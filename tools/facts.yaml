@@ -1,0 +1,147 @@
+# ============================================================================
+# facts.yaml — the canonical fact registry
+#
+# Every number, threshold, version and count that appears in MORE THAN ONE
+# document lives here, once. Master_Documentation.md is the authority for the
+# prose; this file is the authority for the VALUES.
+#
+# Change a value here  ->  tools/check_sync.py tells you every file to update.
+# Never change a value in an HTML file without changing it here first.
+# ============================================================================
+
+versions:
+  platform:        "v7.0"
+  platform_name:   "FAST"
+  data_agent:      "APEX v2.1"
+
+# --- retrieval -------------------------------------------------------------
+retrieval:
+  rrf_k:                   60
+  rerank_weight:           0.70          # final = 0.70*rerank + 0.30*rrf
+  rrf_weight:              0.30
+  rerank_candidates:       20
+  min_agents_for_consensus: 2
+  latency_budget_ms:       "300-500"
+  small_corpus_threshold:  500           # below this, cross-encoder OFF
+  large_corpus_threshold:  5000
+
+# --- approval and autonomy -------------------------------------------------
+approval:
+  auto_confidence_min:     0.95
+  recommend_min:           0.80
+  human_review_min:        0.60
+  auto_approve_confidence: 0.90          # auto-approval precondition
+  auto_approve_judge_score: 8
+  auto_approve_success_rate: 0.95
+  judge_criteria_min:      6             # quality / factual / feasibility
+  max_revisions:           2
+  timeout_reminder_min:    15
+  timeout_escalate_min:    30
+  timeout_autoreject_min:  60
+
+# --- cost and limits -------------------------------------------------------
+limits:
+  tokens_per_incident:     50000
+  cost_per_incident_usd:   5
+  rate_per_minute:         60
+  rate_per_hour:           500
+  max_input_chars:         10000
+  llm_timeout_s:           30
+  execution_poll_max_s:    600
+  stuck_detection_min:     5
+
+# --- SLOs ------------------------------------------------------------------
+slo:
+  availability:            "99.9%"
+  sla_availability:        "99.5%"       # deliberately looser than the SLO
+  error_budget_30d:        "43m 12s"
+  api_latency_p99_ms:      500
+  triage_max_min:          2
+  plan_max_s:              30
+  auto_remediation_min:    "80%"
+  reopened_max:            "5%"
+  reopened_window_days:    7
+  graph_freshness_min:     "95%"
+  graph_freshness_hours:   24
+  burn_rate_page:          14.4
+  burn_rate_severe:        6
+  burn_rate_elevated:      3
+
+# --- architecture counts ---------------------------------------------------
+counts:
+  fast_agents:             9
+  governor_phases:         7
+  phase_states:            12            # THE state model. 24-state is retired (v6.6 and earlier)
+  retrieval_agents:        4
+  apex_agents:             5
+  dag_patterns:            9
+  spark_jobs:              5
+  ddl_schemas:             13
+  source_types:            "70+"
+  mcp_servers:             7
+  rbac_roles:              4
+  approval_levels:         4
+  controls:                20            # CTL-01..CTL-20
+  risks:                   12            # R-01..R-12
+  invariants:              29            # INV-001..INV-029
+  agent_justifications:    7             # AGENT-ARCH-001
+  business_requirements:   8             # BR-01..BR-08
+  constraints_reg:         10            # CON-01..CON-10
+  assumptions_reg:         8             # ASM-01..ASM-08
+  dependencies_reg:        8             # DEP-01..DEP-08
+  acceptance_criteria:     12            # AC-01..AC-12
+  guardrail_layers:        9
+  defence_layers:          5
+  observability_pillars:   4
+  alert_rules:             "35+"
+  metrics:                 "60+"
+  owasp_llm_items:         10
+
+# --- data engineering ------------------------------------------------------
+data:
+  grain_fanout_max:        2.0
+  target_file_size:        "128 MB"
+  vacuum_retention_days:   7
+  bronze_retention_days:   730
+  quarantine_retention_days: 90
+
+# --- compliance ------------------------------------------------------------
+compliance:
+  eu_ai_act_deadline:      "2 Dec 2027"
+  audit_retention_years:   7
+  pii_retention_days:      90
+  incident_retention_days: 365
+  log_retention_days:      30
+  adversarial_bypass_max:  "0%"
+
+# --- values that must NEVER appear (they were corrected) -------------------
+# check_sync.py fails the build if any of these strings is found.
+# --- autonomy policy: the single canonical statement (Master Doc 2.6) ------
+autonomy:
+  prod_auto_approval:      false         # NEVER. Not gated on a threshold - excluded outright
+  auto_approve_environments: "local, dev, sit"
+  min_verified_real_outcomes: 5          # synthetic seed history does not count
+
+forbidden:
+  - text: "24-state machine"
+    why:  "retired in v7.0; the model is 12 phase states"
+  - text: "State machine states | 24"
+    why:  "retired in v7.0"
+  - text: "| Alert noise reduction | **94%** |"
+    why:  "target, not an achieved result - must be labelled Target"
+  - text: "99.95% achieved"
+    why:  "not measured; architecture is sized for it, attainment is unknown"
+  - text: "currently 85%"
+    why:  "auto-remediation success is a target, not an observation"
+  - text: "Partial — approval path only"
+    why:  "outbox now covers every state-changing write"
+  - text: "enforces via Redis"
+    why:  "idempotency source of truth is PostgreSQL, not Redis"
+  - text: "Embed/Key/Graph/Rerank"
+    why:  "the four retrievers are Vector/Keyword/Graph/Metadata"
+  - text: "Angular / React Frontend"
+    why:  "frontend is Next.js 14 / React"
+  - text: "Dataflow jobs</strong>;"
+    why:  "pipeline artefacts are PySpark on Dataproc"
+  - text: "class=\"admonition"
+    why:  "the stylesheet contract is .callout / .callout-title / .callout-body"

@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Incident Management Architecture v5 - Hybrid Protocols</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      min-height: 100vh;
+      padding: 15px;
+      color: white;
+    }
+    .header { text-align: center; margin-bottom: 12px; }
+    .header h1 {
+      font-size: 24px;
+      background: linear-gradient(90deg, #22d3ee, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header p { color: #94a3b8; font-size: 12px; margin-top: 4px; }
+    .badges { display: flex; justify-content: center; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+    .badge { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    .patterns-bar {
+      display: flex; justify-content: center; gap: 20px; margin: 12px 0; flex-wrap: wrap;
+      padding: 12px; background: rgba(30, 41, 59, 0.8); border-radius: 8px; border: 1px solid #475569;
+    }
+    .pattern-group { text-align: center; }
+    .pattern-group h4 { font-size: 9px; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+    .pattern-tags { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+    .pattern-tag { padding: 3px 8px; border-radius: 4px; font-size: 8px; font-weight: bold; }
+    .protocol-legend {
+      display: flex; justify-content: center; gap: 30px; margin: 10px 0; padding: 10px;
+      background: rgba(15, 23, 42, 0.9); border-radius: 8px; border: 1px solid #334155;
+    }
+    .protocol-item { display: flex; align-items: center; gap: 8px; }
+    .protocol-line { width: 40px; height: 4px; border-radius: 2px; }
+    .protocol-label { font-size: 10px; color: #cbd5e1; }
+    .state-machine {
+      display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+      padding: 10px; background: rgba(30, 41, 59, 0.7); border-radius: 8px;
+      border: 1px solid #334155; margin-bottom: 12px;
+    }
+    .state { padding: 4px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; }
+    .state-arrow { color: #64748b; font-size: 12px; }
+    .diagram-container {
+      background: #0f172a; border-radius: 10px; border: 1px solid #334155;
+      padding: 15px; overflow-x: auto;
+    }
+    .info-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 12px;
+    }
+    .info-card {
+      background: rgba(30, 41, 59, 0.8); border-radius: 8px; padding: 12px;
+      border: 1px solid #475569;
+    }
+    .info-card h3 { font-size: 10px; margin-bottom: 8px; }
+    .info-card ul { list-style: none; font-size: 8px; color: #cbd5e1; }
+    .info-card li { margin: 3px 0; padding-left: 12px; position: relative; }
+    .info-card li::before { content: "✓"; color: #4ade80; position: absolute; left: 0; font-size: 8px; }
+    .zone-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; }
+    .zone-card { padding: 10px; border-radius: 6px; background: rgba(30, 41, 59, 0.8); border-left: 4px solid; }
+    .zone-card h3 { font-size: 11px; margin-bottom: 4px; }
+    .zone-card .steps { font-size: 9px; color: #94a3b8; }
+    .zone-card code { display: inline-block; font-size: 8px; background: rgba(236,72,153,0.2); color: #f472b6; padding: 2px 5px; border-radius: 3px; margin: 2px 2px 0 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Enterprise Incident Management Architecture v5.0</h1>
+    <p>Hybrid Protocol Design: Kafka (External) + A2A (Agent) + MCP (Tools) • Swarm RAG • Terraform/Ansible</p>
+  </div>
+
+  <div class="badges">
+    <span class="badge" style="background:#059669;color:white;">SOC2 Type II</span>
+    <span class="badge" style="background:#7c3aed;color:white;">ISO 42001</span>
+    <span class="badge" style="background:#2563eb;color:white;">NIST AI RMF</span>
+    <span class="badge" style="background:#dc2626;color:white;">EU AI Act Ready</span>
+    <span class="badge" style="background:#d97706;color:white;">MITRE ATLAS</span>
+  </div>
+
+  <!-- Protocol Legend -->
+  <div class="protocol-legend">
+    <div class="protocol-item">
+      <div class="protocol-line" style="background:#ec4899;"></div>
+      <span class="protocol-label"><strong>Kafka</strong> - External Systems, Audit Trail, State Transitions</span>
+    </div>
+    <div class="protocol-item">
+      <div class="protocol-line" style="background:#22d3ee;"></div>
+      <span class="protocol-label"><strong>A2A</strong> - Agent-to-Agent Real-time Communication</span>
+    </div>
+    <div class="protocol-item">
+      <div class="protocol-line" style="background:#a78bfa;"></div>
+      <span class="protocol-label"><strong>MCP</strong> - Agent-to-Tool Invocation (JSON-RPC)</span>
+    </div>
+    <div class="protocol-item">
+      <div class="protocol-line" style="background:#f97316;"></div>
+      <span class="protocol-label"><strong>REST/Webhook</strong> - GitHub Actions, External APIs</span>
+    </div>
+  </div>
+
+  <!-- Architecture, Design, Communication Patterns -->
+  <div class="patterns-bar">
+    <div class="pattern-group">
+      <h4>🏗️ Architecture Patterns</h4>
+      <div class="pattern-tags">
+        <span class="pattern-tag" style="background:#7c3aed;color:white;">Hub & Spoke</span>
+        <span class="pattern-tag" style="background:#2563eb;color:white;">Hierarchical Agents</span>
+        <span class="pattern-tag" style="background:#d97706;color:white;">Swarm (RAG)</span>
+        <span class="pattern-tag" style="background:#059669;color:white;">Event-Driven</span>
+      </div>
+    </div>
+    <div class="pattern-group">
+      <h4>🧠 Design Patterns</h4>
+      <div class="pattern-tags">
+        <span class="pattern-tag" style="background:#be185d;color:white;">ReAct</span>
+        <span class="pattern-tag" style="background:#0891b2;color:white;">Chain-of-Thought</span>
+        <span class="pattern-tag" style="background:#4f46e5;color:white;">Plan-Execute</span>
+        <span class="pattern-tag" style="background:#dc2626;color:white;">Self-Reflection</span>
+      </div>
+    </div>
+    <div class="pattern-group">
+      <h4>📡 Protocol Layers</h4>
+      <div class="pattern-tags">
+        <span class="pattern-tag" style="background:#ec4899;color:white;">Kafka (External)</span>
+        <span class="pattern-tag" style="background:#22d3ee;color:#0f172a;">A2A (Agents)</span>
+        <span class="pattern-tag" style="background:#a78bfa;color:white;">MCP (Tools)</span>
+        <span class="pattern-tag" style="background:#f97316;color:white;">REST/Webhooks</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="state-machine">
+    <span class="state" style="background:#475569;">NEW</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#4f46e5;">RECEIVED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#7c3aed;">ENRICHED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#be185d;">JUDGED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#d97706;">PLAN_GEN</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#16a34a;">APPROVED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#2563eb;">EXECUTED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#0891b2;">VERIFIED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#059669;">CLOSED</span>
+    <span style="color:#64748b;margin:0 10px;">|</span>
+    <span class="state" style="background:#dc2626;">FAILED</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#ea580c;">ROLLBACK</span><span class="state-arrow">→</span>
+    <span class="state" style="background:#78716c;">MANUAL</span>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1750 1100" style="width:100%;min-width:1650px;height:auto;background:#0f172a;">
+      <defs>
+        <!-- 
+        ╔════════════════════════════════════════════════════════════════╗
+        ║ ARROWHEAD MARKERS - Using strokeWidth units for consistency   ║
+        ╠════════════════════════════════════════════════════════════════╣
+        ║ markerUnits="strokeWidth" → scales with line thickness        ║
+        ║ refX="4" → arrowhead tip touches endpoint exactly             ║
+        ║ viewBox="0 0 6 6" → normalized coordinate space               ║
+        ╚════════════════════════════════════════════════════════════════╝
+        -->
+        <marker id="arr-kafka" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 6 6">
+          <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="#ec4899"/>
+        </marker>
+        <marker id="arr-a2a" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 6 6">
+          <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="#22d3ee"/>
+        </marker>
+        <marker id="arr-mcp" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 6 6">
+          <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="#a78bfa"/>
+        </marker>
+        <marker id="arr-rest" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 6 6">
+          <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="#f97316"/>
+        </marker>
+        <marker id="arr-gray" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 6 6">
+          <path d="M0,0 L6,3 L0,6 L1.5,3 Z" fill="#64748b"/>
+        </marker>
+
+        <!-- Glow filters for protocol separation -->
+        <filter id="glow-kafka" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="glow-a2a" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="glow-mcp" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <!-- Label background filter -->
+        <filter id="label-bg" x="-10%" y="-10%" width="120%" height="120%">
+          <feFlood flood-color="#0f172a" flood-opacity="0.85"/>
+          <feComposite in="SourceGraphic" operator="over"/>
+        </filter>
+      </defs>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 0: BACKGROUND - Platform Services & Guardrails -->
+      <!-- ============================================================ -->
+      <g id="layer-background">
+        <!-- Platform Services Bar -->
+        <rect x="15" y="10" width="1720" height="35" rx="6" fill="#134e4a" stroke="#14b8a6" stroke-width="2"/>
+        <text x="30" y="30" font-size="10" font-weight="bold" fill="#5eead4">🏗️ PLATFORM SERVICES</text>
+        <rect x="170" y="17" width="75" height="16" rx="3" fill="#115e59"/>
+        <text x="207" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#99f6e4">Schema Registry</text>
+        <rect x="255" y="17" width="65" height="16" rx="3" fill="#115e59"/>
+        <text x="287" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#99f6e4">State Store</text>
+        <rect x="330" y="17" width="55" height="16" rx="3" fill="#115e59"/>
+        <text x="357" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#99f6e4">Vault/KMS</text>
+        <rect x="395" y="17" width="70" height="16" rx="3" fill="#115e59"/>
+        <text x="430" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#99f6e4">Feature Flags</text>
+        <rect x="475" y="17" width="65" height="16" rx="3" fill="#115e59"/>
+        <text x="507" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#99f6e4">OIDC/SPIFFE</text>
+        <rect x="550" y="17" width="65" height="16" rx="3" fill="#115e59"/>
+        <text x="582" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#99f6e4">Service Mesh</text>
+        <rect x="625" y="17" width="75" height="16" rx="3" fill="#7c2d12" stroke="#f97316"/>
+        <text x="662" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#fed7aa">📊 SLO Engine</text>
+        <rect x="710" y="17" width="75" height="16" rx="3" fill="#713f12" stroke="#eab308"/>
+        <text x="747" y="28" text-anchor="middle" font-size="6" font-weight="bold" fill="#fef08a">💰 Cost Controls</text>
+
+        <!-- AI Guardrails Bar -->
+        <rect x="15" y="48" width="1720" height="32" rx="6" fill="#4a044e" stroke="#d946ef" stroke-width="2"/>
+        <text x="30" y="67" font-size="10" font-weight="bold" fill="#f0abfc">🛡️ AI GUARDRAILS</text>
+        <rect x="150" y="56" width="75" height="14" rx="3" fill="#701a75"/>
+        <text x="187" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="#f5d0fe">Prompt Injection</text>
+        <rect x="235" y="56" width="60" height="14" rx="3" fill="#701a75"/>
+        <text x="265" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="#f5d0fe">PII Redaction</text>
+        <rect x="305" y="56" width="70" height="14" rx="3" fill="#701a75"/>
+        <text x="340" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="#f5d0fe">Output Validation</text>
+        <rect x="385" y="56" width="65" height="14" rx="3" fill="#701a75"/>
+        <text x="417" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="#f5d0fe">Jailbreak Block</text>
+        <rect x="460" y="56" width="65" height="14" rx="3" fill="#701a75"/>
+        <text x="492" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="#f5d0fe">Content Safety</text>
+        <rect x="535" y="56" width="70" height="14" rx="3" fill="#701a75"/>
+        <text x="570" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="#f5d0fe">Hallucination Chk</text>
+        <rect x="615" y="56" width="80" height="14" rx="3" fill="#be185d" stroke="#f472b6"/>
+        <text x="655" y="66" text-anchor="middle" font-size="5" font-weight="bold" fill="white">🧑‍⚖️ LLM-as-Judge</text>
+
+        <!-- Observability Bar -->
+        <rect x="15" y="83" width="1720" height="32" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="2"/>
+        <text x="30" y="102" font-size="10" font-weight="bold" fill="#a5b4fc">📊 OBSERVABILITY</text>
+        <rect x="150" y="91" width="80" height="14" rx="3" fill="#312e81"/>
+        <text x="190" y="101" text-anchor="middle" font-size="5" font-weight="bold" fill="#c7d2fe">📝 Structured Logs</text>
+        <rect x="240" y="91" width="80" height="14" rx="3" fill="#312e81"/>
+        <text x="280" y="101" text-anchor="middle" font-size="5" font-weight="bold" fill="#c7d2fe">🔗 OpenTelemetry</text>
+        <rect x="330" y="91" width="70" height="14" rx="3" fill="#312e81"/>
+        <text x="365" y="101" text-anchor="middle" font-size="5" font-weight="bold" fill="#c7d2fe">📈 Prometheus</text>
+        <rect x="410" y="91" width="65" height="14" rx="3" fill="#312e81"/>
+        <text x="442" y="101" text-anchor="middle" font-size="5" font-weight="bold" fill="#c7d2fe">🤖 LangSmith</text>
+        <rect x="485" y="91" width="70" height="14" rx="3" fill="#4c1d95"/>
+        <text x="520" y="101" text-anchor="middle" font-size="5" font-weight="bold" fill="#ddd6fe">🧠 LangGraph</text>
+        <rect x="565" y="91" width="85" height="14" rx="3" fill="#7f1d1d" stroke="#ef4444"/>
+        <text x="607" y="101" text-anchor="middle" font-size="5" font-weight="bold" fill="#fecaca">⚡ Circuit Breakers</text>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 1: KAFKA & A2A BUSES (Central Communication Layer) -->
+      <!-- ============================================================ -->
+      <g id="layer-buses">
+        <!-- Kafka Bus -->
+        <rect x="320" y="520" width="1100" height="40" rx="8" fill="#be185d"/>
+        <rect x="324" y="524" width="1092" height="32" rx="6" fill="#db2777"/>
+        <text x="870" y="543" text-anchor="middle" font-size="12" font-weight="bold" fill="white">KAFKA EVENT BUS (External + Audit + State)</text>
+        <text x="870" y="553" text-anchor="middle" font-size="6" fill="#fce7f3">incident.created • incident.enriched • plan.generated • incident.approved • incident.executed • incident.verified • incident.closed</text>
+
+        <!-- A2A Mesh -->
+        <rect x="320" y="565" width="1100" height="35" rx="6" fill="#0e7490"/>
+        <rect x="324" y="569" width="1092" height="27" rx="4" fill="#0891b2"/>
+        <text x="870" y="586" text-anchor="middle" font-size="11" font-weight="bold" fill="white">A2A AGENT MESH (Real-time Agent Coordination)</text>
+        <text x="870" y="594" text-anchor="middle" font-size="6" fill="#cffafe">swarm.query • swarm.vote • judge.evaluate • judge.score • agent.execute • agent.result</text>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 2: ZONE CONTAINERS (Main zones with backgrounds) -->
+      <!-- ============================================================ -->
+      <g id="layer-zones">
+        <!-- ZONE 1: INGESTION -->
+        <rect x="15" y="120" width="290" height="300" rx="8" fill="#0c1929" stroke="#0ea5e9" stroke-width="2"/>
+        <text x="30" y="142" font-size="11" font-weight="bold" fill="#0ea5e9">1️⃣ INGESTION</text>
+        <text x="30" y="154" font-size="6" fill="#64748b">External → MCP → Kafka → Event Bus</text>
+        
+        <!-- 
+        ╔════════════════════════════════════════════════════════════════════════╗
+        ║ INGESTION ZONE - STRICT GRID SYSTEM                                    ║
+        ╠════════════════════════════════════════════════════════════════════════╣
+        ║ GLOBAL CONSTANTS:                                                      ║
+        ║   BASE_Y         = 158        (first row starts here)                  ║
+        ║   ROW_HEIGHT     = 70         (band height)                            ║
+        ║   ROW_PADDING    = 5          (top padding within band)                ║
+        ║   BOX_HEIGHT_L   = 55         (large boxes)                            ║
+        ║   BOX_HEIGHT_S   = 30         (small boxes / topics)                   ║
+        ╠════════════════════════════════════════════════════════════════════════╣
+        ║ ROW BANDS:                                                             ║
+        ║   Row 0: y = 158 + 0*70 = 158  → box_y = 163, center_y = 190.5 (H=55) ║
+        ║   Row 1: y = 158 + 1*70 = 228  → box_y = 233, center_y = 260.5 (H=55) ║
+        ║   Row 2: y = 158 + 2*70 = 298  → box_y = 303, center_y = 318   (H=30) ║
+        ║   Row 3: y = 158 + 3*70 = 368  → box_y = 373, center_y = 388   (H=30) ║
+        ╠════════════════════════════════════════════════════════════════════════╣
+        ║ COLUMNS:                                                               ║
+        ║   Col A: x = 30,  width = 110  → center_x = 85                        ║
+        ║   Col B: x = 170, width = 115  → center_x = 227.5                     ║
+        ║   Gap: 30px (140 → 170)                                               ║
+        ╠════════════════════════════════════════════════════════════════════════╣
+        ║ ANCHOR NAMING: {zone}_{box}_{position}                                 ║
+        ║   Positions: c=center, l=left, r=right, t=top, b=bottom               ║
+        ╚════════════════════════════════════════════════════════════════════════╝
+        -->
+        
+        <!-- INVISIBLE ANCHORS - All boxes get 5 anchors each -->
+        <!-- Box 1: ServiceNow (Col A, Row 0) - box at (30, 163), size 110×55 -->
+        <circle id="ing_sn_c" cx="85" cy="190.5" r="0"/>
+        <circle id="ing_sn_l" cx="30" cy="190.5" r="0"/>
+        <circle id="ing_sn_r" cx="140" cy="190.5" r="0"/>
+        <circle id="ing_sn_t" cx="85" cy="163" r="0"/>
+        <circle id="ing_sn_b" cx="85" cy="218" r="0"/>
+        
+        <!-- Box 2: MCP Server (Col B, Row 0) - box at (170, 163), size 115×55 -->
+        <circle id="ing_mcp_c" cx="227.5" cy="190.5" r="0"/>
+        <circle id="ing_mcp_l" cx="170" cy="190.5" r="0"/>
+        <circle id="ing_mcp_r" cx="285" cy="190.5" r="0"/>
+        <circle id="ing_mcp_t" cx="227.5" cy="163" r="0"/>
+        <circle id="ing_mcp_b" cx="227.5" cy="218" r="0"/>
+        
+        <!-- Box 3: AIOps (Col A, Row 1) - box at (30, 233), size 110×55 -->
+        <circle id="ing_aio_c" cx="85" cy="260.5" r="0"/>
+        <circle id="ing_aio_l" cx="30" cy="260.5" r="0"/>
+        <circle id="ing_aio_r" cx="140" cy="260.5" r="0"/>
+        <circle id="ing_aio_t" cx="85" cy="233" r="0"/>
+        <circle id="ing_aio_b" cx="85" cy="288" r="0"/>
+        
+        <!-- Box 4: Kafka Topic (Col B, Row 1) - box at (170, 233), size 115×55 -->
+        <circle id="ing_kafka_c" cx="227.5" cy="260.5" r="0"/>
+        <circle id="ing_kafka_l" cx="170" cy="260.5" r="0"/>
+        <circle id="ing_kafka_r" cx="285" cy="260.5" r="0"/>
+        <circle id="ing_kafka_t" cx="227.5" cy="233" r="0"/>
+        <circle id="ing_kafka_b" cx="227.5" cy="288" r="0"/>
+        
+        <!-- Box 5: Idempotency (Col A, Row 2) - box at (30, 303), size 110×30 -->
+        <circle id="ing_idem_c" cx="85" cy="318" r="0"/>
+        
+        <!-- Box 6: Circuit Breaker (Col B, Row 2) - box at (170, 303), size 115×30 -->
+        <circle id="ing_cb_c" cx="227.5" cy="318" r="0"/>
+        
+        <!-- Box 7: ChatOps (Full width, Row 3) - box at (30, 373), size 255×25 -->
+        <circle id="ing_chat_c" cx="157.5" cy="385.5" r="0"/>
+        
+        <!-- ========== ROW 0: y=163, height=55, center_y=190.5 ========== -->
+        
+        <!-- BOX 1: ServiceNow -->
+        <rect x="30" y="163" width="110" height="55" rx="6" fill="#0ea5e9"/>
+        <circle cx="50" cy="185" r="11" fill="#fbbf24"/>
+        <text x="50" y="189" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e293b">1</text>
+        <text x="95" y="183" text-anchor="middle" font-size="9" font-weight="bold" fill="white">ServiceNow</text>
+        <text x="95" y="196" text-anchor="middle" font-size="6" fill="#e0f2fe">Incident Source</text>
+        <text x="95" y="209" text-anchor="middle" font-size="5" fill="#bae6fd">+ GCP • Datadog • PD</text>
+        
+        <!-- BOX 2: SNOW MCP Server -->
+        <rect x="170" y="163" width="115" height="55" rx="6" fill="#14b8a6"/>
+        <circle cx="190" cy="185" r="11" fill="#fbbf24"/>
+        <text x="190" y="189" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e293b">2</text>
+        <text x="247" y="181" text-anchor="middle" font-size="8" font-weight="bold" fill="white">SNOW MCP</text>
+        <text x="247" y="194" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Server</text>
+        <text x="247" y="209" text-anchor="middle" font-size="5" fill="#99f6e4">Protocol: JSON-RPC 2.0</text>
+        
+        <!-- ========== ROW 1: y=233, height=55, center_y=260.5 ========== -->
+        
+        <!-- BOX 3: AIOps Correlator -->
+        <rect x="30" y="233" width="110" height="55" rx="6" fill="#7c3aed"/>
+        <text x="85" y="254" text-anchor="middle" font-size="8" font-weight="bold" fill="white">AIOps</text>
+        <text x="85" y="267" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Correlator</text>
+        <text x="85" y="281" text-anchor="middle" font-size="5" fill="#ddd6fe">-94% noise • Dedup</text>
+        
+        <!-- BOX 4: Kafka Topic + DLQ (stacked within Row 1 band) -->
+        <rect x="170" y="233" width="115" height="32" rx="16" fill="#ec4899"/>
+        <text x="227.5" y="247" text-anchor="middle" font-size="6" fill="white">📤 Kafka Topic</text>
+        <text x="227.5" y="259" text-anchor="middle" font-size="7" font-weight="bold" fill="white">incident.created</text>
+        
+        <rect x="170" y="268" width="115" height="20" rx="10" fill="#7f1d1d" stroke="#dc2626" stroke-width="1"/>
+        <text x="227.5" y="282" text-anchor="middle" font-size="5" font-weight="bold" fill="#fca5a5">⚠️ .created.DLQ</text>
+        
+        <!-- ========== ROW 2: y=303, height=30, center_y=318 ========== -->
+        
+        <!-- BOX 5: Idempotency -->
+        <rect x="30" y="303" width="110" height="30" rx="5" fill="#1e3a5f" stroke="#3b82f6" stroke-dasharray="3,2"/>
+        <text x="85" y="318" text-anchor="middle" font-size="6" font-weight="bold" fill="#60a5fa">🔑 Idempotency</text>
+        <text x="85" y="329" text-anchor="middle" font-size="5" fill="#93c5fd">State hash check</text>
+        
+        <!-- BOX 6: Circuit Breaker -->
+        <rect x="170" y="303" width="115" height="30" rx="5" fill="#450a0a" stroke="#ef4444" stroke-dasharray="3,2"/>
+        <text x="227.5" y="318" text-anchor="middle" font-size="6" font-weight="bold" fill="#fca5a5">⚡ Circuit Breaker</text>
+        <text x="227.5" y="329" text-anchor="middle" font-size="5" fill="#f87171">5 fails → 30s open</text>
+        
+        <!-- ========== ROW 3: y=373, height=25, center_y=385.5 ========== -->
+        
+        <!-- BOX 7: ChatOps -->
+        <rect x="30" y="348" width="255" height="25" rx="5" fill="#1e293b" stroke="#0ea5e9"/>
+        <text x="45" y="364" font-size="6" font-weight="bold" fill="#0ea5e9">💬 ChatOps:</text>
+        <text x="105" y="364" font-size="6" fill="#94a3b8">Slack • Teams • PagerDuty alerts</text>
+        
+        <!-- Flow Summary -->
+        <rect x="30" y="378" width="255" height="28" rx="5" fill="#0f172a" stroke="#475569" stroke-opacity="0.5"/>
+        <text x="45" y="392" font-size="5" font-weight="bold" fill="#64748b">FLOW:</text>
+        <text x="75" y="392" font-size="5" fill="#0ea5e9">ServiceNow</text>
+        <text x="118" y="392" font-size="6" fill="#a78bfa">→</text>
+        <text x="126" y="392" font-size="5" fill="#14b8a6">MCP</text>
+        <text x="145" y="392" font-size="6" fill="#a78bfa">→</text>
+        <text x="153" y="392" font-size="5" fill="#7c3aed">AIOps</text>
+        <text x="178" y="392" font-size="6" fill="#ec4899">→</text>
+        <text x="186" y="392" font-size="5" fill="#ec4899">Kafka</text>
+
+        <!-- ZONE 2: INTELLIGENCE -->
+        <rect x="320" y="120" width="520" height="390" rx="8" fill="#1a1033" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="335" y="142" font-size="11" font-weight="bold" fill="#a78bfa">2️⃣ INTELLIGENCE</text>
+        <text x="335" y="154" font-size="6" fill="#64748b">A2A (agents) • MCP (tools) • Swarm RAG</text>
+
+        <!-- ZONE 3: GOVERNANCE -->
+        <rect x="855" y="120" width="320" height="200" rx="8" fill="#2a0a0a" stroke="#ef4444" stroke-width="2"/>
+        <text x="870" y="142" font-size="11" font-weight="bold" fill="#f87171">3️⃣ GOVERNANCE</text>
+        <text x="870" y="154" font-size="6" fill="#64748b">A2A: Judge → Kafka: State</text>
+
+        <!-- ZONE 4: EXECUTION -->
+        <rect x="1190" y="120" width="545" height="390" rx="8" fill="#052e16" stroke="#22c55e" stroke-width="2"/>
+        <text x="1205" y="142" font-size="11" font-weight="bold" fill="#4ade80">4️⃣ EXECUTION</text>
+        <text x="1205" y="154" font-size="6" fill="#64748b">A2A (coord) • MCP (tools) • REST (GH Actions)</text>
+
+        <!-- ZONE 5: FEEDBACK -->
+        <rect x="15" y="610" width="700" height="230" rx="8" fill="#0c1929" stroke="#3b82f6" stroke-width="2"/>
+        <text x="30" y="632" font-size="11" font-weight="bold" fill="#60a5fa">5️⃣ FEEDBACK</text>
+        <text x="30" y="644" font-size="6" fill="#64748b">Kafka (state) • MCP (update RAG) • REST (Jira)</text>
+
+        <!-- ZONE 6: LEGEND -->
+        <rect x="730" y="610" width="250" height="230" rx="6" fill="#1e293b" stroke="#475569"/>
+        <text x="750" y="632" font-size="10" font-weight="bold" fill="white">📡 PROTOCOL LEGEND</text>
+
+        <!-- ZONE 7: PROTOCOL MATRIX -->
+        <rect x="995" y="610" width="435" height="230" rx="6" fill="#1e293b" stroke="#fbbf24"/>
+        <text x="1015" y="632" font-size="10" font-weight="bold" fill="#fbbf24">WHEN TO USE WHICH PROTOCOL</text>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 3: COMPONENTS INSIDE ZONES -->
+      <!-- ============================================================ -->
+      <g id="layer-components">
+        
+        <!-- ===== ZONE 1: INGESTION - Components defined in layer-zones ===== -->
+
+        <!-- ===== ZONE 2: INTELLIGENCE COMPONENTS ===== -->
+        <rect x="335" y="168" width="150" height="50" rx="5" fill="#6366f1"/>
+        <circle cx="353" cy="188" r="9" fill="#fbbf24"/>
+        <text x="353" y="192" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">3</text>
+        <text x="410" y="188" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Event Orchestrator</text>
+        <text x="410" y="202" text-anchor="middle" font-size="6" fill="#c7d2fe">Kafka Consumer (HUB)</text>
+        <text x="410" y="213" text-anchor="middle" font-size="5" fill="#a5b4fc">Hub & Spoke Pattern</text>
+
+        <rect x="335" y="228" width="150" height="50" rx="5" fill="#8b5cf6"/>
+        <circle cx="353" cy="248" r="9" fill="#fbbf24"/>
+        <text x="353" y="252" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">4</text>
+        <text x="410" y="248" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Decision Orch</text>
+        <text x="410" y="262" text-anchor="middle" font-size="6" fill="#ddd6fe">A2A Coordinator</text>
+        <text x="410" y="273" text-anchor="middle" font-size="5" fill="#c4b5fd">Plan-Execute Pattern</text>
+
+        <rect x="335" y="290" width="150" height="40" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-dasharray="3,2"/>
+        <text x="345" y="305" font-size="5" font-weight="bold" fill="#a78bfa">📊 LangGraph Nodes:</text>
+        <text x="345" y="318" font-size="5" fill="#c4b5fd">enrich • plan • risk • reflect</text>
+
+        <rect x="500" y="168" width="150" height="55" rx="5" fill="#064e3b" stroke="#10b981"/>
+        <text x="575" y="183" text-anchor="middle" font-size="6" font-weight="bold" fill="#6ee7b7">📦 Direct SDK (No Protocol)</text>
+        <rect x="510" y="192" width="130" height="13" rx="3" fill="#065f46"/>
+        <text x="575" y="202" text-anchor="middle" font-size="5" font-weight="bold" fill="#a7f3d0">Redis ~1ms</text>
+        <rect x="510" y="208" width="130" height="13" rx="3" fill="#059669"/>
+        <text x="575" y="218" text-anchor="middle" font-size="5" font-weight="bold" fill="white">PostgreSQL ~10ms</text>
+
+        <rect x="500" y="233" width="150" height="100" rx="5" fill="#d97706" stroke="#fbbf24" stroke-width="2"/>
+        <text x="575" y="248" text-anchor="middle" font-size="7" font-weight="bold" fill="white">🐝 SWARM RAG</text>
+        <text x="575" y="260" text-anchor="middle" font-size="5" fill="#fef3c7">A2A (coord) + MCP (tools)</text>
+        <rect x="510" y="268" width="65" height="25" rx="3" fill="#b45309"/>
+        <text x="542" y="280" text-anchor="middle" font-size="6" font-weight="bold" fill="white">Vector</text>
+        <text x="542" y="289" text-anchor="middle" font-size="4" fill="#fef3c7">Weaviate</text>
+        <rect x="580" y="268" width="65" height="25" rx="3" fill="#92400e"/>
+        <text x="612" y="280" text-anchor="middle" font-size="6" font-weight="bold" fill="white">Graph</text>
+        <text x="612" y="289" text-anchor="middle" font-size="4" fill="#fef3c7">Neo4j</text>
+        <text x="510" y="305" font-size="4" fill="#fde68a">find_terraform() • find_ansible()</text>
+        <text x="510" y="315" font-size="4" fill="#fde68a">rank_scripts() • consensus()</text>
+
+        <rect x="665" y="168" width="160" height="50" rx="5" fill="#06b6d4"/>
+        <circle cx="683" cy="188" r="9" fill="#fbbf24"/>
+        <text x="683" y="192" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">5</text>
+        <text x="745" y="188" text-anchor="middle" font-size="8" font-weight="bold" fill="white">LLM Reasoning</text>
+        <text x="745" y="202" text-anchor="middle" font-size="6" fill="#cffafe">Chain-of-Thought</text>
+        <text x="745" y="213" text-anchor="middle" font-size="5" fill="#a5f3fc">Risk + Confidence</text>
+
+        <rect x="665" y="228" width="160" height="50" rx="5" fill="#be185d" stroke="#f472b6" stroke-width="2"/>
+        <circle cx="683" cy="248" r="9" fill="#fbbf24"/>
+        <text x="683" y="252" text-anchor="middle" font-size="7" font-weight="bold" fill="#1e293b">5b</text>
+        <text x="745" y="248" text-anchor="middle" font-size="7" font-weight="bold" fill="white">🧑‍⚖️ LLM-as-Judge</text>
+        <text x="745" y="262" text-anchor="middle" font-size="5" fill="#fce7f3">Protocol: A2A</text>
+        <text x="745" y="273" text-anchor="middle" font-size="5" fill="#fbcfe8">Self-Reflection Pattern</text>
+
+        <rect x="665" y="290" width="110" height="18" rx="9" fill="#ec4899"/>
+        <text x="720" y="302" text-anchor="middle" font-size="6" font-weight="bold" fill="white">plan.generated</text>
+
+        <rect x="665" y="320" width="160" height="35" rx="5" fill="#1e3a5f" stroke="#3b82f6"/>
+        <text x="745" y="337" text-anchor="middle" font-size="6" font-weight="bold" fill="#60a5fa">📦 Incident State Store</text>
+        <text x="745" y="349" text-anchor="middle" font-size="5" fill="#93c5fd">Authoritative (PG)</text>
+
+        <rect x="335" y="345" width="150" height="35" rx="4" fill="#7c2d12" stroke="#f97316"/>
+        <text x="410" y="360" text-anchor="middle" font-size="6" font-weight="bold" fill="#fed7aa">📊 SLO/Error Budget</text>
+        <text x="410" y="372" text-anchor="middle" font-size="5" fill="#fdba74">MTTR &lt;30m • Auto &gt;60%</text>
+
+        <rect x="500" y="345" width="150" height="35" rx="4" fill="#713f12" stroke="#eab308"/>
+        <text x="575" y="360" text-anchor="middle" font-size="6" font-weight="bold" fill="#fef08a">💰 Cost Controls</text>
+        <text x="575" y="372" text-anchor="middle" font-size="5" fill="#fde047">50K tokens • $5 ceiling</text>
+
+        <rect x="335" y="395" width="315" height="22" rx="4" fill="#1e293b" stroke="#64748b"/>
+        <text x="345" y="409" font-size="5" font-weight="bold" fill="#94a3b8">🐤 Modes:</text>
+        <rect x="395" y="401" width="55" height="12" rx="3" fill="#374151"/>
+        <text x="422" y="410" text-anchor="middle" font-size="5" font-weight="bold" fill="#9ca3af">Shadow</text>
+        <rect x="458" y="401" width="65" height="12" rx="3" fill="#4b5563"/>
+        <text x="490" y="410" text-anchor="middle" font-size="5" font-weight="bold" fill="#d1d5db">Canary 10%</text>
+        <rect x="531" y="401" width="65" height="12" rx="3" fill="#059669"/>
+        <text x="563" y="410" text-anchor="middle" font-size="5" font-weight="bold" fill="white">Production</text>
+
+        <rect x="665" y="368" width="110" height="18" rx="9" fill="#ec4899"/>
+        <text x="720" y="380" text-anchor="middle" font-size="6" font-weight="bold" fill="white">incident.enriched</text>
+
+        <!-- ===== ZONE 3: GOVERNANCE COMPONENTS ===== -->
+        <rect x="870" y="168" width="290" height="45" rx="5" fill="#ef4444"/>
+        <circle cx="888" cy="186" r="9" fill="#fbbf24"/>
+        <text x="888" y="190" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">6</text>
+        <text x="1015" y="186" text-anchor="middle" font-size="9" font-weight="bold" fill="white">Control Plane (Hierarchical)</text>
+        <text x="1015" y="200" text-anchor="middle" font-size="6" fill="#fecaca">Policy + Risk + Judge Score (A2A)</text>
+
+        <rect x="875" y="220" width="80" height="16" rx="3" fill="#7f1d1d"/>
+        <text x="915" y="231" text-anchor="middle" font-size="5" fill="#fca5a5">LOW→Auto</text>
+        <rect x="960" y="220" width="80" height="16" rx="3" fill="#7f1d1d"/>
+        <text x="1000" y="231" text-anchor="middle" font-size="5" fill="#fca5a5">MED→Async</text>
+        <rect x="1045" y="220" width="85" height="16" rx="3" fill="#7f1d1d"/>
+        <text x="1087" y="231" text-anchor="middle" font-size="5" fill="#fca5a5">HIGH→Manual</text>
+
+        <rect x="870" y="243" width="290" height="62" rx="4" fill="#450a0a" stroke="#dc2626" stroke-dasharray="3,2"/>
+        <text x="885" y="258" font-size="6" font-weight="bold" fill="#fca5a5">👤 Human-in-the-Loop (P0)</text>
+        <text x="885" y="270" font-size="5" fill="#f87171">• Slack/Teams approval buttons</text>
+        <text x="885" y="282" font-size="5" fill="#f87171">• Escalation: 15m → 30m → page</text>
+        <text x="885" y="294" font-size="5" fill="#f87171">• Override reason + audit trail</text>
+
+        <rect x="1135" y="168" width="28" height="68" rx="4" fill="#1e293b" stroke="#475569"/>
+        <rect x="1138" y="175" width="22" height="14" rx="7" fill="#ec4899"/>
+        <text x="1149" y="185" text-anchor="middle" font-size="4" fill="white">✓</text>
+        <rect x="1138" y="193" width="22" height="14" rx="7" fill="#dc2626"/>
+        <text x="1149" y="203" text-anchor="middle" font-size="4" fill="white">✗</text>
+        <rect x="1138" y="211" width="22" height="14" rx="7" fill="#7f1d1d"/>
+        <text x="1149" y="221" text-anchor="middle" font-size="3" fill="#fca5a5">DLQ</text>
+
+        <!-- ===== ZONE 4: EXECUTION COMPONENTS ===== -->
+        <!-- Row 1: Execution Orchestrator -->
+        <rect x="1205" y="168" width="515" height="40" rx="5" fill="#22c55e"/>
+        <circle cx="1223" cy="183" r="9" fill="#fbbf24"/>
+        <text x="1223" y="187" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">7</text>
+        <text x="1462" y="183" text-anchor="middle" font-size="9" font-weight="bold" fill="white">Execution Orchestrator (Hierarchical)</text>
+        <text x="1462" y="198" text-anchor="middle" font-size="5" fill="#bbf7d0">🚫 No LLM • A2A to agents • REST to GitHub Actions</text>
+
+        <!-- Row 2: Circuit Breakers (left) -->
+        <rect x="1205" y="215" width="140" height="35" rx="4" fill="#450a0a" stroke="#ef4444"/>
+        <text x="1215" y="230" font-size="5" font-weight="bold" fill="#fca5a5">⚡ Circuit Breakers</text>
+        <text x="1215" y="242" font-size="5" fill="#f87171">3 fails → 60s • Kill switch</text>
+
+        <!-- Row 2: GitHub Actions (right, separate area) -->
+        <rect x="1555" y="215" width="160" height="35" rx="4" fill="#1e293b" stroke="#f97316"/>
+        <text x="1565" y="230" font-size="5" font-weight="bold" fill="#f97316">🔗 GitHub Actions</text>
+        <text x="1565" y="242" font-size="5" fill="#fdba74">REST: workflow_dispatch</text>
+
+        <!-- Row 3: Agent boxes with proper spacing -->
+        <rect x="1205" y="260" width="155" height="55" rx="4" fill="#16a34a"/>
+        <circle cx="1223" cy="283" r="8" fill="#fbbf24"/>
+        <text x="1223" y="287" text-anchor="middle" font-size="6" font-weight="bold" fill="#1e293b">8</text>
+        <text x="1282" y="280" text-anchor="middle" font-size="7" font-weight="bold" fill="white">Terraform Agent</text>
+        <text x="1282" y="293" text-anchor="middle" font-size="5" fill="#dcfce7">MCP: K8s/Infra tools</text>
+        <text x="1282" y="306" text-anchor="middle" font-size="4" fill="#bbf7d0">REST → GH Actions</text>
+
+        <rect x="1370" y="260" width="155" height="55" rx="4" fill="#059669"/>
+        <circle cx="1388" cy="283" r="8" fill="#fbbf24"/>
+        <text x="1388" y="287" text-anchor="middle" font-size="6" font-weight="bold" fill="#1e293b">9</text>
+        <text x="1447" y="280" text-anchor="middle" font-size="7" font-weight="bold" fill="white">Ansible Agent</text>
+        <text x="1447" y="293" text-anchor="middle" font-size="5" fill="#d1fae5">MCP: Config tools</text>
+        <text x="1447" y="306" text-anchor="middle" font-size="4" fill="#a7f3d0">REST → GH Actions</text>
+
+        <rect x="1535" y="260" width="155" height="55" rx="4" fill="#0d9488"/>
+        <circle cx="1553" cy="283" r="8" fill="#fbbf24"/>
+        <text x="1553" y="287" text-anchor="middle" font-size="6" font-weight="bold" fill="#1e293b">10</text>
+        <text x="1612" y="280" text-anchor="middle" font-size="7" font-weight="bold" fill="white">Code Agent</text>
+        <text x="1612" y="293" text-anchor="middle" font-size="5" fill="#ccfbf1">MCP: GitHub tools</text>
+        <text x="1612" y="306" text-anchor="middle" font-size="4" fill="#99f6e4">PR/Hotfix</text>
+
+        <!-- Row 4: From Swarm RAG -->
+        <rect x="1205" y="325" width="485" height="28" rx="4" fill="#78350f" stroke="#d97706"/>
+        <text x="1220" y="338" font-size="5" font-weight="bold" fill="#fde68a">📜 From Swarm RAG (MCP):</text>
+        <text x="1220" y="348" font-size="5" fill="#fcd34d">Terraform .tf • Ansible .yml • K8s manifests → GitHub Actions (REST) → apply/run</text>
+
+        <!-- Row 5: Output topics -->
+        <rect x="1205" y="363" width="100" height="18" rx="9" fill="#ec4899"/>
+        <text x="1255" y="375" text-anchor="middle" font-size="5" font-weight="bold" fill="white">incident.executed</text>
+        <rect x="1315" y="363" width="80" height="18" rx="9" fill="#dc2626"/>
+        <text x="1355" y="375" text-anchor="middle" font-size="5" font-weight="bold" fill="white">exec.failed</text>
+        <rect x="1405" y="363" width="60" height="18" rx="9" fill="#7f1d1d"/>
+        <text x="1435" y="375" text-anchor="middle" font-size="4" fill="#fca5a5">DLQ</text>
+
+        <!-- Row 5: Rollback box -->
+        <rect x="1480" y="363" width="110" height="35" rx="4" fill="#450a0a" stroke="#dc2626"/>
+        <text x="1490" y="378" font-size="5" font-weight="bold" fill="#fca5a5">🔄 Rollback</text>
+        <text x="1490" y="390" font-size="4" fill="#f87171">Auto on verify fail</text>
+
+        <!-- ===== ZONE 5: FEEDBACK COMPONENTS ===== -->
+        <rect x="30" y="660" width="150" height="55" rx="5" fill="#3b82f6"/>
+        <circle cx="48" cy="680" r="9" fill="#fbbf24"/>
+        <text x="48" y="684" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">11</text>
+        <text x="105" y="680" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Verification</text>
+        <text x="105" y="693" text-anchor="middle" font-size="5" fill="#bfdbfe">Health • Metrics • Regression</text>
+        <text x="105" y="705" text-anchor="middle" font-size="5" fill="#93c5fd">+ Judge (A2A) validates</text>
+
+        <rect x="40" y="722" width="100" height="14" rx="7" fill="#ec4899"/>
+        <text x="90" y="732" text-anchor="middle" font-size="5" fill="white">incident.verified</text>
+        <rect x="40" y="740" width="100" height="14" rx="7" fill="#dc2626"/>
+        <text x="90" y="750" text-anchor="middle" font-size="5" fill="white">verification.failed</text>
+
+        <rect x="200" y="660" width="150" height="55" rx="5" fill="#a855f7"/>
+        <circle cx="218" cy="680" r="9" fill="#fbbf24"/>
+        <text x="218" y="684" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">12</text>
+        <text x="275" y="680" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Learning Engine</text>
+        <text x="275" y="693" text-anchor="middle" font-size="5" fill="#e9d5ff">Update Swarm RAG (MCP)</text>
+        <text x="275" y="705" text-anchor="middle" font-size="5" fill="#d8b4fe">🚫 NEVER on failure</text>
+
+        <rect x="200" y="722" width="150" height="40" rx="4" fill="#581c87" stroke="#9333ea" stroke-dasharray="3,2"/>
+        <text x="210" y="737" font-size="5" font-weight="bold" fill="#d8b4fe">📊 Indexed in RAG:</text>
+        <text x="210" y="750" font-size="4" fill="#c4b5fd">success • script_id • duration • confidence</text>
+
+        <rect x="200" y="770" width="100" height="14" rx="7" fill="#ec4899"/>
+        <text x="250" y="780" text-anchor="middle" font-size="5" fill="white">incident.closed</text>
+
+        <rect x="370" y="660" width="140" height="55" rx="5" fill="#14b8a6"/>
+        <circle cx="388" cy="680" r="9" fill="#fbbf24"/>
+        <text x="388" y="684" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">13</text>
+        <text x="440" y="680" text-anchor="middle" font-size="8" font-weight="bold" fill="white">Ticket Closer</text>
+        <text x="440" y="693" text-anchor="middle" font-size="5" fill="#99f6e4">ServiceNow MCP Client</text>
+        <text x="440" y="705" text-anchor="middle" font-size="5" fill="#5eead4">VERIFIED → CLOSED</text>
+
+        <rect x="530" y="660" width="170" height="100" rx="5" fill="#1e3a5f" stroke="#3b82f6"/>
+        <circle cx="548" cy="680" r="9" fill="#fbbf24"/>
+        <text x="548" y="684" text-anchor="middle" font-size="8" font-weight="bold" fill="#1e293b">14</text>
+        <text x="615" y="680" text-anchor="middle" font-size="7" font-weight="bold" fill="#60a5fa">📝 Auto-Postmortem</text>
+        <text x="545" y="698" font-size="5" fill="#60a5fa">• Timeline from OTel</text>
+        <text x="545" y="710" font-size="5" fill="#60a5fa">• Root cause (LLM)</text>
+        <text x="545" y="722" font-size="5" fill="#60a5fa">• Jira (REST/Webhook)</text>
+        <text x="545" y="734" font-size="5" fill="#60a5fa">• Terraform audit log</text>
+        <text x="545" y="746" font-size="5" fill="#60a5fa">• Ansible playbook log</text>
+        <text x="545" y="758" font-size="5" fill="#3b82f6">• Calibration feedback</text>
+
+        <rect x="30" y="770" width="150" height="40" rx="4" fill="#78350f" stroke="#d97706"/>
+        <text x="40" y="785" font-size="5" font-weight="bold" fill="#fde68a">🐝 Swarm RAG Update:</text>
+        <text x="40" y="798" font-size="4" fill="#fcd34d">• Index successful scripts</text>
+        <text x="40" y="808" font-size="4" fill="#fcd34d">• Boost ranking scores</text>
+
+        <!-- ===== LEGEND CONTENT ===== -->
+        <line x1="750" y1="648" x2="790" y2="648" stroke="#ec4899" stroke-width="3"/>
+        <text x="800" y="652" font-size="7" fill="#cbd5e1"><tspan font-weight="bold">Kafka</tspan> - External, Audit, State</text>
+
+        <line x1="750" y1="668" x2="790" y2="668" stroke="#22d3ee" stroke-width="3"/>
+        <text x="800" y="672" font-size="7" fill="#cbd5e1"><tspan font-weight="bold">A2A</tspan> - Agent-to-Agent Real-time</text>
+
+        <line x1="750" y1="688" x2="790" y2="688" stroke="#a78bfa" stroke-width="3" stroke-dasharray="5,3"/>
+        <text x="800" y="692" font-size="7" fill="#cbd5e1"><tspan font-weight="bold">MCP</tspan> - Agent-to-Tool (JSON-RPC)</text>
+
+        <line x1="750" y1="708" x2="790" y2="708" stroke="#f97316" stroke-width="3" stroke-dasharray="4,2"/>
+        <text x="800" y="712" font-size="7" fill="#cbd5e1"><tspan font-weight="bold">REST</tspan> - GitHub Actions, APIs</text>
+
+        <line x1="750" y1="728" x2="790" y2="728" stroke="#64748b" stroke-width="3"/>
+        <text x="800" y="732" font-size="7" fill="#cbd5e1"><tspan font-weight="bold">Internal</tspan> - SDK, Direct calls</text>
+
+        <line x1="745" y1="748" x2="965" y2="748" stroke="#475569" stroke-width="1"/>
+        <text x="750" y="765" font-size="8" font-weight="bold" fill="#94a3b8">COMPONENTS</text>
+
+        <rect x="750" y="775" width="12" height="10" rx="2" fill="#8b5cf6"/>
+        <text x="768" y="783" font-size="6" fill="#cbd5e1">MCP Host</text>
+        <rect x="850" y="775" width="12" height="10" rx="2" fill="#14b8a6"/>
+        <text x="868" y="783" font-size="6" fill="#cbd5e1">MCP Server</text>
+
+        <rect x="750" y="792" width="12" height="10" rx="2" fill="#16a34a"/>
+        <text x="768" y="800" font-size="6" fill="#cbd5e1">Agent</text>
+        <rect x="850" y="792" width="12" height="10" rx="2" fill="#d97706"/>
+        <text x="868" y="800" font-size="6" fill="#cbd5e1">Swarm RAG</text>
+
+        <rect x="750" y="809" width="12" height="10" rx="2" fill="#be185d"/>
+        <text x="768" y="817" font-size="6" fill="#cbd5e1">Judge</text>
+        <rect x="850" y="809" width="12" height="10" rx="2" fill="#ef4444"/>
+        <text x="868" y="817" font-size="6" fill="#cbd5e1">Control Plane</text>
+
+        <circle cx="756" y="832" r="6" fill="#fbbf24"/>
+        <text x="756" y="835" text-anchor="middle" font-size="5" font-weight="bold" fill="#1e293b">N</text>
+        <text x="770" y="835" font-size="6" fill="#cbd5e1">Step #</text>
+
+        <!-- ===== PROTOCOL MATRIX CONTENT ===== -->
+        <rect x="1010" y="645" width="405" height="16" rx="3" fill="#334155"/>
+        <text x="1100" y="656" text-anchor="middle" font-size="6" font-weight="bold" fill="white">USE CASE</text>
+        <text x="1250" y="656" text-anchor="middle" font-size="6" font-weight="bold" fill="white">PROTOCOL</text>
+        <text x="1360" y="656" text-anchor="middle" font-size="6" font-weight="bold" fill="white">REASON</text>
+
+        <text x="1020" y="675" font-size="5" fill="#cbd5e1">ServiceNow → System</text>
+        <rect x="1230" y="668" width="40" height="10" rx="3" fill="#ec4899"/>
+        <text x="1250" y="676" text-anchor="middle" font-size="4" fill="white">Kafka</text>
+        <text x="1310" y="675" font-size="5" fill="#94a3b8">Audit trail, external</text>
+
+        <text x="1020" y="690" font-size="5" fill="#cbd5e1">Swarm agents coordinating</text>
+        <rect x="1230" y="683" width="40" height="10" rx="3" fill="#22d3ee"/>
+        <text x="1250" y="691" text-anchor="middle" font-size="4" fill="#0f172a">A2A</text>
+        <text x="1310" y="690" font-size="5" fill="#94a3b8">Real-time consensus</text>
+
+        <text x="1020" y="705" font-size="5" fill="#cbd5e1">Agent calling RAG tool</text>
+        <rect x="1230" y="698" width="40" height="10" rx="3" fill="#a78bfa"/>
+        <text x="1250" y="706" text-anchor="middle" font-size="4" fill="white">MCP</text>
+        <text x="1310" y="705" font-size="5" fill="#94a3b8">Tool invocation std</text>
+
+        <text x="1020" y="720" font-size="5" fill="#cbd5e1">Plan approved → Execute</text>
+        <rect x="1230" y="713" width="40" height="10" rx="3" fill="#ec4899"/>
+        <text x="1250" y="721" text-anchor="middle" font-size="4" fill="white">Kafka</text>
+        <text x="1310" y="720" font-size="5" fill="#94a3b8">State transition</text>
+
+        <text x="1020" y="735" font-size="5" fill="#cbd5e1">Terraform ↔ Ansible coord</text>
+        <rect x="1230" y="728" width="40" height="10" rx="3" fill="#22d3ee"/>
+        <text x="1250" y="736" text-anchor="middle" font-size="4" fill="#0f172a">A2A</text>
+        <text x="1310" y="735" font-size="5" fill="#94a3b8">Agent coordination</text>
+
+        <text x="1020" y="750" font-size="5" fill="#cbd5e1">Agent → GitHub Actions</text>
+        <rect x="1230" y="743" width="40" height="10" rx="3" fill="#f97316"/>
+        <text x="1250" y="751" text-anchor="middle" font-size="4" fill="white">REST</text>
+        <text x="1310" y="750" font-size="5" fill="#94a3b8">workflow_dispatch</text>
+
+        <text x="1020" y="765" font-size="5" fill="#cbd5e1">Judge evaluating output</text>
+        <rect x="1230" y="758" width="40" height="10" rx="3" fill="#22d3ee"/>
+        <text x="1250" y="766" text-anchor="middle" font-size="4" fill="#0f172a">A2A</text>
+        <text x="1310" y="765" font-size="5" fill="#94a3b8">Real-time evaluation</text>
+
+        <text x="1020" y="780" font-size="5" fill="#cbd5e1">Incident closed → SNOW</text>
+        <rect x="1230" y="773" width="40" height="10" rx="3" fill="#ec4899"/>
+        <text x="1250" y="781" text-anchor="middle" font-size="4" fill="white">Kafka</text>
+        <text x="1310" y="780" font-size="5" fill="#94a3b8">External, audit</text>
+
+        <text x="1020" y="795" font-size="5" fill="#cbd5e1">Postmortem → Jira</text>
+        <rect x="1230" y="788" width="40" height="10" rx="3" fill="#f97316"/>
+        <text x="1250" y="796" text-anchor="middle" font-size="4" fill="white">REST</text>
+        <text x="1310" y="795" font-size="5" fill="#94a3b8">Webhook/API</text>
+
+        <text x="1020" y="810" font-size="5" fill="#cbd5e1">Redis/PG memory access</text>
+        <rect x="1230" y="803" width="40" height="10" rx="3" fill="#64748b"/>
+        <text x="1250" y="811" text-anchor="middle" font-size="4" fill="white">SDK</text>
+        <text x="1310" y="810" font-size="5" fill="#94a3b8">Direct, low latency</text>
+
+        <rect x="1010" y="820" width="405" height="18" rx="3" fill="#0f172a" stroke="#475569"/>
+        <text x="1212" y="832" text-anchor="middle" font-size="5" font-weight="bold" fill="#fbbf24">Kafka: Durability | A2A: Real-time | MCP: Tools | REST: APIs</text>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- CORRIDOR SYSTEM (Fixed Y lanes for all protocol arrows)      -->
+      <!-- RULE: One corridor = one semantic purpose (no mixing)        -->
+      <!-- ============================================================ -->
+      <!--
+      ╔════════════════════════════════════════════════════════════════╗
+      ║ HORIZONTAL CORRIDORS (Y-values) - SEMANTIC SPECIFIC:           ║
+      ╠════════════════════════════════════════════════════════════════╣
+      ║ CORRIDOR_INGESTION    = 400  (incident.created → bus)         ║
+      ║ CORRIDOR_INTELLIGENCE = 430  (plan.generated → bus)           ║
+      ║ CORRIDOR_ENRICHED     = 445  (incident.enriched → bus)        ║
+      ║ CORRIDOR_GOVERNANCE   = 455  (incident.approved → bus)        ║
+      ║ CORRIDOR_EXECUTION    = 465  (incident.executed → bus)        ║
+      ║ CORRIDOR_FEEDBACK     = 608  (bus → Feedback Zone)            ║
+      ║ KAFKA_BUS_TOP         = 520                                    ║
+      ║ KAFKA_BUS_BOTTOM      = 560                                    ║
+      ╠════════════════════════════════════════════════════════════════╣
+      ║ VERTICAL CORRIDORS (X-values):                                 ║
+      ╠════════════════════════════════════════════════════════════════╣
+      ║ VCORR_INGESTION       = 370  (Ingestion to/from Kafka)         ║
+      ║ VCORR_INTELLIGENCE_1  = 550  (plan.generated to Kafka)         ║
+      ║ VCORR_INTELLIGENCE_2  = 650  (enriched to Kafka)               ║
+      ║ VCORR_GOVERNANCE      = 850  (approved to Kafka)               ║
+      ║ VCORR_EXECUTION       = 1050 (executed to Kafka)               ║
+      ╠════════════════════════════════════════════════════════════════╣
+      ║ PROTOCOL OFFSETS (parallel only - one axis per arrow):         ║
+      ╠════════════════════════════════════════════════════════════════╣
+      ║ MCP:   -12px  (Y offset for horizontal, X offset for vertical) ║
+      ║ KAFKA:   0px  (center lane)                                    ║
+      ║ A2A:   +12px  (Y offset for horizontal, X offset for vertical) ║
+      ║ REST:  +24px  (Y offset for horizontal, X offset for vertical) ║
+      ║                                                                 ║
+      ║ LABEL WIDTHS (consistent per protocol):                        ║
+      ║   Kafka = 55px                                                 ║
+      ║   A2A   = 35px                                                 ║
+      ║   MCP   = 30px                                                 ║
+      ╚════════════════════════════════════════════════════════════════╝
+      -->
+
+      <!-- ============================================================ -->
+      <!-- LAYER 4: INTERNAL/GRAY ARROWS (Within zones - Bottom layer) -->
+      <!-- ============================================================ -->
+      <g id="layer-internal">
+        
+        <!-- ========== INGESTION ZONE ARROWS ========== -->
+        <!-- Using anchor coordinates from grid system -->
+        
+        <!-- ARROW 1→2: ServiceNow → MCP Server -->
+        <!-- From: ing_sn_r (140, 190.5) → To: ing_mcp_l (170, 190.5) -->
+        <!-- Horizontal: same center_y, only 90° allowed -->
+        <line x1="140" y1="190.5" x2="170" y2="190.5" 
+              stroke="#64748b" stroke-width="2" marker-end="url(#arr-gray)"/>
+        
+        <!-- ARROW 2→3: MCP Server → AIOps -->
+        <!-- From: ing_mcp_b (227.5, 218) → To: ing_aio_t (85, 233) -->
+        <!-- 90° only: down to corridor, left along corridor, down to target -->
+        <!-- Corridor at y=225.5 (midpoint between rows) -->
+        <path d="M 227.5 218 L 227.5 225.5 L 85 225.5 L 85 233" 
+              stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arr-gray)"/>
+        
+        <!-- ARROW 3→4: AIOps → Kafka Topic -->
+        <!-- From: ing_aio_r (140, 260.5) → To: ing_kafka_l (170, 260.5) -->
+        <!-- Horizontal: same center_y (both in Row 1), pure 90° -->
+        <line x1="140" y1="260.5" x2="170" y2="260.5" 
+              stroke="#64748b" stroke-width="2" marker-end="url(#arr-gray)"/>
+
+        <!-- ========== INTELLIGENCE ZONE ARROWS ========== -->
+        
+        <!-- 3→4: Event Orch → Decision Orch (vertical, center-X=410) -->
+        <line x1="410" y1="218" x2="410" y2="228" stroke="#64748b" stroke-width="2" marker-end="url(#arr-gray)"/>
+
+        <!-- Decision→Memory (SDK) - 90° turns only -->
+        <path d="M 485 253 L 492 253 L 492 195.5 L 500 195.5" 
+              stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arr-gray)"/>
+
+        <!-- ====== Arrows INTO Intelligence Kafka Topics ====== -->
+        
+        <!-- Judge (5b) → plan.generated -->
+        <!-- 90° only: down, then left -->
+        <path d="M 745 278 L 745 284 L 720 284 L 720 290" 
+              stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arr-gray)"/>
+        
+        <!-- State Store → incident.enriched -->
+        <!-- 90° only: down, then left -->
+        <path d="M 745 355 L 745 361 L 720 361 L 720 368" 
+              stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arr-gray)"/>
+
+        <!-- ========== FEEDBACK ZONE ARROWS ========== -->
+        
+        <!-- Verification→Learning (horizontal, center-Y) -->
+        <line x1="180" y1="687.5" x2="200" y2="687.5" stroke="#64748b" stroke-width="2" marker-end="url(#arr-gray)"/>
+
+        <!-- Learning→Closer (horizontal, center-Y) -->
+        <line x1="350" y1="687.5" x2="370" y2="687.5" stroke="#64748b" stroke-width="2" marker-end="url(#arr-gray)"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 5: MCP ARROWS (Purple, dashed)                        -->
+      <!-- Offset: -12px on Y (horizontal) or X (vertical) - PARALLEL ONLY -->
+      <!-- ============================================================ -->
+      <g id="layer-mcp" filter="url(#glow-mcp)">
+        
+        <!-- ========== INGESTION ZONE ========== -->
+        
+        <!-- ARROW 1→2 MCP: ServiceNow → MCP Server -->
+        <!-- Base anchor: ing_sn_r to ing_mcp_l = (140, 190.5) → (170, 190.5) -->
+        <!-- MCP offset: -12px on Y only = 178.5 -->
+        <line x1="140" y1="178.5" x2="170" y2="178.5" 
+              stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="4,2" marker-end="url(#arr-mcp)"/>
+
+        <!-- ========== INTELLIGENCE ZONE ========== -->
+        
+        <!-- Decision→SWARM (MCP for tools) -->
+        <!-- Horizontal arrow: align between Decision right edge and Swarm left edge -->
+        <line x1="485" y1="272" x2="500" y2="272" 
+              stroke="#a78bfa" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr-mcp)"/>
+
+        <!-- ========== FEEDBACK ZONE ========== -->
+        
+        <!-- Learning → Swarm RAG (MCP update) -->
+        <!-- Corridor: FEEDBACK_MCP at y=825 -->
+        <path d="M 263 715 L 263 825 L 105 825 L 105 810" 
+              stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr-mcp)"/>
+
+        <!-- Closer → ServiceNow (MCP close ticket) -->
+        <!-- Routes along left edge, enters at ing_sn_l anchor (30, 190.5) -->
+        <path d="M 428 715 L 428 850 L 8 850 L 8 190.5 L 30 190.5" 
+              stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr-mcp)"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 6: KAFKA ARROWS (Pink, solid) - Center lane (0 offset) -->
+      <!-- Uses formal corridor system for all routing                  -->
+      <!-- SEMANTIC CORRIDORS: One corridor = one semantic purpose      -->
+      <!-- ============================================================ -->
+      <g id="layer-kafka" filter="url(#glow-kafka)">
+        
+        <!-- ========== PRODUCE ARROWS (solid) ========== -->
+        
+        <!-- Ingestion → Kafka Bus -->
+        <!-- From: ing_kafka_b (227.5, 288) -->
+        <!-- Via:  CORRIDOR_INGESTION (y=400) - ingestion only -->
+        <!-- Via:  VCORR_INGESTION (x=370) -->
+        <!-- To:   KAFKA_BUS_TOP (y=520) -->
+        <path d="M 227.5 288 L 227.5 400 L 370 400 L 370 520" 
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- Intelligence: plan.generated → Kafka -->
+        <!-- Via: CORRIDOR_INTELLIGENCE (y=430) - plan only -->
+        <!-- Via: VCORR_INTELLIGENCE_1 (x=550) -->
+        <path d="M 720 308 L 720 430 L 550 430 L 550 520" 
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- Intelligence: enriched → Kafka -->
+        <!-- Via: CORRIDOR_ENRICHED (y=445) - enriched only -->
+        <!-- Via: VCORR_INTELLIGENCE_2 (x=650) -->
+        <path d="M 720 386 L 720 445 L 650 445 L 650 520" 
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- Governance → Kafka (approved) -->
+        <!-- Via: CORRIDOR_GOVERNANCE (y=455) - approval only -->
+        <!-- Via: VCORR_GOVERNANCE (x=850) -->
+        <path d="M 1015 305 L 1015 455 L 850 455 L 850 520" 
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- Execution → Kafka (incident.executed) -->
+        <!-- Via: CORRIDOR_EXECUTION (y=465) - execution only -->
+        <!-- Via: VCORR_EXECUTION (x=1050) -->
+        <path d="M 1255 381 L 1255 465 L 1050 465 L 1050 520"
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- Execution → Kafka (exec.failed) -->
+        <!-- Via: CORRIDOR_EXECUTION (y=465) - execution only -->
+        <!-- Via: VCORR_EXECUTION (x=1050) -->
+        <path d="M 1355 381 L 1355 465 L 1050 465 L 1050 520"
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- Execution → Kafka (DLQ) -->
+        <!-- Via: CORRIDOR_EXECUTION (y=465) - execution only -->
+        <!-- Via: VCORR_EXECUTION (x=1050) -->
+        <path d="M 1435 381 L 1435 465 L 1050 465 L 1050 520"
+              stroke="#ec4899" stroke-width="2.5" fill="none" marker-end="url(#arr-kafka)"/>
+
+        <!-- ========== CONSUME ARROWS (dashed) ========== -->
+        
+        <!-- Kafka → Event Orch (consume) -->
+        <!-- From: KAFKA_BUS_TOP at x=420 -->
+        <!-- Via: horizontal at y=485 -->
+        <!-- Via: vertical at x=308 -->
+        <path d="M 420 520 L 420 485 L 308 485 L 308 193 L 335 193" 
+              stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="6,3" marker-end="url(#arr-kafka)"/>
+
+        <!-- Kafka → Control Plane -->
+        <!-- Via: horizontal at y=475 -->
+        <!-- Via: vertical at x=1175 -->
+        <path d="M 750 520 L 750 475 L 1175 475 L 1175 190.5 L 1160 190.5" 
+              stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="6,3" marker-end="url(#arr-kafka)"/>
+
+        <!-- Kafka → Execution Orchestrator -->
+        <!-- Via: horizontal at y=470 -->
+        <!-- Via: vertical at x=1182 -->
+        <path d="M 950 520 L 950 470 L 1182 470 L 1182 188 L 1205 188"
+              stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="6,3" marker-end="url(#arr-kafka)"/>
+
+        <!-- Kafka → Verification -->
+        <!-- Via: CORRIDOR_FEEDBACK (y=608) -->
+        <path d="M 1150 560 L 1150 608 L 105 608 L 105 660" 
+              stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="6,3" marker-end="url(#arr-kafka)"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 7: A2A ARROWS (Cyan, solid) - Offset: +12px -->
+      <!-- Parallel offsets only: +12 on Y for horizontal, +12 on X for vertical -->
+      <!-- ============================================================ -->
+      <g id="layer-a2a" filter="url(#glow-a2a)">
+        
+        <!-- Decision→SWARM (A2A for coordination) -->
+        <!-- Horizontal arrow: align between Decision right edge and Swarm left edge -->
+        <line x1="485" y1="260" x2="500" y2="260" 
+              stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+
+        <!-- Decision→LLM (A2A - goes around top) - y=152 corridor -->
+        <path d="M 485 253 L 515 253 L 515 152 L 745 152 L 745 168" 
+              stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+
+        <!-- LLM→Judge (A2A) - vertical, center-X -->
+        <line x1="745" y1="218" x2="745" y2="228" stroke="#22d3ee" stroke-width="2" marker-end="url(#arr-a2a)"/>
+
+        <!-- Judge → Control Plane (A2A - horizontal) - y=253 -->
+        <path d="M 825 253 L 858 253 L 858 190.5 L 870 190.5" 
+              stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+
+        <!-- Swarm → A2A Mesh - x=587 corridor (+12 from center 575) -->
+        <path d="M 587 333 L 587 425 L 482 425 L 482 565" 
+              stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+
+        <!-- Exec → Agents (A2A) - clean vertical distribution -->
+        <path d="M 1282 208 L 1282 260" stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+        <path d="M 1447 208 L 1447 260" stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+        <path d="M 1612 208 L 1612 260" stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+
+        <!-- Exec → A2A Mesh - routes outside execution zone -->
+        <path d="M 1462.5 208 L 1462.5 415 L 1312 415 L 1312 565"
+              stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arr-a2a)"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- LAYER 8: REST ARROWS (Orange, dashed) - Offset: +24px -->
+      <!-- ============================================================ -->
+      <g id="layer-rest">
+        <!-- Agents → GitHub Actions (clean orthogonal paths) -->
+        <!-- Terraform Agent → GitHub Actions -->
+        <path d="M 1360 287 L 1380 287 L 1380 256 L 1555 256 L 1555 250"
+              stroke="#f97316" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arr-rest)"/>
+        <!-- Ansible Agent → GitHub Actions -->
+        <path d="M 1525 287 L 1540 287 L 1540 256 L 1600 256 L 1600 250"
+              stroke="#f97316" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arr-rest)"/>
+        <!-- Code Agent → GitHub Actions -->
+        <path d="M 1612 260 L 1612 256 L 1650 256 L 1650 250"
+              stroke="#f97316" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arr-rest)"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- ============================================================ -->
+      <!-- LAYER 9: LABELS (Always on top, with background)            -->
+      <!-- RULES:                                                       -->
+      <!--   Label Y = Corridor Y - 12 (locks label above arrow)       -->
+      <!--   Label centered on corridor midpoint                        -->
+      <!--   Consistent widths: Kafka=55px, A2A=35px, MCP=30px         -->
+      <!-- ============================================================ -->
+      <g id="layer-labels">
+        
+        <!-- ========== INGESTION ZONE LABELS ========== -->
+        
+        <!-- Label: MCP between Box 1 and Box 2 -->
+        <!-- Arrow at y=178.5, label centered in gap (x=155 is midpoint) -->
+        <!-- MCP width = 30px, so x = 155 - 15 = 140 -->
+        <rect x="140" y="166" width="30" height="11" rx="2" fill="#0f172a" fill-opacity="0.95"/>
+        <text x="155" y="175" text-anchor="middle" font-size="6" font-weight="bold" fill="#a78bfa">MCP</text>
+        
+        <!-- Label: Kafka at CORRIDOR_INGESTION (y=400) -->
+        <!-- Corridor midpoint x = (227.5 + 370) / 2 = 298.75 -->
+        <!-- Kafka width = 55px, so x = 298.75 - 27.5 = 271 -->
+        <rect x="271" y="388" width="55" height="11" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="298.5" y="397" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:created</text>
+
+        <!-- ========== INTELLIGENCE ZONE LABELS ========== -->
+        
+        <rect x="498" y="216" width="18" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="507" y="224" text-anchor="middle" font-size="4" fill="#64748b">SDK</text>
+
+        <rect x="480" y="255" width="35" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="497.5" y="263" text-anchor="middle" font-size="4" fill="#22d3ee">A2A</text>
+
+        <rect x="443" y="267" width="30" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="458" y="275" text-anchor="middle" font-size="4" fill="#a78bfa">MCP</text>
+
+        <rect x="587" y="140" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="614.5" y="148" text-anchor="middle" font-size="5" fill="#22d3ee">A2A: invoke LLM</text>
+
+        <rect x="730" y="218" width="35" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="747.5" y="226" text-anchor="middle" font-size="4" fill="#22d3ee">A2A</text>
+
+        <rect x="813" y="215" width="35" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="830.5" y="223" text-anchor="middle" font-size="4" fill="#22d3ee">A2A:score</text>
+
+        <!-- Label: Kafka at CORRIDOR_INTELLIGENCE (y=430) -->
+        <!-- Corridor midpoint x = (720 + 550) / 2 = 635 -->
+        <rect x="607" y="418" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="634.5" y="426" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:plan</text>
+
+        <!-- Label: Kafka enriched at CORRIDOR_ENRICHED (y=445) -->
+        <!-- Corridor midpoint x = (720 + 650) / 2 = 685 -->
+        <rect x="657" y="433" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="684.5" y="441" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:enriched</text>
+
+        <!-- ========== GOVERNANCE ZONE LABELS ========== -->
+        
+        <!-- Label: Kafka at CORRIDOR_GOVERNANCE (y=455) -->
+        <!-- Corridor midpoint x = (1100 + 850) / 2 = 975 -->
+        <rect x="947" y="443" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="974.5" y="451" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:approved</text>
+
+        <!-- ========== EXECUTION ZONE LABELS ========== -->
+        
+        <!-- Label: Kafka at CORRIDOR_EXECUTION (y=465) -->
+        <!-- Corridor midpoint x = (1255 + 1050) / 2 = 1152.5 -->
+        <rect x="1125" y="453" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="1152.5" y="461" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:executed</text>
+
+        <!-- Label: Kafka consume at y=485 -->
+        <!-- Centered on vertical corridor x=308 -->
+        <rect x="280" y="473" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="307.5" y="481" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:consume</text>
+
+        <!-- Label: Kafka at CORRIDOR_FEEDBACK (y=608) -->
+        <!-- Corridor midpoint = center of horizontal run -->
+        <rect x="600" y="596" width="55" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="627.5" y="604" text-anchor="middle" font-size="5" fill="#ec4899">Kafka:feedback</text>
+
+        <!-- Label: A2A swarm at y=425 corridor -->
+        <rect x="517" y="413" width="35" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="534.5" y="421" text-anchor="middle" font-size="5" fill="#22d3ee">A2A:swarm</text>
+
+        <!-- A2A label for Exec → Agents arrows -->
+        <rect x="1355" y="225" width="35" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="1372.5" y="233" text-anchor="middle" font-size="5" fill="#22d3ee">A2A</text>
+
+        <!-- A2A:agents label for mesh arrow -->
+        <rect x="1320" y="403" width="45" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="1342.5" y="411" text-anchor="middle" font-size="5" fill="#22d3ee">A2A:agents</text>
+
+        <!-- REST:dispatch label for GitHub Actions -->
+        <rect x="1410" y="252" width="65" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="1442.5" y="260" text-anchor="middle" font-size="5" fill="#f97316">REST:dispatch</text>
+
+        <!-- ========== FEEDBACK ZONE LABELS ========== -->
+        
+        <rect x="145" y="813" width="30" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="160" y="821" text-anchor="middle" font-size="5" fill="#a78bfa">MCP</text>
+
+        <rect x="380" y="838" width="30" height="10" rx="2" fill="#0f172a" fill-opacity="0.9"/>
+        <text x="395" y="846" text-anchor="middle" font-size="5" fill="#a78bfa">MCP</text>
+      </g>
+
+    </svg>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card" style="border-color:#ec4899;">
+      <h3 style="color:#ec4899;">📨 Kafka (External)</h3>
+      <ul>
+        <li>ServiceNow integration</li>
+        <li>State transitions (audit)</li>
+        <li>Replay capability</li>
+        <li>Schema evolution</li>
+        <li>Cross-system events</li>
+        <li>Compliance trail</li>
+      </ul>
+    </div>
+    <div class="info-card" style="border-color:#22d3ee;">
+      <h3 style="color:#22d3ee;">🤝 A2A (Agents)</h3>
+      <ul>
+        <li>Agent-to-Agent real-time</li>
+        <li>Swarm coordination</li>
+        <li>Judge evaluation requests</li>
+        <li>Agent discovery</li>
+        <li>Capability negotiation</li>
+        <li>Low latency messaging</li>
+      </ul>
+    </div>
+    <div class="info-card" style="border-color:#a78bfa;">
+      <h3 style="color:#a78bfa;">🔧 MCP (Tools)</h3>
+      <ul>
+        <li>Agent → Tool invocation</li>
+        <li>JSON-RPC 2.0 protocol</li>
+        <li>RAG queries/updates</li>
+        <li>ServiceNow operations</li>
+        <li>GitHub tool calls</li>
+        <li>Terraform/Ansible tools</li>
+      </ul>
+    </div>
+    <div class="info-card" style="border-color:#f97316;">
+      <h3 style="color:#f97316;">🌐 REST/Webhooks</h3>
+      <ul>
+        <li>GitHub Actions trigger</li>
+        <li>workflow_dispatch API</li>
+        <li>Jira integration</li>
+        <li>Slack/Teams webhooks</li>
+        <li>PagerDuty API</li>
+        <li>External API calls</li>
+      </ul>
+    </div>
+    <div class="info-card" style="border-color:#d97706;">
+      <h3 style="color:#fbbf24;">🐝 Swarm RAG</h3>
+      <ul>
+        <li>A2A: Agent consensus</li>
+        <li>MCP: Tool queries</li>
+        <li>Find best .tf/.yml</li>
+        <li>Rank by success rate</li>
+        <li>Avoid blast radius</li>
+        <li>Learn from outcomes</li>
+      </ul>
+    </div>
+    <div class="info-card" style="border-color:#22c55e;">
+      <h3 style="color:#4ade80;">🔧 Resolution Flow</h3>
+      <ul>
+        <li>Swarm finds script (A2A)</li>
+        <li>Agent gets .tf/.yml (MCP)</li>
+        <li>Trigger GH Action (REST)</li>
+        <li>Terraform apply / Ansible</li>
+        <li>Verify outcome (Kafka)</li>
+        <li>Update RAG (MCP)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="zone-grid">
+    <div class="zone-card" style="border-color:#0ea5e9;">
+      <h3 style="color:#0ea5e9;">Ingestion</h3>
+      <div class="steps">MCP + Kafka</div>
+      <code>incident.created</code>
+    </div>
+    <div class="zone-card" style="border-color:#8b5cf6;">
+      <h3 style="color:#8b5cf6;">Intelligence</h3>
+      <div class="steps">A2A + MCP + Kafka</div>
+      <code>plan.generated</code>
+    </div>
+    <div class="zone-card" style="border-color:#ef4444;">
+      <h3 style="color:#ef4444;">Governance</h3>
+      <div class="steps">A2A + Kafka</div>
+      <code>incident.approved</code>
+    </div>
+    <div class="zone-card" style="border-color:#22c55e;">
+      <h3 style="color:#22c55e;">Execution</h3>
+      <div class="steps">A2A + MCP + REST</div>
+      <code>incident.executed</code>
+    </div>
+    <div class="zone-card" style="border-color:#3b82f6;">
+      <h3 style="color:#3b82f6;">Feedback</h3>
+      <div class="steps">Kafka + MCP</div>
+      <code>incident.closed</code>
+    </div>
+    <div class="zone-card" style="border-color:#fbbf24;">
+      <h3 style="color:#fbbf24;">Protocols</h3>
+      <div class="steps">4 Layers</div>
+      <code>Hybrid</code>
+    </div>
+  </div>
+</body>
+</html>

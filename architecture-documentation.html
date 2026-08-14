@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Incident Management Architecture - Complete Documentation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 2px solid #334155;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, #22d3ee, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .header .subtitle {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    .header .version {
+      display: inline-block;
+      background: #1e293b;
+      color: #22d3ee;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-top: 15px;
+      border: 1px solid #22d3ee;
+    }
+
+    /* Badges */
+    .badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Navigation */
+    .nav {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 40px;
+      border: 1px solid #334155;
+    }
+
+    .nav h3 {
+      color: #f8fafc;
+      margin-bottom: 15px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: #334155;
+      color: #f8fafc;
+      border-color: #475569;
+    }
+
+    /* Sections */
+    .section {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid #334155;
+    }
+
+    .section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h3 {
+      font-size: 1.2rem;
+      color: #f8fafc;
+      margin: 25px 0 15px 0;
+    }
+
+    .section h4 {
+      font-size: 1rem;
+      color: #cbd5e1;
+      margin: 20px 0 10px 0;
+    }
+
+    .section p {
+      color: #cbd5e1;
+      margin-bottom: 15px;
+    }
+
+    /* Zone Colors */
+    .zone-ingestion { border-left: 4px solid #0ea5e9; }
+    .zone-ingestion h2 { color: #0ea5e9; }
+
+    .zone-intelligence { border-left: 4px solid #8b5cf6; }
+    .zone-intelligence h2 { color: #a78bfa; }
+
+    .zone-governance { border-left: 4px solid #ef4444; }
+    .zone-governance h2 { color: #f87171; }
+
+    .zone-execution { border-left: 4px solid #22c55e; }
+    .zone-execution h2 { color: #4ade80; }
+
+    .zone-feedback { border-left: 4px solid #3b82f6; }
+    .zone-feedback h2 { color: #60a5fa; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+
+    th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      color: #cbd5e1;
+    }
+
+    tr:hover {
+      background: #1e293b;
+    }
+
+    /* Protocol Tags */
+    .protocol-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .protocol-kafka { background: #ec4899; color: white; }
+    .protocol-a2a { background: #22d3ee; color: #0f172a; }
+    .protocol-mcp { background: #a78bfa; color: white; }
+    .protocol-rest { background: #f97316; color: white; }
+    .protocol-sdk { background: #64748b; color: white; }
+
+    /* Code Blocks */
+    .code-block {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+
+    .code-block code {
+      color: #e2e8f0;
+    }
+
+    .code-block .comment { color: #64748b; }
+    .code-block .keyword { color: #ec4899; }
+    .code-block .string { color: #4ade80; }
+    .code-block .arrow { color: #22d3ee; }
+
+    /* Step Cards */
+    .step-card {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      border: 1px solid #334155;
+    }
+
+    .step-card .step-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      background: #fbbf24;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #1e293b;
+      font-size: 1rem;
+    }
+
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .step-meta {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .step-content ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .step-content li {
+      padding: 8px 0 8px 25px;
+      position: relative;
+      color: #cbd5e1;
+    }
+
+    .step-content li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #22d3ee;
+    }
+
+    /* Info Boxes */
+    .info-box {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .info-box.warning {
+      border-left-color: #f59e0b;
+    }
+
+    .info-box.success {
+      border-left-color: #22c55e;
+    }
+
+    .info-box.danger {
+      border-left-color: #ef4444;
+    }
+
+    .info-box h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    /* Flow Diagram */
+    .flow-diagram {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 20px 0;
+      border: 1px solid #334155;
+      overflow-x: auto;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-box {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .grid-card {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #334155;
+    }
+
+    .grid-card h4 {
+      margin-top: 0;
+      color: #f8fafc;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .grid-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .grid-card li {
+      padding: 6px 0;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .grid-card li::before {
+      content: "✓ ";
+      color: #4ade80;
+    }
+
+    /* State Machine */
+    .state-machine {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: #0f172a;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .state {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .state-arrow {
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+
+    /* Protocol Legend */
+    .protocol-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .protocol-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+
+    .protocol-line {
+      width: 40px;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    .protocol-info h5 {
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+
+    .protocol-info p {
+      color: #94a3b8;
+      font-size: 0.8rem;
+      margin: 0;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid #334155;
+      margin-top: 40px;
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 { font-size: 1.8rem; }
+      .section { padding: 20px; }
+      .container { padding: 10px; }
+    }
+
+    /* Print Styles */
+    @media print {
+      body { background: white; color: black; }
+      .section { border: 1px solid #ccc; }
+      .nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <h1>Enterprise Incident Management Architecture</h1>
+      <p class="subtitle">Hybrid Protocol Design: Kafka (External) + A2A (Agent) + MCP (Tools) + REST (APIs)</p>
+      <span class="version">Version 5.0</span>
+
+      <div class="badges">
+        <span class="badge" style="background:#059669;color:white;">SOC2 Type II</span>
+        <span class="badge" style="background:#7c3aed;color:white;">ISO 42001</span>
+        <span class="badge" style="background:#2563eb;color:white;">NIST AI RMF</span>
+        <span class="badge" style="background:#dc2626;color:white;">EU AI Act Ready</span>
+        <span class="badge" style="background:#d97706;color:white;">MITRE ATLAS</span>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <h3>Quick Navigation</h3>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#protocols">Protocols</a>
+        <a href="#state-machine">State Machine</a>
+        <a href="#platform">Platform Services</a>
+        <a href="#zone-1">Zone 1: Ingestion</a>
+        <a href="#zone-2">Zone 2: Intelligence</a>
+        <a href="#zone-3">Zone 3: Governance</a>
+        <a href="#zone-4">Zone 4: Execution</a>
+        <a href="#zone-5">Zone 5: Feedback</a>
+        <a href="#flow-summary">Flow Summary</a>
+        <a href="#design-decisions">Design Decisions</a>
+      </div>
+    </nav>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+      <h2>System Overview</h2>
+      <p>This is an <strong>AI-powered autonomous incident management system</strong> that automatically detects, analyzes, remediates, and learns from infrastructure incidents. The system uses a hybrid protocol design to ensure reliability, auditability, and real-time performance.</p>
+
+      <div class="grid-2">
+        <div class="grid-card">
+          <h4>Architecture Patterns</h4>
+          <ul>
+            <li>Hub & Spoke - Central orchestration</li>
+            <li>Hierarchical Agents - Layered decision making</li>
+            <li>Swarm (RAG) - Distributed knowledge retrieval</li>
+            <li>Event-Driven - Kafka-based state management</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4>Design Patterns</h4>
+          <ul>
+            <li>ReAct - Reasoning + Acting loop</li>
+            <li>Chain-of-Thought - Step-by-step reasoning</li>
+            <li>Plan-Execute - Generate then execute plans</li>
+            <li>Self-Reflection - LLM validates LLM output</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Protocols Section -->
+    <section id="protocols" class="section">
+      <h2>Communication Protocols</h2>
+      <p>The system uses four distinct protocols, each optimized for specific communication patterns:</p>
+
+      <div class="protocol-legend">
+        <div class="protocol-item">
+          <div class="protocol-line" style="background:#ec4899;"></div>
+          <div class="protocol-info">
+            <h5>Kafka</h5>
+            <p>External systems, audit trail, state transitions</p>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-line" style="background:#22d3ee;"></div>
+          <div class="protocol-info">
+            <h5>A2A (Agent-to-Agent)</h5>
+            <p>Real-time agent coordination</p>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-line" style="background:#a78bfa;"></div>
+          <div class="protocol-info">
+            <h5>MCP (Model Context Protocol)</h5>
+            <p>Agent-to-Tool invocation (JSON-RPC 2.0)</p>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-line" style="background:#f97316;"></div>
+          <div class="protocol-info">
+            <h5>REST/Webhook</h5>
+            <p>GitHub Actions, External APIs</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Protocol Selection Matrix</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Use Case</th>
+            <th>Protocol</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ServiceNow → System</td>
+            <td><span class="protocol-tag protocol-kafka">Kafka</span></td>
+            <td>Audit trail, external system integration</td>
+          </tr>
+          <tr>
+            <td>Swarm agents coordinating</td>
+            <td><span class="protocol-tag protocol-a2a">A2A</span></td>
+            <td>Real-time consensus required</td>
+          </tr>
+          <tr>
+            <td>Agent calling RAG tool</td>
+            <td><span class="protocol-tag protocol-mcp">MCP</span></td>
+            <td>Standardized tool invocation</td>
+          </tr>
+          <tr>
+            <td>Plan approved → Execute</td>
+            <td><span class="protocol-tag protocol-kafka">Kafka</span></td>
+            <td>State transition audit</td>
+          </tr>
+          <tr>
+            <td>Terraform ↔ Ansible coordination</td>
+            <td><span class="protocol-tag protocol-a2a">A2A</span></td>
+            <td>Agent coordination</td>
+          </tr>
+          <tr>
+            <td>Agent → GitHub Actions</td>
+            <td><span class="protocol-tag protocol-rest">REST</span></td>
+            <td>workflow_dispatch API</td>
+          </tr>
+          <tr>
+            <td>Judge evaluating output</td>
+            <td><span class="protocol-tag protocol-a2a">A2A</span></td>
+            <td>Real-time evaluation</td>
+          </tr>
+          <tr>
+            <td>Incident closed → ServiceNow</td>
+            <td><span class="protocol-tag protocol-kafka">Kafka</span></td>
+            <td>External system, audit trail</td>
+          </tr>
+          <tr>
+            <td>Postmortem → Jira</td>
+            <td><span class="protocol-tag protocol-rest">REST</span></td>
+            <td>Webhook/API integration</td>
+          </tr>
+          <tr>
+            <td>Redis/PostgreSQL access</td>
+            <td><span class="protocol-tag protocol-sdk">SDK</span></td>
+            <td>Direct, low latency</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- State Machine Section -->
+    <section id="state-machine" class="section">
+      <h2>Incident State Machine</h2>
+      <p>Every incident flows through a defined state machine, ensuring traceability and compliance:</p>
+
+      <h4>Happy Path</h4>
+      <div class="state-machine">
+        <span class="state" style="background:#475569;">NEW</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#4f46e5;">RECEIVED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#7c3aed;">ENRICHED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#be185d;">JUDGED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#d97706;">PLAN_GEN</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#16a34a;">APPROVED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#2563eb;">EXECUTED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#0891b2;">VERIFIED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#059669;">CLOSED</span>
+      </div>
+
+      <h4>Failure Path</h4>
+      <div class="state-machine">
+        <span class="state" style="background:#dc2626;">FAILED</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#ea580c;">ROLLBACK</span>
+        <span class="state-arrow">→</span>
+        <span class="state" style="background:#78716c;">MANUAL</span>
+      </div>
+
+      <div class="info-box">
+        <h4>State Transitions via Kafka</h4>
+        <p>All state transitions are published to Kafka topics for durability and audit compliance. This ensures that the system state can be reconstructed from the event log at any time.</p>
+      </div>
+    </section>
+
+    <!-- Platform Services Section -->
+    <section id="platform" class="section">
+      <h2>Platform Infrastructure</h2>
+      <p>These services run continuously and provide foundational capabilities for all zones:</p>
+
+      <div class="grid-3">
+        <div class="grid-card">
+          <h4 style="color:#14b8a6;">Platform Services</h4>
+          <ul>
+            <li>Schema Registry - Message validation</li>
+            <li>State Store - Persistent state</li>
+            <li>Vault/KMS - Secrets & encryption</li>
+            <li>Feature Flags - Gradual rollout</li>
+            <li>OIDC/SPIFFE - Identity & auth</li>
+            <li>Service Mesh - Communication</li>
+            <li>SLO Engine - Performance monitoring</li>
+            <li>Cost Controls - Budget enforcement</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#d946ef;">AI Guardrails</h4>
+          <ul>
+            <li>Prompt Injection Detection</li>
+            <li>PII Redaction</li>
+            <li>Output Validation</li>
+            <li>Jailbreak Block</li>
+            <li>Content Safety</li>
+            <li>Hallucination Check</li>
+            <li>LLM-as-Judge validation</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#6366f1;">Observability</h4>
+          <ul>
+            <li>Structured Logs (JSON)</li>
+            <li>OpenTelemetry tracing</li>
+            <li>Prometheus metrics</li>
+            <li>LangSmith (LLM observability)</li>
+            <li>LangGraph visualization</li>
+            <li>Circuit Breakers</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zone 1: Ingestion -->
+    <section id="zone-1" class="section zone-ingestion">
+      <h2>Zone 1: Ingestion</h2>
+      <p>Receive incidents from external sources, normalize them, reduce noise, and publish to the event bus.</p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">1</span>
+          <span class="step-title">ServiceNow (Incident Source)</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag" style="background:#64748b;color:white;">External Webhooks</span>
+        </div>
+        <div class="step-content">
+          <p><strong>Sources:</strong> ServiceNow, GCP Alerts, Datadog, PagerDuty</p>
+          <ul>
+            <li>An alert fires in the monitoring system</li>
+            <li>Incident contains: severity, affected service, description, timestamps</li>
+            <li>Multiple related alerts may fire simultaneously</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">2</span>
+          <span class="step-title">SNOW MCP Server</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-mcp">MCP</span>
+          <span class="protocol-tag" style="background:#1e293b;color:#94a3b8;border:1px solid #475569;">JSON-RPC 2.0</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>MCP Server receives the raw incident via JSON-RPC call</li>
+            <li>Transforms diverse alert formats into a unified schema</li>
+            <li>Passes to AIOps Correlator for deduplication</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="grid-card">
+          <h4>AIOps Correlator</h4>
+          <ul>
+            <li>Correlates related alerts (100 alerts → 1 incident)</li>
+            <li>ML-based noise filtering (-94% reduction)</li>
+            <li>Deduplication and event correlation</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4>Protection Mechanisms</h4>
+          <ul>
+            <li><strong>Idempotency:</strong> State hash check prevents duplicates</li>
+            <li><strong>Circuit Breaker:</strong> 5 fails → 30s open</li>
+            <li><strong>DLQ:</strong> Failed messages captured for review</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box success">
+        <h4>Output: Kafka Topic <code>incident.created</code></h4>
+        <p>A single correlated incident is published to Kafka with: incident_id, severity, affected_systems, raw_data. ChatOps notifications sent to Slack/Teams/PagerDuty.</p>
+        <p><strong>State Transition:</strong> NEW → RECEIVED</p>
+      </div>
+    </section>
+
+    <!-- Zone 2: Intelligence -->
+    <section id="zone-2" class="section zone-intelligence">
+      <h2>Zone 2: Intelligence</h2>
+      <p>Enrich the incident with context, generate a remediation plan, assess risk, and validate with AI judge.</p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">3</span>
+          <span class="step-title">Event Orchestrator (Kafka Consumer)</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-kafka">Kafka</span>
+          <span class="protocol-tag" style="background:#1e293b;color:#94a3b8;border:1px solid #475569;">Hub & Spoke Pattern</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>Consumes <code>incident.created</code> from Kafka</li>
+            <li>Acts as the central hub for the intelligence zone</li>
+            <li>Triggers the Decision Orchestrator</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">4</span>
+          <span class="step-title">Decision Orchestrator (A2A Coordinator)</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-a2a">A2A</span>
+          <span class="protocol-tag" style="background:#1e293b;color:#94a3b8;border:1px solid #475569;">Plan-Execute Pattern</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>Coordinates multiple AI agents via A2A protocol</li>
+            <li>Manages the workflow using LangGraph</li>
+            <li>Executes nodes: <code>enrich</code> → <code>plan</code> → <code>risk</code> → <code>reflect</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="grid-card">
+          <h4 style="color:#d97706;">Swarm RAG</h4>
+          <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:15px;">A2A (coordination) + MCP (tool calls)</p>
+          <ul>
+            <li><strong>Vector DB:</strong> Weaviate for embeddings</li>
+            <li><strong>Graph DB:</strong> Neo4j for relationships</li>
+            <li><code>find_terraform()</code> - Find relevant .tf files</li>
+            <li><code>find_ansible()</code> - Find relevant playbooks</li>
+            <li><code>rank_scripts()</code> - Rank by success rate</li>
+            <li><code>consensus()</code> - Swarm voting</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#10b981;">Memory Layer</h4>
+          <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:15px;">Direct SDK (no protocol overhead)</p>
+          <ul>
+            <li><strong>Redis:</strong> ~1ms latency</li>
+            <li>Recent incidents, agent state, embeddings cache</li>
+            <li><strong>PostgreSQL:</strong> ~10ms latency</li>
+            <li>Incident history, audit logs, configurations</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">5</span>
+          <span class="step-title">LLM Reasoning</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-a2a">A2A</span>
+          <span class="protocol-tag" style="background:#1e293b;color:#94a3b8;border:1px solid #475569;">Chain-of-Thought</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>LLM analyzes the enriched incident context</li>
+            <li>Generates step-by-step remediation plan</li>
+            <li>Calculates <strong>Risk Score</strong> (LOW/MEDIUM/HIGH)</li>
+            <li>Calculates <strong>Confidence Score</strong> (0-100%)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number" style="font-size:0.8rem;">5b</span>
+          <span class="step-title">LLM-as-Judge</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-a2a">A2A</span>
+          <span class="protocol-tag" style="background:#1e293b;color:#94a3b8;border:1px solid #475569;">Self-Reflection Pattern</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>A <strong>separate LLM instance</strong> evaluates the plan</li>
+            <li>Checks for: safety, completeness, blast radius, reversibility</li>
+            <li>Provides independent score (0-100%)</li>
+            <li>Can reject plans that are too risky</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="grid-card">
+          <h4 style="color:#f97316;">SLO/Error Budget</h4>
+          <ul>
+            <li>MTTR target: &lt;30 minutes</li>
+            <li>Automation rate: &gt;60%</li>
+            <li>Tracks performance against targets</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#eab308;">Cost Controls</h4>
+          <ul>
+            <li>Token limit: 50K per incident</li>
+            <li>Cost ceiling: $5 per incident</li>
+            <li>Prevents runaway LLM costs</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>Deployment Modes</h4>
+        <table>
+          <tr>
+            <td><strong>Shadow</strong></td>
+            <td>Plans generated but not executed (validation mode)</td>
+          </tr>
+          <tr>
+            <td><strong>Canary 10%</strong></td>
+            <td>Only 10% of incidents auto-remediated</td>
+          </tr>
+          <tr>
+            <td><strong>Production</strong></td>
+            <td>Full autonomous operation</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="info-box success">
+        <h4>Output: Kafka Topics</h4>
+        <p><code>incident.enriched</code> - Published when enrichment completes</p>
+        <p><code>plan.generated</code> - Published when plan is ready for approval</p>
+        <p><strong>State Transition:</strong> RECEIVED → ENRICHED → JUDGED → PLAN_GEN</p>
+      </div>
+    </section>
+
+    <!-- Zone 3: Governance -->
+    <section id="zone-3" class="section zone-governance">
+      <h2>Zone 3: Governance</h2>
+      <p>Make approval decisions based on risk level, enforce human-in-the-loop for high-risk changes.</p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">6</span>
+          <span class="step-title">Control Plane (Hierarchical)</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-a2a">A2A</span>
+          <span class="protocol-tag protocol-kafka">Kafka</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>Receives the plan + risk score + judge score via A2A</li>
+            <li>Applies organizational policies</li>
+            <li>Routes based on risk level</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Risk-Based Routing</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Risk Level</th>
+            <th>Action</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span style="color:#4ade80;font-weight:bold;">LOW</span></td>
+            <td>Auto-approve</td>
+            <td>Restart a pod, clear cache</td>
+          </tr>
+          <tr>
+            <td><span style="color:#fbbf24;font-weight:bold;">MEDIUM</span></td>
+            <td>Async approval</td>
+            <td>Scale deployment, update config</td>
+          </tr>
+          <tr>
+            <td><span style="color:#ef4444;font-weight:bold;">HIGH</span></td>
+            <td>Manual approval required</td>
+            <td>Database migration, infrastructure change</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box danger">
+        <h4>Human-in-the-Loop (P0 - Priority Zero)</h4>
+        <p>For HIGH risk incidents, human approval is mandatory:</p>
+        <ul style="list-style:none;padding:0;margin-top:10px;">
+          <li style="padding:5px 0;">• <strong>Slack/Teams buttons</strong> - Approve/Reject with one click</li>
+          <li style="padding:5px 0;">• <strong>Escalation timer:</strong> 15min → reminder, 30min → manager, 60min → page on-call</li>
+          <li style="padding:5px 0;">• <strong>Override reason</strong> - Required for all manual decisions</li>
+          <li style="padding:5px 0;">• <strong>Audit trail</strong> - All decisions logged for compliance</li>
+        </ul>
+      </div>
+
+      <div class="info-box success">
+        <h4>Output: Kafka Topic <code>incident.approved</code></h4>
+        <p><strong>State Transition:</strong> PLAN_GEN → APPROVED</p>
+      </div>
+    </section>
+
+    <!-- Zone 4: Execution -->
+    <section id="zone-4" class="section zone-execution">
+      <h2>Zone 4: Execution</h2>
+      <p>Execute the approved remediation plan using infrastructure agents and CI/CD pipelines.</p>
+
+      <div class="info-box warning">
+        <h4>Critical Design Decision: No LLM in Execution</h4>
+        <p>The Execution Orchestrator does <strong>NOT</strong> use any LLM. It only executes pre-approved, deterministic plans. This eliminates hallucination risk during actual infrastructure changes.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">7</span>
+          <span class="step-title">Execution Orchestrator (Hierarchical)</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-kafka">Kafka</span>
+          <span class="protocol-tag protocol-a2a">A2A</span>
+          <span class="protocol-tag" style="background:#1e293b;color:#fca5a5;border:1px solid #ef4444;">No LLM</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>Consumes <code>incident.approved</code> from Kafka</li>
+            <li>Coordinates execution agents via A2A</li>
+            <li>Monitors Circuit Breakers (3 fails → 60s open)</li>
+            <li>Kill switch available for emergency stop</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">8</span>
+            <span class="step-title">Terraform Agent</span>
+          </div>
+          <div class="step-meta">
+            <span class="protocol-tag protocol-a2a">A2A</span>
+            <span class="protocol-tag protocol-mcp">MCP</span>
+            <span class="protocol-tag protocol-rest">REST</span>
+          </div>
+          <div class="step-content">
+            <ul>
+              <li>Receives infrastructure task via A2A</li>
+              <li>Uses MCP to call K8s/Infra tools</li>
+              <li>Retrieves .tf files from Swarm RAG</li>
+              <li>Triggers GitHub Actions via REST</li>
+              <li>Runs: <code>terraform plan</code> → <code>terraform apply</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">9</span>
+            <span class="step-title">Ansible Agent</span>
+          </div>
+          <div class="step-meta">
+            <span class="protocol-tag protocol-a2a">A2A</span>
+            <span class="protocol-tag protocol-mcp">MCP</span>
+            <span class="protocol-tag protocol-rest">REST</span>
+          </div>
+          <div class="step-content">
+            <ul>
+              <li>Receives configuration task via A2A</li>
+              <li>Uses MCP to call Config tools</li>
+              <li>Retrieves .yml playbooks from Swarm RAG</li>
+              <li>Triggers GitHub Actions via REST</li>
+              <li>Runs the Ansible playbook</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">10</span>
+            <span class="step-title">Code Agent</span>
+          </div>
+          <div class="step-meta">
+            <span class="protocol-tag protocol-a2a">A2A</span>
+            <span class="protocol-tag protocol-mcp">MCP</span>
+            <span class="protocol-tag protocol-rest">REST</span>
+          </div>
+          <div class="step-content">
+            <ul>
+              <li>Receives code fix task via A2A</li>
+              <li>Uses MCP to interact with GitHub</li>
+              <li>Creates Pull Request or Hotfix branch</li>
+              <li>Triggers CI/CD pipeline via REST</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>From Swarm RAG (MCP)</h4>
+        <p>The execution agents receive remediation scripts from the Intelligence zone:</p>
+        <ul style="list-style:none;padding:0;margin-top:10px;">
+          <li style="padding:3px 0;">• Terraform <code>.tf</code> files</li>
+          <li style="padding:3px 0;">• Ansible <code>.yml</code> playbooks</li>
+          <li style="padding:3px 0;">• Kubernetes manifests</li>
+        </ul>
+        <p style="margin-top:10px;">These are executed via GitHub Actions using <code>workflow_dispatch</code> REST API.</p>
+      </div>
+
+      <div class="info-box danger">
+        <h4>Rollback Mechanism</h4>
+        <p>If verification fails, automatic rollback triggers:</p>
+        <ul style="list-style:none;padding:0;margin-top:10px;">
+          <li style="padding:3px 0;">• <strong>Terraform:</strong> <code>terraform destroy</code> or revert to previous state</li>
+          <li style="padding:3px 0;">• <strong>Ansible:</strong> Run rollback playbook</li>
+          <li style="padding:3px 0;">• <strong>State:</strong> FAILED → ROLLBACK → MANUAL</li>
+        </ul>
+      </div>
+
+      <div class="info-box success">
+        <h4>Output: Kafka Topics</h4>
+        <p><code>incident.executed</code> - Successful execution</p>
+        <p><code>exec.failed</code> - Execution failed</p>
+        <p><code>DLQ</code> - Dead letter queue for errors</p>
+        <p><strong>State Transition:</strong> APPROVED → EXECUTED (or FAILED)</p>
+      </div>
+    </section>
+
+    <!-- Zone 5: Feedback -->
+    <section id="zone-5" class="section zone-feedback">
+      <h2>Zone 5: Feedback</h2>
+      <p>Verify the fix worked, learn from outcomes, close tickets, and generate postmortems.</p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">11</span>
+          <span class="step-title">Verification</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-kafka">Kafka</span>
+          <span class="protocol-tag protocol-a2a">A2A</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li>Consumes <code>incident.executed</code> from Kafka</li>
+            <li>Runs <strong>health checks</strong> on affected systems</li>
+            <li>Validates <strong>metrics</strong> returned to normal</li>
+            <li>Runs <strong>regression tests</strong> (no new issues)</li>
+            <li>LLM-as-Judge (via A2A) validates fix quality</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-number">12</span>
+          <span class="step-title">Learning Engine</span>
+        </div>
+        <div class="step-meta">
+          <span class="protocol-tag protocol-mcp">MCP</span>
+          <span class="protocol-tag" style="background:#dc2626;color:white;">NEVER on Failure</span>
+        </div>
+        <div class="step-content">
+          <ul>
+            <li><strong>Only on SUCCESS</strong>, updates the Swarm RAG</li>
+            <li>Indexes the successful remediation script</li>
+            <li>Records: script_id, duration, confidence score</li>
+            <li>Boosts ranking score for scripts that worked</li>
+            <li>Future similar incidents will prefer this solution</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box danger">
+        <h4>Critical: Never Learn from Failures</h4>
+        <p>The Learning Engine <strong>NEVER</strong> indexes failed remediation attempts. This prevents reinforcing bad patterns and ensures only proven solutions are recommended.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">13</span>
+            <span class="step-title">Ticket Closer</span>
+          </div>
+          <div class="step-meta">
+            <span class="protocol-tag protocol-mcp">MCP</span>
+          </div>
+          <div class="step-content">
+            <ul>
+              <li>Uses MCP to call ServiceNow API</li>
+              <li>Updates incident: VERIFIED → CLOSED</li>
+              <li>Adds resolution notes and timeline</li>
+              <li>Links to postmortem document</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-number">14</span>
+            <span class="step-title">Auto-Postmortem</span>
+          </div>
+          <div class="step-meta">
+            <span class="protocol-tag protocol-rest">REST</span>
+          </div>
+          <div class="step-content">
+            <ul>
+              <li>Timeline from OpenTelemetry traces</li>
+              <li>Root Cause Analysis by LLM</li>
+              <li>Jira ticket created via REST/Webhook</li>
+              <li>Includes Terraform audit log</li>
+              <li>Includes Ansible playbook log</li>
+              <li>Calibration feedback for LLM improvement</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box success">
+        <h4>Output: Kafka Topics</h4>
+        <p><code>incident.verified</code> - Fix confirmed working</p>
+        <p><code>verification.failed</code> - Fix did not work (triggers ROLLBACK)</p>
+        <p><code>incident.closed</code> - Incident fully resolved</p>
+        <p><strong>State Transition:</strong> EXECUTED → VERIFIED → CLOSED</p>
+      </div>
+    </section>
+
+    <!-- Flow Summary -->
+    <section id="flow-summary" class="section">
+      <h2>Complete Flow Summary</h2>
+
+      <div class="flow-diagram">
+        <h4 style="margin-bottom:20px;color:#f8fafc;">End-to-End Incident Flow</h4>
+
+        <div style="font-family:monospace;font-size:0.9rem;line-height:2;">
+          <p><span style="color:#64748b;">1.</span> <span style="color:#fbbf24;">INCIDENT OCCURS</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ ServiceNow/Datadog/PagerDuty alert fires</p>
+
+          <p style="margin-top:15px;"><span style="color:#64748b;">2.</span> <span style="color:#0ea5e9;">INGESTION</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ MCP Server normalizes → AIOps correlates (-94% noise)</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ <span class="protocol-tag protocol-kafka" style="font-size:0.7rem;">Kafka</span> incident.created</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ State: <span style="color:#475569;">NEW</span> → <span style="color:#4f46e5;">RECEIVED</span></p>
+
+          <p style="margin-top:15px;"><span style="color:#64748b;">3.</span> <span style="color:#8b5cf6;">INTELLIGENCE</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Event Orchestrator consumes from Kafka</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Decision Orchestrator coordinates agents <span class="protocol-tag protocol-a2a" style="font-size:0.7rem;">A2A</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Swarm RAG finds best remediation scripts</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ LLM generates plan (Chain-of-Thought)</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ LLM-as-Judge validates plan (Self-Reflection)</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ <span class="protocol-tag protocol-kafka" style="font-size:0.7rem;">Kafka</span> plan.generated</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ State: <span style="color:#4f46e5;">RECEIVED</span> → <span style="color:#7c3aed;">ENRICHED</span> → <span style="color:#be185d;">JUDGED</span> → <span style="color:#d97706;">PLAN_GEN</span></p>
+
+          <p style="margin-top:15px;"><span style="color:#64748b;">4.</span> <span style="color:#ef4444;">GOVERNANCE</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Control Plane evaluates risk</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ LOW: Auto-approve | MEDIUM: Async | HIGH: Human-in-the-Loop</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ <span class="protocol-tag protocol-kafka" style="font-size:0.7rem;">Kafka</span> incident.approved</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ State: <span style="color:#d97706;">PLAN_GEN</span> → <span style="color:#16a34a;">APPROVED</span></p>
+
+          <p style="margin-top:15px;"><span style="color:#64748b;">5.</span> <span style="color:#22c55e;">EXECUTION</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Execution Orchestrator (NO LLM)</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Terraform Agent → <span class="protocol-tag protocol-rest" style="font-size:0.7rem;">REST</span> GitHub Actions → terraform apply</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Ansible Agent → <span class="protocol-tag protocol-rest" style="font-size:0.7rem;">REST</span> GitHub Actions → ansible-playbook</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Code Agent → GitHub → PR/Hotfix</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ <span class="protocol-tag protocol-kafka" style="font-size:0.7rem;">Kafka</span> incident.executed</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ State: <span style="color:#16a34a;">APPROVED</span> → <span style="color:#2563eb;">EXECUTED</span></p>
+
+          <p style="margin-top:15px;"><span style="color:#64748b;">6.</span> <span style="color:#3b82f6;">FEEDBACK</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Verification (health + metrics + regression)</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Judge validates fix quality <span class="protocol-tag protocol-a2a" style="font-size:0.7rem;">A2A</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Learning Engine updates RAG <span class="protocol-tag protocol-mcp" style="font-size:0.7rem;">MCP</span> (SUCCESS ONLY)</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Ticket Closer updates ServiceNow <span class="protocol-tag protocol-mcp" style="font-size:0.7rem;">MCP</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Auto-Postmortem creates Jira <span class="protocol-tag protocol-rest" style="font-size:0.7rem;">REST</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ <span class="protocol-tag protocol-kafka" style="font-size:0.7rem;">Kafka</span> incident.closed</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ State: <span style="color:#2563eb;">EXECUTED</span> → <span style="color:#0891b2;">VERIFIED</span> → <span style="color:#059669;">CLOSED</span></p>
+
+          <p style="margin-top:15px;"><span style="color:#64748b;">7.</span> <span style="color:#dc2626;">FAILURE PATH</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ If verification fails: <span style="color:#dc2626;">FAILED</span> → <span style="color:#ea580c;">ROLLBACK</span> → <span style="color:#78716c;">MANUAL</span></p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Automatic rollback triggered</p>
+          <p style="padding-left:20px;color:#94a3b8;">└─→ Human intervention required</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design Decisions -->
+    <section id="design-decisions" class="section">
+      <h2>Key Design Decisions</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Decision</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>No LLM in Execution</strong></td>
+            <td>Deterministic execution eliminates hallucination risk during infrastructure changes</td>
+          </tr>
+          <tr>
+            <td><strong>LLM-as-Judge</strong></td>
+            <td>Independent validation by a separate LLM prevents bad plans from being approved</td>
+          </tr>
+          <tr>
+            <td><strong>Swarm RAG</strong></td>
+            <td>Multiple agents reaching consensus produces better remediation recommendations</td>
+          </tr>
+          <tr>
+            <td><strong>Never learn from failures</strong></td>
+            <td>Prevents reinforcing bad patterns; only proven solutions are indexed</td>
+          </tr>
+          <tr>
+            <td><strong>Human-in-the-Loop for HIGH risk</strong></td>
+            <td>Critical changes require explicit human approval for safety</td>
+          </tr>
+          <tr>
+            <td><strong>Circuit Breakers everywhere</strong></td>
+            <td>Prevents cascade failures; automatic isolation of failing components</td>
+          </tr>
+          <tr>
+            <td><strong>Kafka for state transitions</strong></td>
+            <td>Provides durable audit trail, replay capability, and compliance evidence</td>
+          </tr>
+          <tr>
+            <td><strong>A2A for real-time coordination</strong></td>
+            <td>Low-latency agent communication for time-sensitive decisions</td>
+          </tr>
+          <tr>
+            <td><strong>MCP for tool invocation</strong></td>
+            <td>Standardized JSON-RPC 2.0 protocol for all agent-to-tool communication</td>
+          </tr>
+          <tr>
+            <td><strong>REST for external APIs</strong></td>
+            <td>Standard HTTP/webhook integration with GitHub Actions, Jira, etc.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Communication Buses -->
+    <section class="section">
+      <h2>Communication Buses</h2>
+
+      <div class="grid-2">
+        <div class="grid-card" style="border-left:4px solid #ec4899;">
+          <h4 style="color:#ec4899;">Kafka Event Bus</h4>
+          <p style="color:#94a3b8;margin-bottom:15px;">Central communication layer for all zones</p>
+          <p style="font-family:monospace;font-size:0.8rem;color:#cbd5e1;">
+            incident.created • incident.enriched • plan.generated • incident.approved • incident.executed • incident.verified • incident.closed
+          </p>
+          <ul style="margin-top:15px;">
+            <li>Durable event storage (replay capability)</li>
+            <li>Audit trail for compliance</li>
+            <li>Decouples all zones</li>
+            <li>State machine transitions</li>
+          </ul>
+        </div>
+        <div class="grid-card" style="border-left:4px solid #22d3ee;">
+          <h4 style="color:#22d3ee;">A2A Agent Mesh</h4>
+          <p style="color:#94a3b8;margin-bottom:15px;">Real-time agent coordination layer</p>
+          <p style="font-family:monospace;font-size:0.8rem;color:#cbd5e1;">
+            swarm.query • swarm.vote • judge.evaluate • judge.score • agent.execute • agent.result
+          </p>
+          <ul style="margin-top:15px;">
+            <li>Real-time agent coordination</li>
+            <li>Low-latency communication</li>
+            <li>Swarm consensus protocols</li>
+            <li>Judge evaluation requests</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compliance -->
+    <section class="section">
+      <h2>Compliance & Standards</h2>
+
+      <div class="grid-3">
+        <div class="grid-card">
+          <h4 style="color:#059669;">SOC2 Type II</h4>
+          <ul>
+            <li>Security controls</li>
+            <li>Availability monitoring</li>
+            <li>Processing integrity</li>
+            <li>Confidentiality measures</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#7c3aed;">ISO 42001</h4>
+          <ul>
+            <li>AI management system</li>
+            <li>Risk assessment</li>
+            <li>Continuous improvement</li>
+            <li>Stakeholder requirements</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#2563eb;">NIST AI RMF</h4>
+          <ul>
+            <li>AI risk management</li>
+            <li>Trustworthy AI</li>
+            <li>Governance framework</li>
+            <li>Impact assessment</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#dc2626;">EU AI Act</h4>
+          <ul>
+            <li>High-risk AI compliance</li>
+            <li>Transparency requirements</li>
+            <li>Human oversight</li>
+            <li>Documentation standards</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#d97706;">MITRE ATLAS</h4>
+          <ul>
+            <li>AI threat modeling</li>
+            <li>Adversarial ML defense</li>
+            <li>Attack surface analysis</li>
+            <li>Mitigation strategies</li>
+          </ul>
+        </div>
+        <div class="grid-card">
+          <h4 style="color:#0891b2;">Best Practices</h4>
+          <ul>
+            <li>Defense in depth</li>
+            <li>Least privilege access</li>
+            <li>Immutable audit logs</li>
+            <li>Encryption at rest/transit</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Enterprise Incident Management Architecture v5.0</p>
+      <p style="margin-top:10px;">Hybrid Protocol Design: Kafka + A2A + MCP + REST</p>
+      <p style="margin-top:20px;font-size:0.8rem;">Documentation generated for architecture review and implementation guidance.</p>
+    </footer>
+
+  </div>
+</body>
+</html>

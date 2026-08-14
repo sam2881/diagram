@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Agentic Platform — Project Demo Deck</title>
+<meta name="description" content="Slide deck for the Enterprise Agentic Platform (v7.0 FAST / APEX v2.1) on Google Cloud with Agentspace and Gemini.">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070c16; --bg2:#0d1526; --panel:#111c30; --panel2:#16233a;
+  --line:#243554; --line2:#31456b;
+  --fg:#f1f5f9; --fg2:#a9b8ce; --fg3:#6e7f99;
+  --blue:#4285f4; --blue-l:#8ab4f8;
+  --green:#34a853; --green-l:#81c995;
+  --yellow:#fbbc04; --yellow-l:#fcd34d;
+  --red:#ea4335; --red-l:#f28b82;
+  --purple:#a855f7; --purple-l:#d8b4fe;
+  --cyan:#0891b2; --cyan-l:#67e8f9;
+  --pink:#be185d; --pink-l:#f9a8d4;
+  --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Mono","JetBrains Mono",Consolas,ui-monospace,monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{position:relative}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1100px 620px at 12% -8%, rgba(66,133,244,.16), transparent 62%),
+    radial-gradient(900px 560px at 92% 108%, rgba(52,168,83,.13), transparent 60%),
+    linear-gradient(160deg,#070c16 0%,#0b1424 48%,#070c16 100%);
+}
+
+/* ---------- scaled 16:9 stage ---------- */
+#stage{
+  position:absolute;left:50%;top:50%;width:1600px;height:900px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center;z-index:1;
+}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:52px 64px 58px}
+.slide.active{display:flex;animation:in .32s ease}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- slide chrome ---------- */
+.head{display:flex;align-items:flex-start;gap:18px;margin-bottom:26px;flex:0 0 auto}
+.num{
+  flex:0 0 auto;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;font-weight:800;background:linear-gradient(135deg,var(--blue),#1a56c4);color:#fff;
+  box-shadow:0 6px 18px rgba(66,133,244,.35);
+}
+.head .txt{flex:1;min-width:0}
+.kicker{font-size:12px;letter-spacing:2.6px;text-transform:uppercase;color:var(--fg3);font-weight:700;margin-bottom:5px}
+h1.title{font-size:38px;line-height:1.12;font-weight:800;letter-spacing:-.6px}
+h1.title .hl{background:linear-gradient(90deg,var(--blue-l),var(--green-l));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:16px;color:var(--fg2);margin-top:9px;line-height:1.5;max-width:1180px}
+.rule{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green),var(--yellow),var(--red));opacity:.75;margin-top:14px}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:16px}
+
+/* ---------- primitives ---------- */
+.row{display:flex;gap:12px;align-items:stretch}
+.row.center{align-items:center}
+.col{display:flex;flex-direction:column;gap:12px}
+.grow{flex:1;min-width:0;min-height:0}
+
+.card{
+  background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+  border:1px solid var(--line);border-top:3px solid var(--line2);border-radius:14px;padding:16px 18px;
+  display:flex;flex-direction:column;gap:7px;flex:1;min-width:0;
+}
+.card .ct{font-size:16px;font-weight:700;line-height:1.25}
+.card .cs{font-size:13px;color:var(--fg2);line-height:1.55}
+.card .cn{font-size:11px;font-family:var(--mono);color:var(--blue-l);background:rgba(66,133,244,.13);
+  border:1px solid rgba(66,133,244,.28);padding:2px 8px;border-radius:5px;align-self:flex-start}
+.card .icon{font-size:24px;line-height:1}
+.card.sm{padding:12px 13px;border-radius:11px}
+.card.sm .ct{font-size:13.5px}
+.card.sm .cs{font-size:11.5px;line-height:1.5}
+.card.dash{border-style:dashed;background:rgba(17,28,48,.55)}
+
+.b   {border-top-color:var(--blue)}    .b .ct{color:var(--blue-l)}
+.g   {border-top-color:var(--green)}   .g .ct{color:var(--green-l)}
+.y   {border-top-color:var(--yellow)}  .y .ct{color:var(--yellow-l)}
+.r   {border-top-color:var(--red)}     .r .ct{color:var(--red-l)}
+.p   {border-top-color:var(--purple)}  .p .ct{color:var(--purple-l)}
+.c   {border-top-color:var(--cyan)}    .c .ct{color:var(--cyan-l)}
+.k   {border-top-color:var(--pink)}    .k .ct{color:var(--pink-l)}
+.n   {border-top-color:var(--line2)}   .n .ct{color:var(--fg)}
+
+.arrow{flex:0 0 auto;align-self:center;color:var(--fg3);font-size:22px;font-weight:300}
+.arrow.d{align-self:center;margin:-2px auto;font-size:20px}
+
+.band{border:1px dashed var(--line2);border-radius:14px;padding:12px;background:rgba(9,15,27,.5);
+  display:flex;flex-direction:column;gap:10px;flex:1;min-width:0}
+.band > .bl{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:var(--fg3)}
+
+.stat{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+  border-radius:14px;padding:16px 12px;text-align:center;flex:1}
+.stat .v{font-size:42px;font-weight:800;line-height:1;letter-spacing:-1px}
+.stat .l{font-size:11.5px;color:var(--fg2);text-transform:uppercase;letter-spacing:1.3px;margin-top:8px;line-height:1.4}
+
+.pill{display:inline-block;font-size:12px;padding:5px 12px;border-radius:20px;background:rgba(36,53,84,.7);
+  border:1px solid var(--line2);color:var(--fg2)}
+.pill.ok{background:rgba(52,168,83,.15);border-color:var(--green);color:var(--green-l)}
+.pill.no{background:rgba(234,67,53,.15);border-color:var(--red);color:var(--red-l)}
+.pill.wa{background:rgba(251,188,4,.14);border-color:var(--yellow);color:var(--yellow-l)}
+.pill.pu{background:rgba(168,85,247,.15);border-color:var(--purple);color:var(--purple-l)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;padding:8px 11px;font-size:11px;letter-spacing:1.3px;text-transform:uppercase;
+  color:var(--fg3);border-bottom:1px solid var(--line2);font-weight:700}
+table.t td{padding:8px 11px;border-bottom:1px solid rgba(36,53,84,.6);color:var(--fg2);line-height:1.45}
+table.t td strong{color:var(--fg)}
+table.t tr:last-child td{border-bottom:none}
+
+.lane{display:grid;grid-template-columns:132px 1fr;gap:10px}
+.lane-l{background:rgba(17,28,48,.9);border-left:4px solid var(--blue);border-radius:9px;
+  padding:10px;font-size:12.5px;font-weight:700;color:var(--fg2);display:flex;align-items:center}
+
+.note-inline{font-size:12px;color:var(--fg3);line-height:1.5}
+code{font-family:var(--mono);font-size:.92em;color:var(--blue-l);background:rgba(66,133,244,.12);
+  padding:1px 5px;border-radius:4px}
+.big{font-size:19px;line-height:1.5;color:var(--fg2)}
+.big strong{color:var(--fg)}
+
+/* ---------- title slide ---------- */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:26px}
+.hero h1{font-size:66px;font-weight:800;letter-spacing:-2px;line-height:1.05}
+.hero .vp{font-size:24px;color:var(--fg2);max-width:1150px;line-height:1.45}
+.hero .vp b{color:var(--fg)}
+.brandbar{display:flex;gap:10px;flex-wrap:wrap}
+.brandbar span{font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:7px}
+
+/* ---------- footer / chrome ---------- */
+#chrome{position:fixed;left:0;right:0;bottom:0;z-index:5;pointer-events:none}
+#bar{height:3px;background:rgba(255,255,255,.06)}
+#bar div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .3s ease}
+#foot{display:flex;justify-content:space-between;align-items:center;padding:9px 22px;font-size:12px;color:var(--fg3)}
+#foot .l{display:flex;gap:16px;align-items:center}
+#foot b{color:var(--fg2)}
+#foot .keys{font-size:11px}
+#foot .keys kbd{font-family:var(--mono);background:rgba(255,255,255,.07);border:1px solid var(--line2);
+  border-radius:4px;padding:1px 5px;margin:0 1px;color:var(--fg2)}
+#nav{pointer-events:auto;display:flex;gap:7px}
+#nav button{pointer-events:auto;background:rgba(255,255,255,.06);border:1px solid var(--line2);color:var(--fg2);
+  border-radius:7px;padding:4px 11px;font-size:12px;cursor:pointer;font-family:inherit}
+#nav button:hover{background:rgba(66,133,244,.2);border-color:var(--blue);color:#fff}
+
+/* ---------- speaker notes ---------- */
+#notes{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;max-height:52vh;overflow:auto;
+  background:linear-gradient(180deg,rgba(7,12,22,.985),rgba(11,20,36,.985));
+  border-top:2px solid var(--blue);padding:20px 30px 26px;
+  transform:translateY(101%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -18px 50px rgba(0,0,0,.6);
+}
+#notes.open{transform:none}
+#notes h3{font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:var(--blue-l);margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center}
+#notes h3 em{font-style:normal;color:var(--fg3);letter-spacing:.4px;text-transform:none;font-size:11px}
+#notes .nbody{font-size:14px;line-height:1.68;color:var(--fg2);columns:2;column-gap:34px}
+#notes .nbody p{margin-bottom:10px;break-inside:avoid}
+#notes .nbody strong{color:var(--fg)}
+#notes .nbody .lbl{color:var(--green-l);font-weight:700}
+#notes .nbody .nx{color:var(--yellow-l);font-weight:700}
+#notes .nbody ul{margin:0 0 10px 18px}
+#notes .nbody li{margin-bottom:5px}
+
+#help{position:fixed;inset:0;z-index:30;background:rgba(4,8,15,.9);display:none;
+  align-items:center;justify-content:center}
+#help.open{display:flex}
+#help .box{background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:32px 40px;max-width:560px}
+#help h4{font-size:19px;margin-bottom:16px}
+#help table{width:100%;font-size:14px}
+#help td{padding:6px 8px;color:var(--fg2)}
+#help td:first-child{width:180px}
+#help kbd{font-family:var(--mono);background:rgba(255,255,255,.08);border:1px solid var(--line2);
+  border-radius:4px;padding:2px 7px;color:var(--fg)}
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+<!-- ══════════════════ SLIDE 1 — PROJECT OVERVIEW ══════════════════ -->
+<section class="slide" data-title="Project Overview">
+  <div class="hero">
+    <div class="kicker">Enterprise Agentic Platform &nbsp;&middot;&nbsp; Google Cloud Edition</div>
+    <h1>Governed <span style="background:linear-gradient(90deg,var(--blue-l),var(--green-l));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Agentic AI</span><br>for IT Operations &amp; Data Engineering</h1>
+    <p class="vp">
+      An AI system that <b>resolves IT incidents and builds data pipelines end to end</b> &mdash;
+      with a human approving every change that touches production, and every decision auditable.
+    </p>
+    <div class="row" style="gap:14px;max-width:1300px">
+      <div class="card b"><div class="icon">&#9881;&#65039;</div><div class="ct">Track A &mdash; Incident Management</div><div class="cs">&ldquo;Something broke &mdash; what is the safest proven fix, and may I apply it?&rdquo;</div><span class="cn">FAST &middot; 9 agents &middot; 7 phases &middot; 24 states</span></div>
+      <div class="card g"><div class="icon">&#128202;</div><div class="ct">Track B &mdash; Data Engineering</div><div class="cs">&ldquo;We need this data &mdash; what is the correct pipeline, and may I deploy it?&rdquo;</div><span class="cn">APEX v2.1 &middot; 9 patterns &middot; 5 Spark jobs</span></div>
+      <div class="card p"><div class="icon">&#9878;&#65039;</div><div class="ct">One Architecture, One Rule</div><div class="cs">Sense &rarr; retrieve &rarr; reason &rarr; validate &rarr; <b>authorise</b> &rarr; execute &rarr; verify &rarr; learn.</div><span class="cn">No autonomous production change</span></div>
+    </div>
+    <div class="brandbar">
+      <span style="background:#4285f4;color:#fff">Google Agentspace</span>
+      <span style="background:#0891b2;color:#fff">Gemini 2.0 Pro + Flash</span>
+      <span style="background:#ea4335;color:#fff">Cloud Pub/Sub Event Spine</span>
+      <span style="background:#34a853;color:#fff">Cloud Composer + Dataproc</span>
+      <span style="background:#fbbc04;color:#1e293b">Vertex AI Search</span>
+      <span style="background:#334155;color:#e2e8f0">Platform v7.0 &ldquo;FAST&rdquo;</span>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> your opening frame. Do not read the boxes &mdash; land the one-line value proposition and move.</p>
+    <p><span class="lbl">Say this:</span> &ldquo;This is a governed agentic AI platform on Google Cloud. It does two jobs that consume disproportionate engineering effort in every enterprise: <strong>resolving IT incidents</strong> and <strong>building data pipelines</strong>. The critical word is <em>governed</em> &mdash; a human approves every change that reaches production, and every AI decision is auditable.&rdquo;</p>
+    <p><span class="lbl">Technical point:</span> both tracks run on <strong>the same machine</strong>. Same event spine, same orchestration model, same approval gate, same audit trail. Only the specialised agents differ. That is why the platform scales to new use cases without a new architecture.</p>
+    <p><span class="lbl">Business point:</span> the differentiator is not model quality &mdash; anyone can call Gemini. The differentiator is the <strong>governance layer around the model</strong>: approval gates, tamper-evident audit, and first-class integration with ServiceNow and Jira.</p>
+    <p><span class="lbl">Naming:</span> <strong>FAST</strong> = Federated Agents with Strict Transitions (incident engine). <strong>APEX</strong> = the data-engineering pipeline compiler. Use these names consistently &mdash; they appear on every later slide.</p>
+    <p><span class="nx">Transition:</span> &ldquo;To explain why this exists, let me start with what it costs an enterprise not to have it.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 2 — BUSINESS PROBLEM ══════════════════ -->
+<section class="slide" data-title="The Business Problem">
+  <div class="head">
+    <div class="num">2</div>
+    <div class="txt">
+      <div class="kicker">Why this project exists</div>
+      <h1 class="title">Two functions burn engineering effort &mdash; and produce no differentiated value</h1>
+      <p class="sub">Both are <strong>pattern-heavy</strong> and <strong>judgement-light</strong> in the majority of cases, yet both are executed as bespoke, manual work.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow">
+      <div class="band" style="border-color:var(--red)">
+        <div class="bl" style="color:var(--red-l)">&#9888; L1 Support &middot; ITSM &middot; Platform Operations</div>
+        <div class="row"><div class="card sm r"><div class="ct">Alert fatigue</div><div class="cs">Thousands of alerts daily, <strong>90%+ noise</strong> &mdash; real incidents are missed inside the noise floor</div></div>
+          <div class="card sm r"><div class="ct">Slow resolution</div><div class="cs">MTTR in <strong>hours or days</strong> for routine issues &rarr; SLA breaches, overtime cost</div></div></div>
+        <div class="row"><div class="card sm r"><div class="ct">Knowledge silos</div><div class="cs">Remediation know-how lives in <strong>individual engineers' heads</strong> &mdash; bus-factor risk, months to onboard</div></div>
+          <div class="card sm r"><div class="ct">Manual toil</div><div class="cs">Triage &rarr; search the wiki &rarr; ask for approval on chat &rarr; run a script &rarr; write the ticket up by hand</div></div></div>
+      </div>
+      <div class="band" style="border-color:var(--yellow)">
+        <div class="bl" style="color:var(--yellow-l)">&#128202; Data Engineering</div>
+        <div class="row"><div class="card sm y"><div class="ct">Boilerplate dominates</div><div class="cs">Engineers spend <strong>~60% of their time</strong> hand-writing ingestion, transforms, validation and DAGs</div></div>
+          <div class="card sm y"><div class="ct">Inconsistent quality</div><div class="cs">The same pattern re-implemented per feed with slight, <strong>undocumented variations</strong></div></div></div>
+        <div class="row"><div class="card sm y"><div class="ct">Backlog of unmet demand</div><div class="cs">Every new feed is a project; analytics requests queue behind engineering capacity</div></div>
+          <div class="card sm y"><div class="ct">Legacy migration debt</div><div class="cs">SSIS, COBOL and mainframe estates that nobody wants to touch by hand</div></div></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="card p" style="flex:2"><div class="ct">&#9878;&#65039; And underneath both &mdash; the audit problem</div>
+        <div class="cs">Hard to reconstruct <strong>who did what, why, and on whose authority</strong>. That is direct compliance exposure under SOC 2, ISO 42001, the EU AI Act and GDPR. Meanwhile headcount cannot grow as fast as infrastructure, so toil grows superlinearly with estate size.</div></div>
+      <div class="card r" style="flex:1.4"><div class="ct">&#10060; Why a generic AI assistant does not solve this</div>
+        <div class="cs">Off-the-shelf copilots cannot enforce approval gates, cannot keep a tamper-evident audit trail, cannot act inside ITSM workflows, and cannot guarantee output structure. <strong>Governance &mdash; not model quality &mdash; is the binding constraint.</strong></div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the pain, split by audience. The left column is what your operations stakeholders feel; the right is what your data leaders feel; the bottom is what your risk and compliance people feel.</p>
+    <p><span class="lbl">Say this:</span> &ldquo;Two functions in every large enterprise consume disproportionate effort while producing little differentiated value: <strong>IT incident response</strong> and <strong>data pipeline development</strong>. Both are pattern-heavy and judgement-light &mdash; which is exactly the shape of problem language models are good at, <em>provided</em> the automation is wrapped in enterprise controls.&rdquo;</p>
+    <p><span class="lbl">Numbers worth quoting:</span> 90%+ of alerts are noise; data engineers spend roughly 60% of their time on boilerplate. These are the two figures that justify the whole investment.</p>
+    <p><span class="lbl">Do not skip the red box.</span> If someone in the room is going to object with &ldquo;why not just use ChatGPT / a copilot?&rdquo;, this is where you pre-empt it. The answer is governance, not intelligence.</p>
+    <p><span class="lbl">If asked &ldquo;is this replacing our engineers?&rdquo;:</span> No. It removes the pattern-heavy work so that engineers spend their time on the judgement-heavy work. The human approval gate is non-negotiable and is a legal requirement under the EU AI Act, not a design preference.</p>
+    <p><span class="nx">Transition:</span> &ldquo;So the question becomes: how do you get the automation without giving up control? That is the solution.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 3 — PROPOSED SOLUTION ══════════════════ -->
+<section class="slide" data-title="The Proposed Solution">
+  <div class="head">
+    <div class="num">3</div>
+    <div class="txt">
+      <div class="kicker">The solution</div>
+      <h1 class="title">Agentic AI, wrapped in an <span class="hl">enterprise governance layer</span></h1>
+      <p class="sub">Google Cloud supplies the runtime. The architecture supplies the control.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:14px">
+      <div class="card r"><div class="icon">&#128220;</div><div class="ct">1 &middot; The event log is the system of record</div>
+        <div class="cs">Every state change is an immutable <strong>Pub/Sub</strong> message. Any incident or pipeline can be replayed from a snapshot. Durability, decoupling and a compliance-grade audit trail from one mechanism.</div></div>
+      <div class="card b"><div class="icon">&#129504;</div><div class="ct">2 &middot; A state machine controls flow &mdash; the LLM never does</div>
+        <div class="cs">The <strong>Agentspace Agent Graph</strong> decides which node runs next. LLM nodes only reason; code nodes only execute. <strong>ReAct is explicitly forbidden.</strong></div></div>
+      <div class="card y"><div class="icon">&#128269;</div><div class="ct">3 &middot; Retrieval beats recall</div>
+        <div class="cs">Four retrieval agents &mdash; <strong>vector, keyword, graph, metadata</strong> &mdash; search in parallel and fuse by Reciprocal Rank Fusion, then a cross-encoder reranks. No single method is trusted alone.</div></div>
+      <div class="card p"><div class="icon">&#9878;&#65039;</div><div class="ct">4 &middot; Two independent validators before every action</div>
+        <div class="cs"><strong>Gemini Flash judges Gemini Pro's plan</strong> on quality, safety, factuality, feasibility and risk. Then a human approves. High-risk and production changes always require a person.</div></div>
+      <div class="card g"><div class="icon">&#8635;</div><div class="ct">5 &middot; The system only learns from success</div>
+        <div class="cs">Verified successful resolutions are indexed back into the knowledge base. <strong>Failures are never indexed</strong>, so a bad pattern cannot be reinforced.</div></div>
+    </div>
+    <div class="row">
+      <div class="card n" style="flex:1.6"><div class="ct">Where Google Cloud fits</div>
+        <div class="row" style="margin-top:6px;gap:8px">
+          <span class="pill">Agentspace &mdash; managed agent graph + 100&plus; enterprise connectors</span>
+          <span class="pill">Gemini 2.0 Pro &mdash; planning</span>
+          <span class="pill">Gemini 2.0 Flash &mdash; independent judging</span>
+          <span class="pill">Vertex AI Search &mdash; grounded retrieval</span>
+          <span class="pill">Pub/Sub &mdash; event spine</span>
+          <span class="pill">Cloud Composer + Dataproc &mdash; pipeline execution</span>
+          <span class="pill">Cloud Build &mdash; governed execution</span>
+          <span class="pill">Cloud DLP &middot; KMS &middot; Secret Manager &mdash; data protection</span>
+        </div></div>
+      <div class="card g" style="flex:1"><div class="ct">&#10003; Portable by design</div>
+        <div class="cs">Pub/Sub &harr; Kafka &nbsp;|&nbsp; Agentspace &harr; LangGraph &nbsp;|&nbsp; Gemini &harr; Claude/GPT &nbsp;|&nbsp; Vertex AI Search &harr; Weaviate. <strong>Same architecture, different managed services</strong> &mdash; the patterns and governance are identical, which is what prevents lock-in.</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the five load-bearing ideas. If the audience remembers nothing else, they should remember ideas 2, 4 and 5.</p>
+    <p><span class="lbl">Idea 2 is the one architects will test you on.</span> Say it plainly: &ldquo;The model never decides what happens next. A deterministic state graph does. The model is used for judgement under ambiguity &mdash; planning, analysis, critique &mdash; and nothing else. That is what makes the workflow auditable and resumable.&rdquo; ReAct &mdash; where the LLM drives its own tool-use loop &mdash; is explicitly excluded because it is unpredictable and unauditable.</p>
+    <p><span class="lbl">Idea 4, expect the question &ldquo;why two models?&rdquo;:</span> a model asked to check its own work shares its own blind spots. Independence is the entire value of the judge step, so the judge runs on a <strong>different model</strong> from the planner. This is enforced by configuration, not convention.</p>
+    <p><span class="lbl">Idea 5 is subtle but important:</span> indexing a failed remediation would make the system <em>more confident</em> about a solution that does not work. That failure mode is silent and compounding, so only verified successes are learned from.</p>
+    <p><span class="lbl">Business point:</span> the portability line matters to procurement and to architecture review boards. It is a real design property, not a slogan &mdash; every GCP service in this stack has a named portable equivalent.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Here is how those five ideas assemble into an actual architecture.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 4 — HIGH-LEVEL ARCHITECTURE ══════════════════ -->
+<section class="slide" data-title="High-Level Architecture">
+  <div class="head">
+    <div class="num">4</div>
+    <div class="txt">
+      <div class="kicker">Architecture</div>
+      <h1 class="title">Five zones &mdash; work crosses every boundary as an immutable event</h1>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:10px">
+      <div class="band" style="border-color:var(--blue);flex:0 0 216px">
+        <div class="bl" style="color:var(--blue-l)">Zone 1 &mdash; Ingestion</div>
+        <div class="card sm b"><div class="ct">Agentspace connectors</div><div class="cs">ServiceNow &middot; Jira polled every 30 s</div></div>
+        <div class="card sm b"><div class="ct">Cloud Monitoring</div><div class="cs">Alert policies push directly</div></div>
+        <div class="card sm r"><div class="ct">AIOps correlator</div><div class="cs">Dedup + correlate &rarr; <strong>&minus;94% noise</strong></div></div>
+        <div class="card sm r"><div class="ct">Idempotency check</div><div class="cs">SHA-256 fingerprint</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="col" style="flex:1">
+        <div class="card r" style="flex:0 0 auto;padding:11px 16px">
+          <div class="ct">&#9889; Event Spine &mdash; Cloud Pub/Sub &nbsp;<span style="font-size:12px;color:var(--fg3);font-weight:400">(the system of record)</span></div>
+          <div class="cs"><code>incident.*</code> &nbsp; <code>pipeline.*</code> &nbsp; <code>remediation.*</code> &nbsp; + dead letter topics &nbsp;&middot;&nbsp; ordering per entity key &middot; at-least-once &middot; replayable &middot; schema-validated</div>
+        </div>
+        <div class="row grow" style="gap:10px">
+          <div class="band" style="border-color:var(--purple)">
+            <div class="bl" style="color:var(--purple-l)">Zone 2 &mdash; Intelligence</div>
+            <div class="card sm p"><div class="ct">Agentspace Orchestrator</div><div class="cs">Hub &amp; spoke &mdash; routes by topic prefix, validates state transitions</div></div>
+            <div class="row"><div class="card sm b"><div class="ct">FAST Governor</div><div class="cs">9 agents &middot; 7 phases &middot; 24 states</div></div>
+              <div class="card sm g"><div class="ct">APEX compiler</div><div class="cs">9-node graph &middot; 9 patterns</div></div></div>
+            <div class="row"><div class="card sm y"><div class="ct">Swarm RAG</div><div class="cs">Vector + Keyword + Graph + Metadata</div></div>
+              <div class="card sm k"><div class="ct">Gemini-as-Judge</div><div class="cs">Independent model</div></div></div>
+          </div>
+          <div class="band" style="border-color:var(--red);flex:0 0 176px">
+            <div class="bl" style="color:var(--red-l)">Zone 3 &mdash; Governance</div>
+            <div class="card sm r"><div class="ct">Control Plane</div><div class="cs">Auth &middot; RBAC &middot; policy</div></div>
+            <div class="card sm r"><div class="ct">Approval Agent</div><div class="cs">4-level risk routing, timeout escalation</div></div>
+            <div class="card sm n dash"><div class="ct">Cloud Run UI</div><div class="cs">CQRS reads &middot; approvals &middot; publishes intent only</div></div>
+          </div>
+          <div class="band" style="border-color:var(--green);flex:0 0 176px">
+            <div class="bl" style="color:var(--green-l)">Zone 4 &mdash; Execution</div>
+            <div class="card sm g"><div class="ct">Execution Agent</div><div class="cs"><strong>No LLM in this path</strong></div></div>
+            <div class="card sm g"><div class="ct">Cloud Build</div><div class="cs">Terraform &middot; Ansible &middot; shell</div></div>
+            <div class="card sm g"><div class="ct">Cloud Composer</div><div class="cs">Airflow DAGs + Dataproc Spark</div></div>
+          </div>
+          <div class="band" style="border-color:var(--cyan);flex:0 0 176px">
+            <div class="bl" style="color:var(--cyan-l)">Zone 5 &mdash; Feedback</div>
+            <div class="card sm c"><div class="ct">Verification</div><div class="cs">Proof of recovery</div></div>
+            <div class="card sm c"><div class="ct">Learning</div><div class="cs">Success only &rarr; RAG + graph</div></div>
+            <div class="card sm c"><div class="ct">Ticket closer</div><div class="cs">Back to ServiceNow / Jira</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="card n dash" style="flex:2.2"><div class="ct">&#128065; Observability &amp; Audit &mdash; always on, across every zone</div>
+        <div class="cs">Structured logs &middot; 60&plus; metrics &middot; distributed traces &middot; <strong>LLM traces</strong> &mdash; all correlated by <code>incident_id</code>. Checksummed audit records retained <strong>7 years</strong>.</div></div>
+      <div class="card n dash" style="flex:1.6"><div class="ct">&#128451; Persistence</div>
+        <div class="cs">Cloud SQL (audit, CQRS read model, APEX metadata) &middot; Memorystore (state machine, cache) &middot; Vertex AI Search (vectors) &middot; Neo4j (knowledge graph) &middot; Cloud Storage + BigQuery (lake &amp; warehouse)</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the whole system on one page. Walk it left to right, once, in about 60 seconds. Do not go depth-first &mdash; every zone gets its own slide later.</p>
+    <p><span class="lbl">Say this:</span> &ldquo;Work enters at Zone 1, is reasoned about in Zone 2, is <strong>authorised</strong> in Zone 3, is executed deterministically in Zone 4, and is verified and learned from in Zone 5. Everything crossing a zone boundary is an immutable Pub/Sub event &mdash; that single decision is what makes the whole flow replayable and auditable.&rdquo;</p>
+    <p><span class="lbl">Point at the noise reduction early.</span> The AIOps correlator collapses related alerts into a single incident and removes roughly 94% of the noise <em>before</em> any AI reasoning happens. That is cheap, deterministic value.</p>
+    <p><span class="lbl">Two architectural rules to call out:</span></p>
+    <ul>
+      <li><strong>The Cloud Run API is a control plane only.</strong> It serves the UI, exposes CQRS reads, and publishes intent events. It does not poll external systems and does not run workflows. That separation is what keeps the audit trail complete.</li>
+      <li><strong>There is no LLM in Zone 4.</strong> Execution runs pre-approved deterministic plans only &mdash; hallucination risk is eliminated at exactly the moment a mistake would touch production infrastructure.</li>
+    </ul>
+    <p><span class="lbl">If asked about Kafka vs Pub/Sub:</span> the reference architecture uses Kafka; this GCP-native variant uses Pub/Sub. Same guarantees, same topic model, less operational burden.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Let me zoom into Zone 2 &mdash; that is where the agentic part actually lives.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 5 — AGENTIC AI ARCHITECTURE ══════════════════ -->
+<section class="slide" data-title="Agentic AI Architecture">
+  <div class="head">
+    <div class="num">5</div>
+    <div class="txt">
+      <div class="kicker">Agentic AI architecture</div>
+      <h1 class="title">User &rarr; Agentspace &rarr; Orchestrator &rarr; Specialised agents &rarr; Tools &rarr; Response</h1>
+      <p class="sub"><strong>FAST</strong> = Federated Agents with Strict Transitions. Parallel where safe, strictly sequential where correctness demands it.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow center" style="gap:8px">
+      <div class="band" style="border-color:var(--blue);flex:0 0 152px">
+        <div class="bl" style="color:var(--blue-l)">Phase 1 &mdash; Intake</div>
+        <div class="card sm b grow"><div class="ct">Incident Intelligence</div><div class="cs">15 RCA rules &middot; SHA-256 dedup &middot; graph correlation &middot; confidence &middot; SLA deadline</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--purple);flex:0 0 176px">
+        <div class="bl" style="color:var(--purple-l)">Phase 2 &mdash; Parallel &nbsp;<span style="color:var(--fg3)">asyncio.gather</span></div>
+        <div class="card sm p grow"><div class="ct">Risk Agent</div><div class="cs">Blast radius via graph BFS &middot; SLA urgency</div></div>
+        <div class="card sm p grow"><div class="ct">Change Management</div><div class="cs">ServiceNow CHG record + classification</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--yellow);flex:0 0 196px">
+        <div class="bl" style="color:var(--yellow-l)">Phase 3 &mdash; Plan &amp; Judge</div>
+        <div class="card sm y grow"><div class="ct">Swarm RAG</div><div class="cs">4 retrievers &rarr; RRF &rarr; rerank &rarr; risk filter</div></div>
+        <div class="card sm y grow"><div class="ct">Planner &mdash; Gemini Pro</div><div class="cs">Chain-of-Thought plan <strong>+ rollback</strong></div></div>
+        <div class="card sm k grow"><div class="ct">Judge &mdash; Gemini Flash</div><div class="cs">Different model &middot; 5 criteria &middot; max 2 revisions</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--red);flex:0 0 156px">
+        <div class="bl" style="color:var(--red-l)">Phase 4 &mdash; Approval</div>
+        <div class="card sm r grow"><div class="ct">&#128100; Human gate</div><div class="cs">Evidence-first payload &middot; 4-level routing &middot; identity from the verified token &middot; timeout escalation</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--green);flex:0 0 152px">
+        <div class="bl" style="color:var(--green-l)">Phase 5 &mdash; Execute</div>
+        <div class="card sm g grow"><div class="ct">Execution Agent</div><div class="cs"><strong>Write-ahead intent &rarr; Cloud Tasks (deduplicated) &rarr; reconcile on restart.</strong> Artefact hash verified. Auto-rollback armed. <strong>No LLM.</strong></div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--cyan);flex:0 0 152px">
+        <div class="bl" style="color:var(--cyan-l)">Phase 6 &mdash; Verify</div>
+        <div class="card sm c grow"><div class="ct">Verification Agent</div><div class="cs">Stabilisation window &middot; health checks &middot; symptom reassessment &middot; proof of recovery</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--green);flex:0 0 152px">
+        <div class="bl" style="color:var(--green-l)">Phase 7 &mdash; Close &amp; Learn</div>
+        <div class="card sm g grow"><div class="ct">Learning Agent</div><div class="cs">Close ticket &middot; index success into RAG + graph &middot; retune fusion weights</div></div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="card n dash" style="flex:2"><div class="ct">&#128065; Observability Agent &mdash; concurrent hook on every phase</div>
+        <div class="cs">Audit &rarr; Cloud SQL &middot; metrics &rarr; Cloud Monitoring &middot; traces &rarr; Cloud Trace. Best-effort and non-blocking &mdash; observability never fails a workflow.</div></div>
+      <div class="card b" style="flex:1.2"><div class="ct">&#128274; The state machine, not the model</div>
+        <div class="cs"><strong>24 states</strong>, Memorystore-backed with optimistic locking. Workflows <strong>pause</strong> at the approval gate with state persisted, then resume exactly where they stopped.</div></div>
+      <div class="card r" style="flex:1"><div class="ct">&#128721; Escape hatch</div>
+        <div class="cs">Any non-terminal state can move to <code>ESCALATED</code> &mdash; a human takes over. Fail safe, never fail open.</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the agentic core. This is the slide a technical audience will want to interrogate; give it the most time of any architecture slide.</p>
+    <p><span class="lbl">Say this:</span> &ldquo;Nine specialised agents run under a Governor across seven phases. Phase 2 runs in parallel because risk assessment and change-record creation are independent. Phases 3 through 7 are strictly sequential &mdash; each depends on the previous output, and an auditor must be able to prove the <em>order</em> in which decisions were made.&rdquo;</p>
+    <p><span class="lbl">The rollback point lands well:</span> the rollback plan is generated <strong>before</strong> the forward action runs, and it is armed during execution. There is no irreversible action without a pre-written way back.</p>
+    <p><span class="lbl">The revision loop:</span> if the judge returns NEEDS_REVISION, the plan goes back to the planner &mdash; but <strong>bounded at two iterations</strong>, then a human takes over. Unbounded revision loops are a cost and latency incident waiting to happen.</p>
+    <p><span class="lbl">Pause and resume is worth emphasising for architects:</span> the workflow genuinely stops at Phase 4 with state persisted in Memorystore. It can sit there for an hour. When the approval event arrives, it resumes at exactly that node. That is why an explicit state machine was chosen over a conversational framework.</p>
+    <p><span class="lbl">If asked &ldquo;what happens when an agent fails?&rdquo;:</span> every agent has a defined fail-safe. The Risk Agent returns CRITICAL, which forces human review. If the Judge is unavailable, the plan is flagged for mandatory human review &mdash; never auto-approved. <strong>Degradation removes automation, never safety.</strong></p>
+    <p><span class="nx">Transition:</span> &ldquo;Let me name those agents and what each one is actually responsible for.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 6 — AGENT ECOSYSTEM ══════════════════ -->
+<section class="slide" data-title="Agent Ecosystem">
+  <div class="head">
+    <div class="num">6</div>
+    <div class="txt">
+      <div class="kicker">Agent ecosystem</div>
+      <h1 class="title">Nine incident agents, five data agents &mdash; <span class="hl">only three roles use an LLM</span></h1>
+      <p class="sub">The model is used for judgement under ambiguity, and for nothing else. Everything else is deterministic code.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:12px">
+      <div class="band grow" style="border-color:var(--blue)">
+        <div class="bl" style="color:var(--blue-l)">Track A &mdash; FAST incident agents</div>
+        <table class="t">
+          <thead><tr><th style="width:24%">Agent</th><th>Responsibility</th><th style="width:24%">Fail-safe behaviour</th><th style="width:9%">LLM</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Governor</strong></td><td>7-phase orchestration, 24-state machine, stuck detection, resume</td><td>Escalates to a human</td><td>&mdash;</td></tr>
+            <tr><td><strong>IncidentIntelligence</strong></td><td>RCA, SHA-256 dedup, graph correlation, confidence, SLA deadline</td><td>Conservative context, low confidence</td><td style="color:var(--yellow-l)">Hybrid</td></tr>
+            <tr><td><strong>RiskAgent</strong></td><td>Blast radius via graph BFS, SLA urgency, routing input</td><td>Returns <strong style="color:var(--red-l)">CRITICAL</strong> &rarr; forces human review</td><td>&mdash;</td></tr>
+            <tr><td><strong>ChangeManagement</strong></td><td>ServiceNow CHG record + emergency/normal/standard classification</td><td>Locally generated CHG number</td><td>&mdash;</td></tr>
+            <tr><td><strong>Planner</strong></td><td>Chain-of-Thought plan: pre-checks, steps, post-checks, rollback</td><td>Template plan + mandatory review</td><td style="color:var(--yellow-l)"><strong>Yes</strong></td></tr>
+            <tr><td><strong>Judge</strong></td><td>Independent scoring: quality, safety, factual, feasibility, risk</td><td>Plan flagged for mandatory human review</td><td style="color:var(--yellow-l)"><strong>Yes</strong></td></tr>
+            <tr><td><strong>ApprovalAgent</strong></td><td>Evidence-first payload, 4-level routing, timeout escalation</td><td>Escalate, then auto-<em>reject</em></td><td>&mdash;</td></tr>
+            <tr><td><strong>ExecutionAgent</strong></td><td>Pre-validate, dispatch, exponential retry</td><td>Auto-rollback on failure</td><td>&mdash;</td></tr>
+            <tr><td><strong>VerificationAgent</strong></td><td>Stabilisation, health checks, symptom reassessment</td><td>Rollback, then escalate</td><td>&mdash;</td></tr>
+            <tr><td><strong>LearningAgent</strong></td><td>Feedback, <code>FIXED_BY</code> edges, index success, retune weights</td><td>Buffer and retry later</td><td>&mdash;</td></tr>
+            <tr><td><strong>ObservabilityAgent</strong></td><td>Audit rows, metrics, traces &mdash; always on</td><td>Best-effort, non-blocking</td><td>&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="flex:0 0 430px">
+        <div class="band" style="border-color:var(--green)">
+          <div class="bl" style="color:var(--green-l)">Track B &mdash; APEX data agents</div>
+          <div class="row"><div class="card sm n"><div class="ct">Supervisor</div><div class="cs">Routes the request</div><span class="cn" style="color:var(--fg3);background:rgba(110,127,153,.12);border-color:var(--line2)">No LLM</span></div>
+            <div class="card sm y"><div class="ct">Planner</div><div class="cs">Source analysis, schema, DAG structure</div><span class="cn" style="color:var(--yellow-l);background:rgba(251,188,4,.12);border-color:rgba(251,188,4,.3)">Gemini</span></div></div>
+          <div class="row"><div class="card sm g"><div class="ct">Generator</div><div class="cs">Jinja2 &rarr; PySpark, DAG, SQL</div><span class="cn" style="color:var(--fg3);background:rgba(110,127,153,.12);border-color:var(--line2)">No LLM</span></div>
+            <div class="card sm c"><div class="ct">Validator</div><div class="cs">Lint, schema, security scan</div><span class="cn" style="color:var(--fg3);background:rgba(110,127,153,.12);border-color:var(--line2)">No LLM</span></div>
+            <div class="card sm r"><div class="ct">Deployer</div><div class="cs">Approval &rarr; PR &rarr; CI/CD</div><span class="cn" style="color:var(--fg3);background:rgba(110,127,153,.12);border-color:var(--line2)">No LLM</span></div></div>
+        </div>
+        <div class="card p"><div class="ct">&#9888; Naming is the guardrail</div>
+          <div class="cs">Each additional LLM multiplies latency, cost and the places a hallucination can enter. <strong>Only a component whose control flow is decided by a model is an agent</strong> &mdash; the rest are services, and are named as such. The platform is <strong>one orchestrator, three agents, six services and one middleware layer</strong>. Every component labelled &ldquo;agent&rdquo; invites a future engineer to give it a model.</div></div>
+        <div class="card r"><div class="ct">&#128683; No LLM in the execution path</div>
+          <div class="cs">The Execution Agent runs pre-approved, deterministic plans only. Hallucination risk is eliminated at exactly the moment a mistake would touch production infrastructure.</div></div>
+      </div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the agent inventory. Do <em>not</em> read the table row by row &mdash; let the audience scan it while you make three points.</p>
+    <p><span class="lbl">Point 1 &mdash; the fail-safe column is the real content.</span> &ldquo;Notice the third column. Every agent has a defined behaviour when it breaks, and every one of those behaviours is <em>more</em> conservative, not less. The Risk Agent returns CRITICAL. The Approval Agent auto-rejects on timeout &mdash; it never auto-approves. There is no failure mode in which this system executes something it otherwise would not have.&rdquo;</p>
+    <p><span class="lbl">Point 2 &mdash; the LLM column is the design in one number.</span> Only Planner, Judge and the analytical part of IncidentIntelligence use a model. On the data side, <strong>one of five agents</strong> uses an LLM: generation is templated, validation is rule-based, deployment is deterministic. That is what makes generated pipelines reproducible and reviewable.</p>
+    <p><span class="lbl">Point 3 &mdash; nine agents, not nineteen.</span> If asked about agent sprawl: nine agents map to nine genuinely distinct responsibilities. Agent count is a cost, not a feature.</p>
+    <p><span class="lbl">If asked why generation does not use the LLM:</span> because a Jinja2 template produces the same output every time and can be reviewed once, whereas generated-from-scratch code must be reviewed every time. The LLM chooses the <em>pattern</em>; the template produces the <em>code</em>.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Now let us follow one real request through all of that, step by step.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 7 — END-TO-END WORKFLOW ══════════════════ -->
+<section class="slide" data-title="End-to-End Agent Workflow">
+  <div class="head">
+    <div class="num">7</div>
+    <div class="txt">
+      <div class="kicker">End-to-end workflow</div>
+      <h1 class="title">One request, fourteen stages &mdash; and where the clock goes</h1>
+      <p class="sub">Request &rarr; intent &rarr; agent selection &rarr; context retrieval &rarr; reasoning &rarr; validation &rarr; approval &rarr; tool execution &rarr; verification &rarr; response &rarr; audit.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="col grow" style="gap:9px">
+      <div class="row" style="gap:8px">
+        <div class="card sm n"><div class="ct">1 &middot; Request</div><div class="cs">Incident raised in ServiceNow, or an alert policy fires</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm b"><div class="ct">2 &middot; Intake &amp; normalise</div><div class="cs">Agentspace connector polls, normalises payload</div><span class="cn">&le; 30 s</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm r"><div class="ct">3 &middot; Correlate &amp; dedup</div><div class="cs">AIOps collapses related alerts; SHA-256 fingerprint blocks duplicates</div><span class="cn">&minus;94% noise</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm r"><div class="ct">4 &middot; Publish to spine</div><div class="cs"><code>incident.created</code>, keyed by incident ID</div><span class="cn">ms</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm p"><div class="ct">5 &middot; Route by intent</div><div class="cs">Orchestrator dispatches on topic prefix &mdash; <strong>deterministic, no LLM</strong></div><span class="cn">ms</span></div>
+      </div>
+      <div class="row" style="gap:8px">
+        <div class="card sm b"><div class="ct">6 &middot; Analyse</div><div class="cs">RCA classification, correlation with prior incidents, confidence, SLA deadline</div><span class="cn">~0.5 s</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm p"><div class="ct">7 &middot; Assess in parallel</div><div class="cs">Blast radius via graph BFS &#8741; CHG record created</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm y"><div class="ct">8 &middot; Retrieve context</div><div class="cs">4 retrievers &rarr; RRF &rarr; rerank &rarr; blast-radius filter &rarr; top 5 with evidence</div><span class="cn">~2 s</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm y"><div class="ct">9 &middot; Reason</div><div class="cs">Gemini Pro plans: pre-checks, steps, post-checks, <strong>rollback</strong></div><span class="cn">~3 s</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm k"><div class="ct">10 &middot; Validate</div><div class="cs">Schema &rarr; harmful-command &amp; secret scan &rarr; grounding &rarr; Gemini Flash judges</div><span class="cn">~3 s</span></div>
+      </div>
+      <div class="row" style="gap:8px">
+        <div class="card sm r"><div class="ct">11 &middot; Authorise</div><div class="cs">Evidence-first approval, risk-routed. Workflow <strong>pauses</strong>, state persisted</div><span class="cn">~2 min (variable)</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm g"><div class="ct">12 &middot; Execute via tools</div><div class="cs"><strong>Write-ahead intent</strong> &rarr; Cloud Tasks (deduplicated) &rarr; Cloud Build runs Terraform / Ansible / shell. Rollback armed. <strong>Artefact hash verified against what was approved</strong></div><span class="cn">exactly-once</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm c"><div class="ct">13 &middot; Verify</div><div class="cs">Stabilisation window, health checks, symptom reassessment &mdash; <strong>proof of recovery</strong></div><span class="cn">~15 s</span></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm g"><div class="ct">14 &middot; Respond &amp; learn</div><div class="cs">Ticket closed with resolution notes; success indexed to RAG + graph; weights retuned</div><span class="cn">~5 s</span></div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="card g" style="flex:1.3"><div class="ct">&#9201; Total: ~3 min 15 s with a human in the loop</div>
+        <div class="cs">Of which <strong>the AI accounts for roughly 75 seconds</strong>. The rest is the approver. Compare to hours or days manually.</div></div>
+      <div class="card b" style="flex:1.5"><div class="ct">&#9889; Auto-approval fast path: 65&ndash;90 seconds</div>
+        <div class="cs">Only when <strong>all</strong> hold: risk = LOW &middot; judge score &ge; 8 &middot; confidence &ge; 0.90 &middot; script has history with &ge; 95% success &middot; environment &ne; production.</div></div>
+      <div class="card p" style="flex:1"><div class="ct">&#128220; And at every stage</div>
+        <div class="cs">Logs, metrics, traces, LLM traces and a checksummed audit record &mdash; all keyed by the same <code>incident_id</code>.</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the mechanism made concrete. Walk the three rows in order; each row is roughly one third of the journey.</p>
+    <p><span class="lbl">Say this:</span> &ldquo;Row one is <strong>sensing</strong> &mdash; and notice how much value is created before any AI runs: correlation and deduplication remove 94% of the noise deterministically. Row two is <strong>reasoning</strong> &mdash; retrieve, plan, then independently validate. Row three is <strong>acting</strong> &mdash; but only after a human authorises it.&rdquo;</p>
+    <p><span class="lbl">The number that lands with executives:</span> total wall-clock is about three and a quarter minutes, and <strong>most of that is the human approver</strong>. The AI portion is around 75 seconds. When you remove the approval wait on the genuinely routine cases, it is 65 to 90 seconds end to end.</p>
+    <p><span class="lbl">The number that lands with architects:</span> stage 11 &mdash; the workflow <em>pauses</em> with state persisted and resumes on the approval event. It is not a blocking thread waiting on a callback.</p>
+    <p><span class="lbl">Be precise about the auto-approval criteria.</span> Read all five conditions aloud. Someone will ask &ldquo;so it <em>can</em> act without a human?&rdquo; &mdash; the answer is: only for low-risk actions, with a high judge score, high confidence, a proven track record, and <strong>never in production</strong>. Production always requires a person, without exception.</p>
+    <p><span class="lbl">If asked what happens on failure:</span> execution failure triggers the pre-generated rollback automatically; verification failure also triggers rollback and then escalates to a human.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Stage 8 is where most of the accuracy comes from &mdash; so let me open up the retrieval layer.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 8 — RAG & KNOWLEDGE ══════════════════ -->
+<section class="slide" data-title="RAG &amp; Knowledge Architecture">
+  <div class="head">
+    <div class="num">8</div>
+    <div class="txt">
+      <div class="kicker">RAG &amp; knowledge architecture</div>
+      <h1 class="title">Four retrieval signals, fused without weights &mdash; <span class="hl">grounded in 300&ndash;500 ms</span></h1>
+      <p class="sub">Because &ldquo;VM is down&rdquo; embeds almost identically to &ldquo;VM is up&rdquo;. The fix is not a better embedding model &mdash; it is combining signal types.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:12px">
+      <div class="col" style="flex:1">
+        <div class="row" style="gap:8px">
+          <div class="card sm n"><div class="ct">Query</div><div class="cs">&ldquo;GCP VM instance prod-api-01 in us-central1-a is unresponsive&rdquo;</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm b"><div class="ct">Query understanding</div><div class="cs">Intent: RESTART &middot; entities &middot; service &middot; synonym expansion</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm c"><div class="ct">Embedding</div><div class="cs">memory &rarr; Memorystore &rarr; disk &rarr; compute, then backfill all tiers</div><span class="cn">&lt;1 ms cached</span></div>
+        </div>
+        <div class="band grow" style="border-color:var(--yellow)">
+          <div class="bl" style="color:var(--yellow-l)">Four parallel retrieval agents &mdash; each with its own failure handling</div>
+          <div class="row" style="gap:8px">
+            <div class="card sm y"><div class="ct">Vector &mdash; semantic</div><div class="cs"><span style="color:var(--green-l)">&#10003;</span> synonyms, paraphrase, intent<br><span style="color:var(--red-l)">&#10007;</span> negation, numbers, identifiers</div></div>
+            <div class="card sm y"><div class="ct">Keyword &mdash; lexical</div><div class="cs"><span style="color:var(--green-l)">&#10003;</span> error codes, exact terms<br><span style="color:var(--red-l)">&#10007;</span> no understanding of meaning</div></div>
+            <div class="card sm y"><div class="ct">Graph &mdash; structural</div><div class="cs"><span style="color:var(--green-l)">&#10003;</span> &ldquo;what actually worked before?&rdquo;<br><span style="color:var(--red-l)">&#10007;</span> cold start for new scripts</div></div>
+            <div class="card sm y"><div class="ct">Metadata &mdash; explicit</div><div class="cs"><span style="color:var(--green-l)">&#10003;</span> hard constraints: cloud, service, env<br><span style="color:var(--red-l)">&#10007;</span> limited to known fields</div></div>
+          </div>
+        </div>
+        <div class="row" style="gap:8px">
+          <div class="card sm p"><div class="ct">RRF fusion</div><div class="cs">&Sigma; 1/(60&plus;rank). <strong>No weights &mdash; only rankings</strong></div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm k"><div class="ct">Cross-encoder rerank</div><div class="cs">Joint (query, doc) scoring &mdash; <strong>&plus;20&ndash;30% precision</strong></div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm r"><div class="ct">ACL + blast-radius filter</div><div class="cs"><strong>Filtered by the requesting principal in the query</strong>, then critical-risk candidates dropped</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm g"><div class="ct">Top 5 + evidence</div><div class="cs">Match reasons, risk level, historical success count, avg resolution time</div></div>
+        </div>
+      </div>
+      <div class="col" style="flex:0 0 400px">
+        <div class="card y"><div class="ct">Why ranks beat scores</div>
+          <div class="cs">A vector score of 0.9 and a graph score of 0.9 do not mean the same thing. RRF only uses <strong>positions</strong>, so it is scale-invariant, needs no weight tuning, and stays stable when you add a retriever.<br><br>
+          <strong>And it degrades gracefully:</strong> if one agent times out, a weighted average collapses &mdash; RRF loses only that agent's quarter of the contribution.</div></div>
+        <div class="card p"><div class="ct">The knowledge graph answers what vectors cannot</div>
+          <div class="cs"><code>Incident &mdash;FIXED_BY&rarr; Script</code> carries success, resolution time and human verification.<br>
+          <code>Service &mdash;DEPENDS_ON&rarr; Service</code> gives <strong>blast radius</strong> in one query &mdash; restarting Kubernetes surfaces api-gateway, payment-service, auth-service.<br>
+          All &ldquo;restart&rdquo; scripts embed almost identically; only history can separate them.</div></div>
+        <div class="card g"><div class="ct">&#8635; Learns from verified success &mdash; and <em>un</em>-learns on reopen</div>
+          <div class="cs">Success &rarr; <code>FIXED_BY</code> edge merged, resolved incident indexed, fusion weights retuned per incident type.<br>
+          <strong>Failure &rarr; nothing is indexed.</strong> And if the incident <strong>reopens within 7 days</strong> the association is <strong>retracted</strong> &mdash; verification proves recovery at T+minutes, not T+3 days. <strong>A learning system without a retraction path only ever becomes more confident.</strong></div></div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="card n dash" style="flex:1"><div class="ct">Five kinds of memory, no implicit memory</div>
+        <div class="cs">Working state (Memorystore, ~1 ms) &middot; episodic (Cloud SQL, ~10 ms) &middot; semantic (Vertex AI Search, ~50&ndash;100 ms) &middot; relational (Neo4j, ~100&ndash;200 ms) &middot; cache (&lt;1 ms). <strong>Every LLM call receives explicit retrieved context</strong> &mdash; the model is never assumed to remember a prior turn, which is what makes runs reproducible and auditable.</div></div>
+      <div class="card r" style="flex:0 0 330px"><div class="ct">&#9888; If fewer than two agents respond</div>
+        <div class="cs">Return empty and escalate to a human. <strong>Do not guess.</strong></div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the accuracy engine. This is where a sceptical technical audience is won or lost.</p>
+    <p><span class="lbl">Open with the failure of naive RAG.</span> &ldquo;If you just embed the incident text and take the nearest vector, you get burned. &lsquo;VM is down&rsquo; sits right next to &lsquo;VM is up&rsquo; in embedding space. &lsquo;Disk 95% full&rsquo; retrieves a disk utility guide instead of the clear-disk-space script. Vectors are good at synonyms and terrible at negation, numbers and exact identifiers.&rdquo;</p>
+    <p><span class="lbl">Then the fix:</span> four <em>different kinds</em> of signal, run in parallel, each strong where the others are weak. Note that reranking is a separate downstream stage &mdash; the four retrievers are vector, keyword, graph and metadata.</p>
+    <p><span class="lbl">RRF in one sentence:</span> &ldquo;Each agent produces a ranking. We sum one-over-sixty-plus-rank across agents. A document that ranks first with three agents beats a document that ranks first with only one &mdash; and we never had to pick a weight.&rdquo;</p>
+    <p><span class="lbl">The graph is the differentiator &mdash; give it 20 seconds.</span> Every restart script embeds almost identically. The only thing that separates them is <strong>what actually worked before</strong>, and that lives in the <code>FIXED_BY</code> edges. The same graph gives blast radius, which is what the Risk Agent uses to route approvals.</p>
+    <p><span class="lbl">Close on the learning rule</span> &mdash; it is memorable and it is a governance point, not just an ML point: the system indexes only <em>verified</em> successes, so it cannot be poisoned by its own failures.</p>
+    <p><span class="nx">Transition:</span> &ldquo;That was the incident track. The same architecture drives data engineering &mdash; here is a real example.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 9 — DATA ENGINEERING USE CASE ══════════════════ -->
+<section class="slide" data-title="Data Engineering Use Case">
+  <div class="head">
+    <div class="num">9</div>
+    <div class="txt">
+      <div class="kicker">Data engineering &mdash; APEX</div>
+      <h1 class="title">Worked example: the nightly sales load fails at 02:14</h1>
+      <p class="sub">Problem &rarr; agent analysis &rarr; tool / query &rarr; root cause &rarr; recommended action &rarr; result.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:8px">
+      <div class="card r"><div class="cn" style="color:var(--red-l);background:rgba(234,67,53,.12);border-color:rgba(234,67,53,.3)">PROBLEM</div>
+        <div class="ct">Pipeline failed</div>
+        <div class="cs"><code>sales_orders_daily</code> fails at <code>raw_to_bronze</code>. Feed must land by 06:00. <code>pipeline.failed</code> published; on-call notified.</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card b"><div class="cn">AGENT ANALYSIS</div>
+        <div class="ct">Intake &amp; correlate</div>
+        <div class="cs">Fingerprint checked &mdash; not a duplicate. RCA classification run. Correlated against prior incidents on the same feed. Confidence and SLA deadline attached.</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card y"><div class="cn" style="color:var(--yellow-l);background:rgba(251,188,4,.12);border-color:rgba(251,188,4,.3)">TOOL / QUERY</div>
+        <div class="ct">Metadata + execution log</div>
+        <div class="cs">Reads <code>task_execution</code> and <code>error_log</code>; compares the incoming DataFrame against <code>schema_version</code>; reads the feed's drift policy.</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card p"><div class="cn" style="color:var(--purple-l);background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.3)">ROOT CAUSE</div>
+        <div class="ct">Schema drift under a STRICT policy</div>
+        <div class="cs">The source added two columns and retyped one. The feed's policy is <code>STRICT</code> &mdash; <strong>fail on any change</strong>. The job failed loudly with an explicit schema diff, exactly as designed.</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card g"><div class="cn" style="color:var(--green-l);background:rgba(52,168,83,.12);border-color:rgba(52,168,83,.3)">ACTION</div>
+        <div class="ct">Two governed options</div>
+        <div class="cs"><strong>A.</strong> Register a new <code>schema_version</code> and move the feed to <code>ADDITIVE</code>.<br><strong>B.</strong> Quarantine and continue for tonight, fix at source.<br><span style="color:var(--red-l)"><strong>A schema change always requires human approval.</strong></span></div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card c"><div class="cn" style="color:var(--cyan-l);background:rgba(8,145,178,.12);border-color:rgba(8,145,178,.3)">RESULT</div>
+        <div class="ct">Approved &rarr; metadata updated &rarr; re-run</div>
+        <div class="cs"><strong>No DAG code was edited.</strong> The pipeline is metadata-driven, so the new schema version changes runtime behaviour on the next run. Re-run is safe: <code>raw_to_bronze</code> deletes by <code>_run_id</code> before writing.</div></div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="band" style="border-color:var(--green);flex:2.1">
+        <div class="bl" style="color:var(--green-l)">And the other half of the job &mdash; APEX builds the pipeline in the first place</div>
+        <div class="row" style="gap:7px">
+          <div class="card sm n"><div class="ct">Request</div><div class="cs">Jira ticket, UI form, plain English, or an SSIS package upload</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm b"><div class="ct">Normalise</div><div class="cs">One canonical metadata model from all three input modes</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm p"><div class="ct">Resolve pattern</div><div class="cs">P01&ndash;P09 chosen deterministically from contract and source type</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm y"><div class="ct">Generate</div><div class="cs">Jinja2 renders PySpark jobs, Composer DAG, SQL</div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm c"><div class="ct">Validate</div><div class="cs">Syntax, imports, <strong>no hard-coded secrets</strong></div></div>
+          <div class="arrow">&#8594;</div>
+          <div class="card sm r"><div class="ct">Approve &amp; deploy</div><div class="cs">Human reviews a <strong>real pull request</strong> &rarr; CI/CD &rarr; Cloud Composer</div></div>
+        </div>
+      </div>
+      <div class="card y" style="flex:1"><div class="ct">&#128295; APEX is a compiler, not an ETL tool</div>
+        <div class="cs">Business logic lives in <strong>13 PostgreSQL metadata schemas</strong>, not in DAG Python. The generated DAG is a thin wrapper that fetches its configuration at runtime &mdash; <strong>the same file behaves differently when the metadata changes</strong>. 70&plus; source types, 9 DAG patterns, 5 canonical Spark jobs, medallion Raw&rarr;Bronze&rarr;Silver&rarr;Gold&rarr;Trusted with quality gates between zones.</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> proof that the same machine works on the data side. The top row is a troubleshooting story; the bottom row is the build story.</p>
+    <p><span class="lbl">Walk the top row as a narrative, not a diagram.</span> &ldquo;At 02:14 the nightly sales load fails. The agent checks it is not a duplicate, correlates it against prior failures on this feed, then queries the execution log and compares the incoming schema against the registered version. Root cause: the source system added two columns and changed a type, and this feed is on a STRICT drift policy &mdash; so it failed loudly with an explicit diff. <em>That is the system working, not breaking.</em>&rdquo;</p>
+    <p><span class="lbl">The payoff line:</span> &ldquo;The fix is a metadata change, not a code change. Nobody edits a DAG. And because ingestion deletes by run ID before writing, re-running is safe &mdash; no duplicates.&rdquo;</p>
+    <p><span class="lbl">The governance beat:</span> a schema change <strong>always</strong> requires human approval. Say it explicitly &mdash; it shows the guardrails are not only on the incident side.</p>
+    <p><span class="lbl">Bottom row, for the data audience:</span> three input modes &mdash; a structured form, plain English, or an uploaded SSIS package &mdash; all normalise to <em>one</em> canonical metadata model, so everything downstream is uniform. Pattern selection is deterministic, not a model guess. And the deployer opens a real pull request: <strong>generation removes the typing, not the review</strong>.</p>
+    <p><span class="lbl">If asked about legacy migration:</span> pattern P04 handles DTSX/SSIS, COBOL copybooks, EBCDIC and AS400 &mdash; uncertain T-SQL to PySpark mappings are flagged for manual review rather than silently guessed.</p>
+    <p><span class="nx">Transition:</span> &ldquo;That covers building and fixing pipelines. Now the L1 and ITSM side &mdash; the daily operational reality.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 10 — L1 / ITSM / PLATFORM SUPPORT ══════════════════ -->
+<section class="slide" data-title="L1 / ITSM / Platform Support">
+  <div class="head">
+    <div class="num">10</div>
+    <div class="txt">
+      <div class="kicker">L1 &middot; ITSM &middot; platform support</div>
+      <h1 class="title">The platform does the routine path &mdash; people keep the authority</h1>
+      <p class="sub">ServiceNow and Jira remain the systems of record. The agent becomes a first-class actor inside the existing ITSM workflow.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:12px">
+      <div class="col" style="flex:1.35">
+        <div class="band grow" style="border-color:var(--red)">
+          <div class="bl" style="color:var(--red-l)">The ten-stage incident lifecycle &mdash; who does what now</div>
+          <div class="lane"><div class="lane-l" style="border-left-color:var(--green)">Automated</div>
+            <div class="row" style="gap:7px">
+              <div class="card sm g"><div class="ct">Detect</div><div class="cs">Alert, ticket or proactive check</div></div>
+              <div class="card sm g"><div class="ct">Triage</div><div class="cs">Severity, component, blast radius</div></div>
+              <div class="card sm g"><div class="ct">Investigate</div><div class="cs">Runbook retrieval + RCA with evidence</div></div>
+              <div class="card sm g"><div class="ct">Mitigate</div><div class="cs">Plan generated with rollback</div></div>
+            </div></div>
+          <div class="lane"><div class="lane-l" style="border-left-color:var(--red)">Human</div>
+            <div class="row" style="gap:7px">
+              <div class="card sm r"><div class="ct">Acknowledge</div><div class="cs">Own it inside the severity SLA</div></div>
+              <div class="card sm r"><div class="ct">Communicate</div><div class="cs">Stakeholders, update cadence</div></div>
+              <div class="card sm r"><div class="ct">Approve</div><div class="cs">Authorise the change &mdash; the gate</div></div>
+              <div class="card sm r"><div class="ct">Escalate</div><div class="cs">On the clock, not on feeling</div></div>
+            </div></div>
+          <div class="lane"><div class="lane-l" style="border-left-color:var(--cyan)">Automated</div>
+            <div class="row" style="gap:7px">
+              <div class="card sm c"><div class="ct">Resolve</div><div class="cs">Recovery proven by health check, not by absence of alerts</div></div>
+              <div class="card sm c"><div class="ct">Close</div><div class="cs">ServiceNow updated with resolution notes</div></div>
+              <div class="card sm c"><div class="ct">Post-incident</div><div class="cs">Timeline from traces; knowledge base updated</div></div>
+            </div></div>
+        </div>
+      </div>
+      <div class="col" style="flex:1">
+        <div class="band" style="border-color:var(--yellow)">
+          <div class="bl" style="color:var(--yellow-l)">Severity, SLA and escalation stay exactly as they were</div>
+          <table class="t">
+            <thead><tr><th style="width:22%">Severity</th><th style="width:20%">Ack SLA</th><th style="width:24%">Updates</th><th>Resolution target</th></tr></thead>
+            <tbody>
+              <tr><td><strong style="color:#ef4444">P1 Critical</strong></td><td>5 min</td><td>Every 30 min</td><td>4 h</td></tr>
+              <tr><td><strong style="color:#f59e0b">P2 High</strong></td><td>15 min</td><td>Every 2 h</td><td>8 h</td></tr>
+              <tr><td><strong style="color:#fbbf24">P3 Medium</strong></td><td>1 h</td><td>Daily</td><td>3 business days</td></tr>
+              <tr><td><strong style="color:#94a3b8">P4 Low</strong></td><td>1 business day</td><td>Weekly</td><td>Next sprint</td></tr>
+            </tbody>
+          </table>
+          <div class="row" style="gap:7px">
+            <div class="card sm r"><div class="ct">L1</div><div class="cs">Triage, runbooks, comms</div></div>
+            <div class="card sm y"><div class="ct">L2</div><div class="cs">Cross-component, recovery</div></div>
+            <div class="card sm b"><div class="ct">L3</div><div class="cs">Code, architecture</div></div>
+            <div class="card sm p"><div class="ct">L4</div><div class="cs">Manager &rarr; CTO</div></div>
+          </div>
+        </div>
+        <div class="card r"><div class="ct">&#128721; L1 boundaries are enforced, not advisory</div>
+          <div class="cs">L1 does <strong>not</strong> change code, does <strong>not</strong> modify production data, and does <strong>not</strong> bypass approval gates. Security incidents, PII exposure, data loss and IAM changes escalate <strong>immediately</strong> &mdash; without waiting for a timer.</div></div>
+        <div class="card g"><div class="ct">&#128465; Kill switch, tested not assumed</div>
+          <div class="cs">If auto-remediation misbehaves: flip the feature flag to <strong>Shadow mode</strong> &mdash; plans are still generated but never executed. Fallback: raise the auto-approval threshold so everything requires a human. Alert <code>RemediationFailureRate &gt; 20%</code> prompts exactly this.</div></div>
+      </div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the operational reality slide. It is aimed at the service-management audience, who will be asking &ldquo;what changes for my team?&rdquo;</p>
+    <p><span class="lbl">Say this:</span> &ldquo;The lifecycle does not change. The severities do not change. The escalation matrix does not change. ServiceNow and Jira stay the systems of record. What changes is <em>who does the repetitive parts</em>.&rdquo;</p>
+    <p><span class="lbl">The three lanes are the message.</span> Detection, triage, investigation and plan generation are automated. Acknowledgement, communication, <strong>approval</strong> and escalation stay human. Resolution proof, closure and knowledge capture are automated again. Point at the middle lane and say: <em>&ldquo;the authority never leaves this row.&rdquo;</em></p>
+    <p><span class="lbl">Worth quoting on resolution:</span> the platform proves recovery with a health check and symptom reassessment after a stabilisation window. It never closes an incident because the alert stopped firing.</p>
+    <p><span class="lbl">The kill switch usually gets a nod from operations leadership.</span> Mention that Shadow mode is not a theoretical control &mdash; it is the same mechanism used to validate a new model against production traffic, so it is exercised regularly rather than sitting untested.</p>
+    <p><span class="lbl">If asked &ldquo;does this de-skill L1?&rdquo;:</span> it removes the searching and the copying, not the judgement. L1 still owns acknowledgement, communication and the escalation decision &mdash; and gets a much better evidence pack to decide with.</p>
+    <p><span class="nx">Transition:</span> &ldquo;All of that only works if the security and governance model holds. So let me show you that layer.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 11 — SECURITY & GOVERNANCE ══════════════════ -->
+<section class="slide" data-title="Security &amp; Governance">
+  <div class="head">
+    <div class="num">11</div>
+    <div class="txt">
+      <div class="kicker">Security &amp; governance</div>
+      <h1 class="title">Five independent safety layers &mdash; and a model that never holds a credential</h1>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row" style="gap:8px">
+      <div class="card b"><div class="ct">1 &middot; Identity &amp; access</div><div class="cs">Cloud Identity / Workforce Identity Federation &middot; <strong>MFA for all human access</strong> &middot; OAuth 2.0 / OIDC &middot; Workload Identity (no key files) &middot; mTLS between services</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card p"><div class="ct">2 &middot; Input guardrails</div><div class="cs">Relevance &rarr; prompt &amp; command injection &rarr; <strong>PII redaction via Cloud DLP</strong> &rarr; rate and size limits &mdash; all <em>before</em> the model sees anything</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card y"><div class="ct">3 &middot; Retrieval risk filter</div><div class="cs">Critical-risk runbooks are removed from the candidate set &mdash; they cannot even be proposed</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card k"><div class="ct">4 &middot; Output guardrails + Judge</div><div class="cs">Schema validation &rarr; harmful-command, secret-exposure and privilege-escalation detection &rarr; grounding check &rarr; <strong>Gemini Flash judges</strong></div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card r"><div class="ct">5 &middot; Human approval</div><div class="cs">Risk-routed, evidence-first. <strong>Entitlement intersection</strong> &mdash; the approver must be entitled to <em>this</em> environment, service and risk tier, not merely hold the role. Separation of duties enforced. <strong>Approved artefact hash</strong> binds the decision to the bytes that run</div></div>
+      <div class="arrow">&#8594;</div>
+      <div class="card g"><div class="ct">&#10003; Post-execution verification</div><div class="cs">Proof of recovery &mdash; or automatic rollback</div></div>
+    </div>
+    <div class="row grow" style="gap:12px">
+      <div class="col" style="flex:1">
+        <div class="card n"><div class="ct">Authorisation &mdash; four hierarchical roles</div>
+          <table class="t" style="margin-top:6px">
+            <thead><tr><th style="width:26%">Role</th><th>View</th><th>Trigger</th><th>Approve</th><th>Config</th><th>Delete</th></tr></thead>
+            <tbody>
+              <tr><td><code>viewer</code></td><td style="color:var(--green-l)">&#10003;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+              <tr><td><code>operator</code></td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+              <tr><td><code>approver</code></td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td><td>&mdash;</td><td>&mdash;</td></tr>
+              <tr><td><code>admin</code></td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td><td style="color:var(--green-l)">&#10003;</td></tr>
+            </tbody>
+          </table>
+          <div class="note-inline" style="margin-top:6px">Enforced by middleware on every API request via an endpoint&rarr;role map. <strong>The approver's identity comes from the verified token, never from the request body.</strong></div></div>
+        <div class="card r"><div class="ct">&#128273; Secrets, data protection &amp; retention</div>
+          <div class="cs">Secret Manager + Cloud KMS CMEK &middot; 90-day automatic rotation &middot; CI secret scanning, including on <strong>generated pipeline code</strong> &middot; TLS 1.3 external, mTLS internal &middot; PII masked before it reaches the model or the Gold zone &middot; VPC Service Controls as a data-exfiltration perimeter &middot; <strong>audit 7 years, PII 90 days</strong>.</div></div>
+      </div>
+      <div class="col" style="flex:1">
+        <div class="card g"><div class="ct">&#128272; MCP Gateway &mdash; the model never holds a credential</div>
+          <div class="cs">Agents ask for a <em>named tool</em>; the connector holds the credential and enforces its own authorisation. Tools are allowlisted per agent &mdash; the Terraform agent cannot call ServiceNow write tools. <strong>A prompt injection that convinces the model to &ldquo;print all secrets&rdquo; finds nothing to print.</strong> Every call traverses the <strong>MCP Gateway</strong>: one policy decision point evaluating <em>agent &times; tool &times; parameters &times; environment</em>, one audit choke point, <strong>fails closed</strong>.</div></div>
+        <div class="card b"><div class="ct">&#128273; ACL-aware retrieval</div>
+          <div class="cs">Retrieval is filtered by the <strong>requesting principal, inside the vector-store query</strong> &mdash; never post-filtered in application code. Chunks carry their source document ACL. <strong>Post-filtering is not access control:</strong> the content was still read, ranked and logged.</div></div>
+        <div class="card p"><div class="ct">&#128220; Audit trail &mdash; every decision, every actor</div>
+          <div class="cs">Every AI decision recorded with explanation, confidence, risk level and a human-oversight flag. Every human decision recorded with the recommendation and the actual choice, including overrides and their stated reason. <strong>Checksummed, append-only, 7-year retention</strong>, queryable by incident ID.</div></div>
+        <div class="card y"><div class="ct">&#9878;&#65039; Enterprise governance posture</div>
+          <div class="pills" style="margin-top:6px">
+            <span class="pill ok">SOC 2 Type II &mdash; compliant</span>
+            <span class="pill ok">ISO/IEC 42001 &mdash; compliant</span>
+            <span class="pill ok">NIST AI RMF + GenAI Profile &mdash; aligned</span>
+            <span class="pill ok">GDPR &mdash; compliant</span>
+            <span class="pill ok">MITRE ATLAS &mdash; 7 techniques mapped</span>
+            <span class="pill wa">EU AI Act high-risk &mdash; controls implemented; conformity assessment due <strong>2 Dec 2027</strong></span>
+          </div>
+          <div class="note-inline" style="margin-top:8px">
+            <strong>20-control unified catalogue</strong> cross-mapped across all six frameworks &mdash; evidence gathered once serves every auditor.
+            <strong>12-entry AI risk register</strong> with named owners; the two highest residual risks are <em>automation bias</em> and <em>provider behaviour drift</em> &mdash; both people-and-process, not technical.
+          </div>
+          <div class="note-inline" style="margin-top:6px"><strong>Article 14 requires <em>meaningful</em> oversight, not an approve button.</strong> Countermeasures: evidence-first payloads, explicit confidence and risk, auto-approval for genuinely routine actions to preserve attention, and <strong>approval dwell time measured</strong> as an automation-bias indicator.</div></div>
+      </div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the slide that makes the project approvable. Risk, security and compliance stakeholders are the audience.</p>
+    <p><span class="lbl">Open with the three claims:</span> &ldquo;The security posture rests on three things that must stay true. <strong>One</strong> &mdash; no action reaches production without an identified human approver. <strong>Two</strong> &mdash; no model ever holds a credential. <strong>Three</strong> &mdash; every decision is attributable and tamper-evident.&rdquo;</p>
+    <p><span class="lbl">Emphasise that the five layers are <em>independent</em>.</span> A prompt injection that gets past the input guardrail still has to produce a plan that passes schema validation, harmful-command detection, a grounding check, an independent judge model, <em>and</em> a human. They are not one control with five names.</p>
+    <p><span class="lbl">Credential isolation is the point most people have not thought about.</span> The model asks for a named tool; the connector holds the credential. This is the single strongest structural answer to &ldquo;what if someone jailbreaks it?&rdquo;</p>
+    <p><span class="lbl">On the token-versus-request-body detail:</span> this was a real gap that was found and closed &mdash; the code once trusted an <code>approved_by</code> field that any caller could set to any name. Being candid about this builds credibility; 44 such gaps were closed in the current release.</p>
+    <p><span class="lbl">Be precise about EU AI Act status &mdash; and know the date.</span> Say &ldquo;the <strong>controls</strong> for the high-risk articles are implemented; the <strong>formal conformity assessment</strong> is in progress.&rdquo; <strong>Do not claim certification.</strong> The high-risk deadline is <strong>2 December 2027</strong> &mdash; it was deferred from August 2026 by the AI Act Omnibus, so if anyone quotes the old date, correct them. The deferral gives runway, not relief: transparency, AI-literacy and GPAI obligations are already live, and a conformity assessment for a system this complex takes 12&ndash;18 months. Milestones run quarterly from Q1 2027 with the executive sponsor accountable.</p>
+    <p><span class="lbl">Dwell time is a strong closer here:</span> a gate that nobody reads is theatre, so the platform measures how long approvers actually spend before clicking. That turns &ldquo;meaningful oversight&rdquo; into something continuously evidenced.</p>
+    <p><span class="nx">Transition:</span> &ldquo;That is what we built. The next question any architecture board asks is &mdash; measured against what?&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 12 — STANDARDS CONFORMANCE ══════════════════ -->
+<section class="slide" data-title="Standards Conformance">
+  <div class="head">
+    <div class="num">12</div>
+    <div class="txt">
+      <div class="kicker">Architecture assurance</div>
+      <h1 class="title">Measured against the frameworks your auditors and architects will use</h1>
+      <p class="sub">Conformance is <strong>claimed with evidence and a status</strong>, never assumed. An architecture that claims full conformance to everything is not credible.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:12px">
+      <div class="band" style="border-color:var(--blue)">
+        <div class="bl" style="color:var(--blue-l)">Google Cloud Well-Architected &mdash; 6 pillars</div>
+        <div class="row" style="gap:7px">
+          <div class="card sm g"><div class="ct">Operational excellence</div><div class="cs">Four observability pillars, 35+ alerts, runbooks, RCA, IaC</div><span class="cn" style="color:var(--green-l)">Conformant</span></div>
+          <div class="card sm g"><div class="ct">Security &amp; privacy</div><div class="cs">Zero-trust identity, CMEK, PII redaction, layered guardrails</div><span class="cn" style="color:var(--green-l)">Conformant</span></div>
+          <div class="card sm g"><div class="ct">Reliability</div><div class="cs">Multi-zone, breakers, replay, degradation ladder, DR drills</div><span class="cn" style="color:var(--green-l)">Conformant</span></div>
+        </div>
+        <div class="row" style="gap:7px">
+          <div class="card sm g"><div class="ct">Cost optimisation</div><div class="cs">Preemptibles, ephemeral clusters, per-incident ceilings</div><span class="cn" style="color:var(--green-l)">Conformant</span></div>
+          <div class="card sm g"><div class="ct">Performance</div><div class="cs">Autoscaling on the right signal, caching, pruning</div><span class="cn" style="color:var(--green-l)">Conformant</span></div>
+          <div class="card sm y"><div class="ct">Sustainability</div><div class="cs">Ephemeral compute, scale-to-zero &mdash; <strong>carbon reporting not yet instrumented</strong></div><span class="cn" style="color:var(--yellow-l)">Partial</span></div>
+        </div>
+        <div class="row" style="gap:7px">
+          <div class="card sm p"><div class="ct">&#129504; The AI &amp; ML perspective</div>
+            <div class="cs">Google publishes a cross-pillar view specifically for AI workloads. <strong>The FAST architecture, the agentic design patterns and the GRC programme are our response to it</strong> &mdash; AI governance is not bolted on to a general-purpose design.</div></div>
+          <div class="card sm n"><div class="ct">&#128260; Re-scored quarterly, not once</div>
+            <div class="cs">The architecture review board re-scores against <strong>both</strong> frameworks every quarter, alongside monthly dependency/drift review and per-release threat modelling. Conformance is a <strong>maintained position</strong>, not a launch artefact.</div></div>
+        </div>
+      </div>
+      <div class="col" style="flex:0 0 400px">
+        <div class="band" style="border-color:var(--cyan)">
+          <div class="bl" style="color:var(--cyan-l)">Azure Well-Architected &mdash; 5 pillars</div>
+          <div class="pills">
+            <span class="pill ok">Reliability</span><span class="pill ok">Security</span>
+            <span class="pill ok">Cost Optimization</span><span class="pill ok">Operational Excellence</span>
+            <span class="pill ok">Performance Efficiency</span>
+          </div>
+          <div class="note-inline">Azure's <strong>AI workload pattern</strong> maps with <strong>one stated deviation: no model training or fine-tuning</strong> &mdash; the platform consumes hosted foundation models.</div>
+        </div>
+        <div class="card p"><div class="ct">&#9878;&#65039; Why assess against both</div>
+          <div class="cs">The architecture is deliberately portable &mdash; Pub/Sub &harr; Kafka, Agentspace &harr; LangGraph, Gemini &harr; Claude/GPT. Scoring against <strong>two</strong> cloud frameworks <strong>proves the portability claim is real rather than aspirational</strong>, and prevents accidental lock-in to one vendor's idioms.</div></div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="card n" style="flex:1"><div class="ct">TOGAF &mdash; 4 domains</div>
+        <div class="cs">Business, Data, Application and Technology architecture all have named artefacts; ADM phases map to the delivery lifecycle, with ADRs as implementation governance.</div></div>
+      <div class="card n" style="flex:1"><div class="ct">C4 model</div>
+        <div class="cs">Context for executives, Container for platform engineers, Component for developers. <strong>Level 4 lives in the code</strong>, not in documents &mdash; it goes stale fastest.</div></div>
+      <div class="card n" style="flex:1"><div class="ct">12-Factor App</div>
+        <div class="cs"><strong>11 of 12 conformant.</strong> Disposability is <span style="color:var(--yellow-l)">partial</span> &mdash; graceful shutdown hooks still needed on some consumers (Q1 2027).</div></div>
+      <div class="card n" style="flex:1.15"><div class="ct">Data reference models</div>
+        <div class="cs"><strong>Medallion</strong> adopted &middot; <strong>Data Mesh</strong> conformant on all 4 principles &middot; <strong>Lambda</strong> rejected (dual code paths) &middot; <strong>Kappa</strong> partial &mdash; control plane yes, data plane batch-first.</div></div>
+      <div class="card p" style="flex:1.1"><div class="ct">&#128221; 10 ADRs in force</div>
+        <div class="cs">No ReAct &middot; no LLM in the execution path &middot; different judge model &middot; never learn from failures &middot; production always requires a human. <strong>Re-scored quarterly.</strong></div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the credibility slide. It answers &ldquo;has anyone competent checked this?&rdquo; before an architecture review board asks it. Aimed at enterprise architects, auditors and anyone whose job is to say no.</p>
+    <p><span class="lbl">Open with the honesty point &mdash; it is the whole argument:</span> &ldquo;Every one of these has a <strong>status</strong>, not a tick. Conformant means we meet the intent and can show evidence. Partial means we meet it in some areas. And you will notice one Partial and one deviation on this slide &mdash; that is deliberate. <em>An architecture document that claims full conformance to everything is not credible.</em>&rdquo;</p>
+    <p><span class="lbl">The two-framework point is the strategic one.</span> &ldquo;We score against both Google's and Microsoft's Well-Architected frameworks. Not because we run on both, but because doing so <strong>proves the portability claim</strong>. Every GCP service in this stack has a named portable equivalent, and assessing against a second vendor's framework is what stops us drifting into one vendor's idioms without noticing.&rdquo;</p>
+    <p><span class="lbl">Be ready for &ldquo;what is the Partial?&rdquo;</span> Sustainability &mdash; carbon reporting is not instrumented yet. Ephemeral compute, scale-to-zero and storage lifecycle rules are all in place, so the remaining work is export and reporting. It is on the gap register for Q2 2027 with a named owner.</p>
+    <p><span class="lbl">Be ready for &ldquo;what is the deviation?&rdquo;</span> Azure's AI workload pattern includes model training and fine-tuning. We do not train models &mdash; we consume hosted foundation models. That is a scope decision, stated rather than hidden.</p>
+    <p><span class="lbl">If an enterprise architect is in the room, mention the layer rules:</span> nine layers with strictly unidirectional dependencies, and each layer has an explicit <em>must not</em> &mdash; the API layer must not poll external systems, the intelligence layer must not hold credentials, the agent layer must not control the loop. Those constraints are what make the audit trail complete.</p>
+    <p><span class="lbl">On ADRs:</span> ten decisions are recorded as immutable numbered records, and the architecture board re-scores conformance quarterly. If someone asks &ldquo;why not ReAct?&rdquo; or &ldquo;why a different judge model?&rdquo;, the answer is a written ADR with context, consequences and rejected alternatives &mdash; not a preference.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Frameworks tell you the design is sound. Observability tells you whether it is actually working.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 12 — OBSERVABILITY & RELIABILITY ══════════════════ -->
+<section class="slide" data-title="Observability &amp; Reliability">
+  <div class="head">
+    <div class="num">13</div>
+    <div class="txt">
+      <div class="kicker">Observability &amp; reliability</div>
+      <h1 class="title">Four pillars, one correlation ID &mdash; and degradation that removes automation, never safety</h1>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row" style="gap:10px">
+      <div class="card b"><div class="ct">Logs</div><div class="cs"><strong>What happened?</strong> Structured JSON with correlation IDs. PII redacted before anything is written.</div><span class="cn">Cloud Logging</span></div>
+      <div class="card g"><div class="ct">Metrics</div><div class="cs"><strong>How much, how fast, how often?</strong> 60&plus; series, 15-second scrape.</div><span class="cn">Cloud Monitoring</span></div>
+      <div class="card p"><div class="ct">Traces</div><div class="cs"><strong>Where did the time go?</strong> Every event, LLM call and query is a span in one waterfall.</div><span class="cn">Cloud Trace / OTEL</span></div>
+      <div class="card y"><div class="ct">LLM traces</div><div class="cs"><strong>What did we ask, and what did it say?</strong> Full prompts, responses, tokens, per-call cost, prompt version.</div><span class="cn">The fourth pillar</span></div>
+    </div>
+    <div class="row grow" style="gap:12px">
+      <div class="col" style="flex:1.15">
+        <div class="card n"><div class="ct">&#128279; One identifier ties every signal together</div>
+          <div class="row" style="margin-top:8px;gap:6px">
+            <span class="pill">Pub/Sub attribute</span><span class="arrow" style="font-size:15px">&#8594;</span>
+            <span class="pill">log field</span><span class="arrow" style="font-size:15px">&#8594;</span>
+            <span class="pill">metric label</span><span class="arrow" style="font-size:15px">&#8594;</span>
+            <span class="pill">trace ID</span><span class="arrow" style="font-size:15px">&#8594;</span>
+            <span class="pill">LLM trace name</span><span class="arrow" style="font-size:15px">&#8594;</span>
+            <span class="pill">audit resource</span>
+          </div>
+          <div class="note-inline" style="margin-top:8px">For pipelines the same role is played by <code>dag_id</code> + <code>run_id</code>, and the <code>_run_id</code> audit column carries it down to <strong>individual data rows</strong>.</div></div>
+        <div class="card r"><div class="ct">&#128276; 35&plus; alert rules across 8 categories</div>
+          <div class="cs">System health &middot; LLM performance &middot; RAG &middot; workflow &middot; cost &middot; security &amp; compliance &middot; connectors &middot; integrations.<br>
+          Alerts that matter operationally: <code>CircuitBreakerOpen</code>, <code>WorkflowNodeStuck</code> (&gt;5 min), <code>HighPendingApprovals</code>, <code>BudgetDepleted</code>, and <strong><code>RemediationFailureRate &gt; 20%</code> &mdash; the signal to pause auto-remediation</strong>.</div></div>
+        <div class="card c"><div class="ct">&#9201; SLO <em>targets</em>, and the error budget that governs them</div>
+          <table class="t" style="margin-top:4px">
+            <thead><tr><th>Indicator</th><th style="width:26%">Target</th><th style="width:24%">Design point</th></tr></thead>
+            <tbody>
+              <tr><td>Platform availability</td><td>99.9%</td><td style="color:var(--green-l)"><strong>99.95%</strong></td></tr>
+              <tr><td>Incident triage time</td><td>&lt; 2 min</td><td style="color:var(--green-l)"><strong>45 s</strong></td></tr>
+              <tr><td>API latency (p99)</td><td>&lt; 500 ms</td><td style="color:var(--green-l)"><strong>320 ms</strong></td></tr>
+              <tr><td>Auto-remediation success</td><td>&gt; 80%</td><td style="color:var(--green-l)"><strong>85%</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="note-inline" style="margin-top:7px">
+            99.9% buys an error budget of <strong>43m 12s per 30 days</strong>. Below <strong>10% remaining the feature release freezes</strong> &mdash; only reliability and security fixes ship.
+            Alerting is on <strong>burn rate</strong>, not raw error rate: 14.4&times; pages immediately, and a two-window rule suppresses spikes that already recovered.
+            <strong>The SLA is deliberately looser than the SLO</strong> (99.5% vs 99.9%) &mdash; that margin is the room to react before a contractual breach.
+          </div></div>
+      </div>
+      <div class="col" style="flex:1">
+        <div class="band grow" style="border-color:var(--green)">
+          <div class="bl" style="color:var(--green-l)">Fallback ladder &mdash; every step is <em>more</em> conservative</div>
+          <div class="row" style="gap:7px"><div class="card sm y"><div class="ct">Primary model degrades</div><div class="cs">Circuit breaker opens &rarr; fall back to the secondary model</div></div>
+            <div class="card sm r"><div class="ct">Both models unavailable</div><div class="cs">Template-based plan &rarr; <strong>mandatory human review</strong></div></div></div>
+          <div class="row" style="gap:7px"><div class="card sm r"><div class="ct">Judge unavailable</div><div class="cs"><strong>Never auto-approved</strong> &mdash; mandatory human review</div></div>
+            <div class="card sm b"><div class="ct">Vector store down</div><div class="cs">Keyword fallback; fusion continues with the remaining retrievers</div></div></div>
+          <div class="row" style="gap:7px"><div class="card sm b"><div class="ct">Graph store down</div><div class="cs">Baseline score; other retrievers unaffected</div></div>
+            <div class="card sm p"><div class="ct">&lt; 2 retrievers responding</div><div class="cs">Return empty and escalate &mdash; <strong>do not guess</strong></div></div></div>
+          <div class="row" style="gap:7px"><div class="card sm p"><div class="ct">Risk agent fails</div><div class="cs">Returns CRITICAL &rarr; forces human review</div></div>
+            <div class="card sm g"><div class="ct">Event spine unavailable</div><div class="cs">Local buffer with backoff; auto-replay on recovery &mdash; idempotency keys prevent duplicate side effects</div></div></div>
+        </div>
+        <div class="card g"><div class="ct">&#128260; Resilience &amp; recovery, by design</div>
+          <div class="cs">Multi-zone replicas with anti-affinity &middot; Cloud SQL regional HA (RPO 0, RTO &lt; 60 s) &middot; zone failure absorbed in under 5 minutes &middot; documented <strong>region failure: RPO 1 h, RTO 4 h</strong> &middot; lake corruption recovered by Delta/Iceberg time travel &middot; DR drills on a fixed calendar &mdash; backup restore monthly, replay and failover quarterly, full region exercise annually.</div></div>
+      </div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the &ldquo;can you actually run this in production?&rdquo; slide. SRE and platform engineering are the audience.</p>
+    <p><span class="lbl">Lead with the fourth pillar &mdash; it is the non-obvious one.</span> &ldquo;Logs, metrics and traces are table stakes. But when an agent produces a wrong plan, the question is not <em>how long did it take</em> &mdash; it is <strong>what exactly did we ask the model, and what exactly did it say</strong>. That needs full prompt and response capture, per-token cost, and the prompt version. Standard observability cannot give you that &mdash; and it is also what EU AI Act explainability requires.&rdquo;</p>
+    <p><span class="lbl">The correlation ID is the practical hero.</span> One identifier moves from the Pub/Sub message attribute into logs, metrics, traces, LLM traces and audit records. For pipelines it goes all the way down to individual data rows through the run-ID audit column. Debugging becomes: search one ID, get the whole story.</p>
+    <p><span class="lbl">Do not skip the fallback ladder.</span> Read two or three entries and then land the principle: <strong>&ldquo;every entry in this table makes the system more conservative, not less. There is no failure mode in which the platform executes something it otherwise would not have.&rdquo;</strong> That is the sentence to leave in the room.</p>
+    <p><span class="lbl">On the SLO table:</span> these are measured, not aspirational &mdash; triage is running at 45 seconds against a 2-minute target, and auto-remediation success is at 85% against an 80% target.</p>
+    <p><span class="lbl">If asked about disaster recovery honestly:</span> this is a single-region deployment with a documented cold-standby DR procedure &mdash; RPO one hour, RTO four hours. Active-active was assessed and not justified by the RTO requirement. That is a recorded decision, not an oversight.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Here is where all of this actually runs.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 13 — DEPLOYMENT / GCP ══════════════════ -->
+<section class="slide" data-title="Deployment / GCP Architecture">
+  <div class="head">
+    <div class="num">14</div>
+    <div class="txt">
+      <div class="kicker">Deployment &amp; GCP architecture</div>
+      <h1 class="title">Where it runs, how it ships, and what it costs</h1>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow" style="gap:10px">
+      <div class="band" style="border-color:var(--red);flex:0 0 150px">
+        <div class="bl" style="color:var(--red-l)">Edge</div>
+        <div class="card sm r"><div class="ct">Cloud Armor WAF</div><div class="cs">OWASP rules, rate limiting</div></div>
+        <div class="card sm r"><div class="ct">Global HTTPS LB</div><div class="cs">TLS 1.3, managed certs</div></div>
+        <div class="card sm n dash"><div class="ct">VPC Service Controls</div><div class="cs">Data perimeter; Cloud NAT egress allowlist; Private Service Connect to SaaS</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--blue);flex:1.25">
+        <div class="bl" style="color:var(--blue-l)">GKE Autopilot &mdash; multi-zone with anti-affinity</div>
+        <div class="row" style="gap:7px">
+          <div class="card sm b"><div class="ct">Zone a</div><div class="cs">orchestrator &middot; api &middot; agents</div></div>
+          <div class="card sm b"><div class="ct">Zone b</div><div class="cs">orchestrator &middot; api &middot; agents</div></div>
+          <div class="card sm p"><div class="ct">Zone c</div><div class="cs">vector + graph StatefulSets with PVCs &middot; observability</div></div>
+        </div>
+        <table class="t" style="margin-top:2px">
+          <thead><tr><th>Workload</th><th style="width:22%">Replicas</th><th style="width:38%">Autoscaling signal</th></tr></thead>
+          <tbody>
+            <tr><td>Orchestrator</td><td>2&ndash;10</td><td>Consumer lag</td></tr>
+            <tr><td>FAST agents</td><td>2&ndash;8</td><td>In-flight workflows</td></tr>
+            <tr><td>RAG service</td><td>2&ndash;6</td><td>Request rate</td></tr>
+            <tr><td>Control plane API</td><td>2&ndash;20</td><td>CPU + request rate</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--cyan);flex:0 0 158px">
+        <div class="bl" style="color:var(--cyan-l)">Serverless</div>
+        <div class="card sm c"><div class="ct">Cloud Run</div><div class="cs">Frontend + control-plane API, autoscale 0&ndash;10</div></div>
+        <div class="card sm c"><div class="ct">Cloud Functions</div><div class="cs">Event glue, webhook receivers</div></div>
+      </div>
+      <div class="arrow">&#8594;</div>
+      <div class="band" style="border-color:var(--green);flex:1">
+        <div class="bl" style="color:var(--green-l)">Managed data &amp; AI services</div>
+        <div class="row" style="gap:7px">
+          <div class="card sm g"><div class="ct">Cloud SQL HA</div><div class="cs">Audit, CQRS read model, APEX metadata</div></div>
+          <div class="card sm g"><div class="ct">Memorystore</div><div class="cs">State machine, cache</div></div></div>
+        <div class="row" style="gap:7px">
+          <div class="card sm g"><div class="ct">Composer + Dataproc</div><div class="cs">Airflow DAGs, ephemeral Spark</div></div>
+          <div class="card sm g"><div class="ct">Storage + BigQuery</div><div class="cs">Medallion lake, warehouse</div></div></div>
+        <div class="row" style="gap:7px">
+          <div class="card sm y"><div class="ct">Vertex AI</div><div class="cs">Gemini Pro + Flash, Search, embeddings</div></div>
+          <div class="card sm y"><div class="ct">Agentspace</div><div class="cs">Agent graph + connectors</div></div></div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="band" style="border-color:var(--purple);flex:1.7">
+        <div class="bl" style="color:var(--purple-l)">Five environments, one artefact, one manual gate</div>
+        <div class="row" style="gap:6px">
+          <div class="card sm n"><div class="ct">local</div><div class="cs">Docker Compose, synthetic</div></div><div class="arrow">&#8594;</div>
+          <div class="card sm b"><div class="ct">dev</div><div class="cs">~10% &middot; auto on merge</div></div><div class="arrow">&#8594;</div>
+          <div class="card sm c"><div class="ct">sit</div><div class="cs">~20% &middot; auto on green</div></div><div class="arrow">&#8594;</div>
+          <div class="card sm y"><div class="ct">uat</div><div class="cs">~30% &middot; masked prod-shaped data</div></div><div class="arrow">&#8594;</div>
+          <div class="card sm r"><div class="ct">prod</div><div class="cs">Full HA &middot; <strong>manual approval</strong> &middot; canary 5&ndash;10% then full</div></div>
+        </div>
+        <div class="note-inline">Same Terraform modules everywhere &mdash; environments differ only in variables. <strong>The same container image is promoted, never rebuilt</strong> &mdash; the artefact tested is the artefact deployed. No production data below UAT.</div>
+      </div>
+      <div class="card g" style="flex:1"><div class="ct">&#128736; CI gates that block a merge</div>
+        <div class="pills" style="margin-top:5px">
+          <span class="pill">lint + types</span><span class="pill">unit + integration</span>
+          <span class="pill no">any secret detected</span><span class="pill no">any CRITICAL CVE</span>
+          <span class="pill no">any compliance FAIL</span><span class="pill no">generated DAG fails to parse</span>
+          <span class="pill">image scan</span><span class="pill">terraform plan on the PR</span>
+        </div>
+        <div class="note-inline" style="margin-top:7px">Post-deploy verification failure triggers <strong>automatic rollback</strong>.</div></div>
+      <div class="card y" style="flex:0 0 292px"><div class="ct">&#128176; Indicative run cost</div>
+        <div class="cs">Full GCP-native production environment: <strong>~$2,070/month</strong> excluding Agentspace licensing. Dev and staging run at 20&ndash;30% with preemptible Dataproc workers.<br>
+        The largest and most variable line is Gemini token spend &mdash; which is why <strong>50,000 tokens and $5 per incident are hard ceilings in code</strong>.</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the infrastructure and delivery answer. Platform engineering, cloud and finance stakeholders.</p>
+    <p><span class="lbl">Top row, left to right, quickly.</span> &ldquo;Traffic hits Cloud Armor and the global load balancer. Stateless agent workloads run on multi-zone GKE Autopilot with anti-affinity. The UI and control-plane API are on Cloud Run and scale to zero. Everything stateful is a managed GCP service, except the graph database, which runs as a StatefulSet.&rdquo;</p>
+    <p><span class="lbl">The autoscaling table is worth one sentence:</span> the orchestrator scales on consumer lag, the agents on in-flight workflows. But note &mdash; <strong>the real binding constraint is LLM provider rate limits, not compute</strong>. When those are hit, the correct response is to throttle and queue, never to retry-storm.</p>
+    <p><span class="lbl">On environments, land two rules:</span> the same container image is promoted rather than rebuilt, so the artefact you tested is the artefact you deployed; and no production data exists below UAT. Production is the only environment with a mandatory manual gate, and it goes out as a canary first.</p>
+    <p><span class="lbl">The CI gate pills in red are the interesting ones</span> &mdash; a detected secret, a critical CVE, a compliance failure, or a generated DAG that does not parse will each block a merge outright. Note that generated pipeline code goes through exactly the same gates as hand-written code.</p>
+    <p><span class="lbl">On cost, be straight:</span> around $2,070 a month for a full GCP-native production environment, excluding Agentspace licensing. The comparable self-hosted portable stack is around $710. Token spend is the variable line, and it is capped per incident in code &mdash; a looping workflow cannot consume the budget.</p>
+    <p><span class="nx">Transition:</span> &ldquo;Let me now show you exactly what this looks like when it runs.&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 14 — DEMO SCENARIO ══════════════════ -->
+<section class="slide" data-title="Demo Scenario">
+  <div class="head">
+    <div class="num">15</div>
+    <div class="txt">
+      <div class="kicker">Live demo scenario</div>
+      <h1 class="title">&ldquo;GCP VM instance <span class="hl">prod-api-01</span> in us-central1-a is unresponsive&rdquo;</h1>
+      <p class="sub">P2 incident, raised in ServiceNow at 09:14. Follow it end to end.</p>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="col grow" style="gap:9px">
+      <div class="row" style="gap:8px">
+        <div class="card sm n" style="flex:0 0 168px"><div class="cn" style="color:var(--fg3);background:rgba(110,127,153,.12);border-color:var(--line2)">USER ASKS</div>
+          <div class="ct">Incident raised</div><div class="cs">Assignment group routes it to the agent. Connector picks it up within 30 s.</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm b" style="flex:0 0 200px"><div class="cn">AGENT UNDERSTANDS</div>
+          <div class="ct">Intent: RESTART</div><div class="cs">Entities: <code>instance=prod-api-01</code>, <code>zone=us-central1-a</code>, service GCP. Not a duplicate. Severity and SLA deadline set.</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm p grow"><div class="cn" style="color:var(--purple-l);background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.3)">AGENT INVESTIGATES</div>
+          <div class="ct">Blast radius computed in parallel with the change record</div>
+          <div class="cs">Graph traversal from the affected service returns <code>api-gateway</code>, <code>payment-service</code>, <code>auth-service</code>. This is production &rarr; risk elevated, and a ServiceNow CHG record is created and classified.</div></div>
+      </div>
+      <div class="row" style="gap:8px">
+        <div class="card sm y grow"><div class="cn" style="color:var(--yellow-l);background:rgba(251,188,4,.12);border-color:rgba(251,188,4,.3)">AGENT USES TOOLS</div>
+          <div class="ct">Four retrievers vote &mdash; and disagree usefully</div>
+          <div class="cs">
+            <strong>Vector:</strong> &ldquo;Start GCP instance&rdquo; &mdash; &ldquo;unresponsive&rdquo; &asymp; &ldquo;start&rdquo; &nbsp;&middot;&nbsp;
+            <strong>Keyword:</strong> &ldquo;GCP VM instance restart&rdquo; &mdash; exact term match &nbsp;&middot;&nbsp;
+            <strong>Graph:</strong> &ldquo;this script fixed 15 similar incidents&rdquo; &nbsp;&middot;&nbsp;
+            <strong>Metadata:</strong> GCP, production, Compute Engine.<br>
+            RRF fuses the four rankings &rarr; cross-encoder reranks &rarr; blast-radius filter drops critical-risk options.
+          </div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm g" style="flex:0 0 250px"><div class="cn" style="color:var(--green-l);background:rgba(52,168,83,.12);border-color:rgba(52,168,83,.3)">ROOT CAUSE</div>
+          <div class="ct">Top match, with evidence</div>
+          <div class="cs"><strong>Restart GCP VM Instance</strong> &mdash; final score 0.94.<br>
+          Match reasons shown to the human: top-1 semantic (92%), strong keyword overlap (85%), <strong>15 historical successes</strong>.</div></div>
+      </div>
+      <div class="row" style="gap:8px">
+        <div class="card sm k" style="flex:1.1"><div class="cn" style="color:var(--pink-l);background:rgba(190,24,93,.14);border-color:rgba(190,24,93,.35)">AGENT RECOMMENDS</div>
+          <div class="ct">Plan generated, then independently judged</div>
+          <div class="cs">Gemini Pro produces pre-checks, the restart steps with parameters filled, post-checks and a <strong>rollback plan</strong>. Gemini Flash scores it on quality, safety, factuality, feasibility and risk &mdash; and it passes.</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm r" style="flex:1.1"><div class="cn" style="color:var(--red-l);background:rgba(234,67,53,.12);border-color:rgba(234,67,53,.3)">HUMAN APPROVES</div>
+          <div class="ct">This is production &rarr; a person decides</div>
+          <div class="cs">The approver sees the RCA, the retrieved evidence, the judge scores, the blast radius, the confidence and the rollback availability &mdash; then approves. Identity is taken from the verified token.</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="card sm c" style="flex:1.1"><div class="cn" style="color:var(--cyan-l);background:rgba(8,145,178,.12);border-color:rgba(8,145,178,.3)">USER RECEIVES RESULT</div>
+          <div class="ct">Executed, verified, closed, learned</div>
+          <div class="cs">Cloud Build executes with rollback armed. Stabilisation window, then health checks and symptom reassessment prove recovery. ServiceNow closed with resolution notes. The success is indexed &mdash; that script's <code>FIXED_BY</code> count becomes 16.</div></div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <div class="card b" style="flex:1.5"><div class="ct">&#128065; What to show on screen while narrating</div>
+        <div class="cs">The workflow visualisation stepping through states &middot; the retrieval result with its four agent ranks and match reasons &middot; the approval screen with judge scores and blast radius &middot; the audit record afterwards &middot; the trace waterfall showing exactly where the time went.</div></div>
+      <div class="card g" style="flex:1"><div class="ct">&#9201; Roughly 3 minutes end to end</div>
+        <div class="cs">~75 seconds of it is the platform. The rest is the approver reading the evidence &mdash; <strong>which is the part we deliberately did not automate.</strong></div></div>
+      <div class="card p" style="flex:1"><div class="ct">&#127919; Also worth demoing</div>
+        <div class="cs"><strong>Reject the plan</strong> and show the reason captured in the audit trail &middot; let an approval <strong>time out</strong> and show the escalation &middot; flip to <strong>Shadow mode</strong> and show a plan generated but not executed.</div></div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> your demo script. Keep this slide up while you drive the actual system, or narrate it as a walkthrough if you are not live.</p>
+    <p><span class="lbl">Why this scenario:</span> it is the worked example the platform is documented against, so every number on the slide is real &mdash; the four agent rankings, the 0.94 final score, the 15 historical successes, the three services in the blast radius.</p>
+    <p><span class="lbl">The single best moment in the demo</span> is the retrieval step. Pause there. &ldquo;Look at what the four agents each found. The vector agent matched on meaning. The keyword agent matched on the exact term. The graph agent said &lsquo;this specific script has fixed fifteen incidents like this before&rsquo;. The metadata agent confirmed cloud, environment and service. <strong>No single one of those would have been enough</strong> &mdash; and the human sees all four reasons, which is why they can trust the recommendation in ten seconds instead of ten minutes.&rdquo;</p>
+    <p><span class="lbl">The second best moment is the approval screen.</span> Say: &ldquo;This is not a yes/no prompt. This is an evidence pack. That distinction is the difference between real oversight and a rubber stamp &mdash; and it is what EU AI Act Article 14 actually requires.&rdquo;</p>
+    <p><span class="lbl">Emphasise that this is production, so it routes to a human.</span> The auto-approval path would not apply here even though confidence is high, because production <strong>always</strong> requires a person.</p>
+    <p><span class="lbl">Close the loop out loud:</span> &ldquo;And because this one succeeded and was verified, the count goes from fifteen to sixteen. The next engineer who sees this incident gets a slightly better recommendation than I just did. Had it failed, <strong>nothing</strong> would have been learned &mdash; by design.&rdquo;</p>
+    <p><span class="lbl">Have a fallback:</span> if the live environment misbehaves, the timeout and rejection paths make an equally good demo &mdash; showing the system refusing to act is more persuasive to a risk audience than showing it acting.</p>
+    <p><span class="nx">Transition:</span> &ldquo;So what does this buy us &mdash; and where does it go next?&rdquo;</p>
+  </script>
+</section>
+
+<!-- ══════════════════ SLIDE 15 — BUSINESS VALUE & ROADMAP ══════════════════ -->
+<section class="slide" data-title="Business Value &amp; Roadmap">
+  <div class="head">
+    <div class="num">16</div>
+    <div class="txt">
+      <div class="kicker">Business value &amp; roadmap</div>
+      <h1 class="title">Measured outcomes today &mdash; and a deliberate ceiling on autonomy</h1>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row" style="gap:12px">
+      <div class="stat"><div class="v" style="color:var(--green-l)">94%</div><div class="l">Alert noise removed</div></div>
+      <div class="stat"><div class="v" style="color:var(--blue-l)">73%</div><div class="l">Faster incident resolution</div></div>
+      <div class="stat"><div class="v" style="color:var(--yellow-l)">85%</div><div class="l">Auto-remediation success</div></div>
+      <div class="stat"><div class="v" style="color:var(--purple-l)">60%</div><div class="l">Pipeline effort saved</div></div>
+      <div class="stat"><div class="v" style="color:var(--cyan-l)">~2 min</div><div class="l">MTTR target<br>(from hours)</div></div>
+      <div class="stat"><div class="v" style="color:var(--red-l)">7 yr</div><div class="l">Tamper-evident audit retention</div></div>
+    </div>
+    <div class="row grow" style="gap:12px">
+      <div class="band" style="border-color:var(--green)">
+        <div class="bl" style="color:var(--green-l)">Where the value lands</div>
+        <div class="row" style="gap:8px">
+          <div class="card sm g"><div class="ct">Faster troubleshooting</div><div class="cs">Evidence-backed diagnosis in seconds instead of a wiki search &mdash; and the evidence is shown, not just the answer</div></div>
+          <div class="card sm g"><div class="ct">Reduced manual effort</div><div class="cs">The pattern-heavy work is automated; engineers keep the judgement-heavy work</div></div></div>
+        <div class="row" style="gap:8px">
+          <div class="card sm g"><div class="ct">Lower MTTR</div><div class="cs">Routine incidents resolve in minutes, with proof of recovery rather than absence of alerts</div></div>
+          <div class="card sm g"><div class="ct">Support productivity</div><div class="cs">L1 handles more with the same headcount; escalations carry a full evidence pack</div></div></div>
+        <div class="row" style="gap:8px">
+          <div class="card sm g"><div class="ct">Knowledge that compounds</div><div class="cs">Remediation know-how moves out of individual heads into a graph that gets measurably better with every verified success</div></div>
+          <div class="card sm g"><div class="ct">Scales without headcount</div><div class="cs">500 incidents/hour and 100 pipelines/hour &mdash; toil stops growing with the estate</div></div></div>
+      </div>
+      <div class="col" style="flex:0 0 470px">
+        <div class="band" style="border-color:var(--blue)">
+          <div class="bl" style="color:var(--blue-l)">Roadmap &mdash; near term</div>
+          <div class="row" style="gap:7px">
+            <div class="card sm b"><div class="ct">EU AI Act conformity by 2 Dec 2027</div><div class="cs">Controls implemented; FRIA Q2 2027, assessment Q3, registration Q4 &mdash; executive-owned, tracked quarterly</div></div>
+            <div class="card sm b"><div class="ct">Widen the agent catalogue</div><div class="cs">New runbook domains and new DAG patterns (P10&plus;) &mdash; each one validated and human-approved before it becomes reusable</div></div></div>
+          <div class="row" style="gap:7px">
+            <div class="card sm p"><div class="ct">Deeper knowledge coverage</div><div class="cs">Additional enterprise knowledge sources via Agentspace connectors &mdash; scoped, classified and access-controlled first</div></div>
+            <div class="card sm p"><div class="ct">Learned reranking</div><div class="cs">Deferred, not rejected &mdash; needs labelled data and carries overfitting risk</div></div></div>
+        </div>
+        <div class="card y"><div class="ct">&#128207; Maturity: Level 3 &mdash; Governed Autonomy</div>
+          <div class="cs">The AI acts autonomously inside a bounded, policy-defined envelope; humans approve everything outside it; every action is verified and audited.<br>
+          <strong>The envelope itself is widened only by humans</strong> &mdash; the feedback loop tunes retrieval, never authority.</div></div>
+        <div class="card r"><div class="ct">&#128683; Level 5 is not the destination</div>
+          <div class="cs">Maturity models imply the top level is the goal. For a high-risk AI system, <strong>meaningful human oversight is a legal requirement, not a stage to outgrow</strong>. Level 3 with excellent verification and audit is the correct terminal state for this platform.</div></div>
+      </div>
+    </div>
+  </div>
+  <script type="application/x-notes">
+    <p><span class="lbl">What this slide is:</span> the close. Land the numbers, then land the philosophy &mdash; in that order.</p>
+    <p><span class="lbl">Say this:</span> &ldquo;94% of alert noise removed. 73% faster resolution. 85% auto-remediation success. 60% of pipeline effort saved. MTTR from hours to minutes. And every one of those decisions is reconstructable seven years later.&rdquo;</p>
+    <p><span class="lbl">The strategic point &mdash; do not skip it:</span> &ldquo;The most durable value here is not speed. It is that <strong>remediation knowledge stops living in individual engineers' heads</strong>. Every verified fix strengthens a shared graph. The system gets measurably better with use, and it survives people leaving.&rdquo;</p>
+    <p><span class="lbl">On scale:</span> the constraint being removed is that headcount cannot grow as fast as infrastructure. This is what stops toil growing superlinearly with the estate.</p>
+    <p><span class="lbl">Finish on the ceiling, and finish deliberately.</span> &ldquo;One last thing. Most maturity models imply that full autonomy is the destination. <strong>It is not the destination here.</strong> For a high-risk AI system, meaningful human oversight is a legal obligation. Level 3 &mdash; governed autonomy with excellent verification and audit &mdash; is the correct terminal state. We are not building toward removing the human. We are building toward making the human's decision fast, evidenced, and worth making.&rdquo;</p>
+    <p><span class="lbl">Then stop talking and take questions.</span> The most likely ones: cost (~$2,070/month for a GCP-native production environment, capped token spend per incident); what happens when the AI is wrong (five independent safety layers, then automatic rollback, then escalation); and how long to onboard a new use case (a new runbook is immediately searchable with no retraining; a new DAG pattern is a template plus a human approval).</p>
+  </script>
+</section>
+
+</div><!-- /stage -->
+
+<!-- ═══════════ CHROME ═══════════ -->
+<div id="chrome">
+  <div id="bar"><div id="barfill"></div></div>
+  <div id="foot">
+    <div class="l">
+      <span><b id="stitle">Project Overview</b></span>
+      <span class="keys"><kbd>&larr;</kbd><kbd>&rarr;</kbd> navigate &nbsp; <kbd>N</kbd> speaker notes &nbsp; <kbd>F</kbd> fullscreen &nbsp; <kbd>?</kbd> help</span>
+    </div>
+    <div class="l">
+      <span>Enterprise Agentic Platform &middot; v7.0 FAST &middot; Confidential</span>
+      <span><b id="snum">1</b> / <b id="stot">15</b></span>
+      <span id="nav"><button id="prev">&#8592;</button><button id="notesbtn">Notes</button><button id="next">&#8594;</button></span>
+    </div>
+  </div>
+</div>
+
+<div id="notes">
+  <h3><span>Speaker Notes &mdash; <span id="ntitle"></span></span><em>press N or S to hide &middot; not visible in presentation view</em></h3>
+  <div class="nbody" id="nbody"></div>
+</div>
+
+<div id="help"><div class="box">
+  <h4>Keyboard shortcuts</h4>
+  <table>
+    <tr><td><kbd>&rarr;</kbd> <kbd>Space</kbd> <kbd>PgDn</kbd></td><td>Next slide</td></tr>
+    <tr><td><kbd>&larr;</kbd> <kbd>PgUp</kbd></td><td>Previous slide</td></tr>
+    <tr><td><kbd>Home</kbd></td><td>First slide</td></tr>
+    <tr><td><kbd>End</kbd></td><td>Last slide</td></tr>
+    <tr><td><kbd>F</kbd></td><td>Toggle fullscreen</td></tr>
+    <tr><td><kbd>N</kbd> or <kbd>S</kbd></td><td>Toggle speaker notes</td></tr>
+    <tr><td><kbd>1</kbd>&hellip;<kbd>9</kbd></td><td>Jump to slide</td></tr>
+    <tr><td><kbd>?</kbd> or <kbd>Esc</kbd></td><td>Toggle / close this help</td></tr>
+  </table>
+</div></div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total  = slides.length;
+  var i = 0;
+  var stage = document.getElementById('stage');
+  var notes = document.getElementById('notes');
+  var help  = document.getElementById('help');
+
+  document.getElementById('stot').textContent = total;
+
+  function fit(){
+    var k = Math.min(window.innerWidth / 1600, (window.innerHeight - 34) / 900);
+    stage.style.setProperty('--k', k);
+  }
+  window.addEventListener('resize', fit);
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach(function(s, idx){ s.classList.toggle('active', idx === i); });
+    var s = slides[i];
+    var t = s.getAttribute('data-title') || ('Slide ' + (i + 1));
+    document.getElementById('snum').textContent = i + 1;
+    document.getElementById('stitle').innerHTML = t;
+    document.getElementById('ntitle').innerHTML = t;
+    document.getElementById('barfill').style.width = ((i + 1) / total * 100) + '%';
+    var n1 = s.querySelector('script[type="application/x-notes"]');
+    document.getElementById('nbody').innerHTML = n1 ? n1.textContent
+      : '<p>No speaker notes for this slide.</p>';
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch(e){}
+  }
+
+  function next(){ show(i + 1); }
+  function prev(){ show(i - 1); }
+  function toggleNotes(){ notes.classList.toggle('open'); }
+  function toggleFs(){
+    if (!document.fullscreenElement) {
+      (document.documentElement.requestFullscreen || function(){}).call(document.documentElement);
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k === 'Escape'){ help.classList.remove('open'); return; }
+    if (k === '?' ){ help.classList.toggle('open'); e.preventDefault(); return; }
+    if (k === 'ArrowRight' || k === ' ' || k === 'PageDown'){ next(); e.preventDefault(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp'){ prev(); e.preventDefault(); }
+    else if (k === 'Home'){ show(0); e.preventDefault(); }
+    else if (k === 'End'){ show(total - 1); e.preventDefault(); }
+    else if (k === 'f' || k === 'F'){ toggleFs(); e.preventDefault(); }
+    else if (k === 'n' || k === 'N' || k === 's' || k === 'S'){ toggleNotes(); e.preventDefault(); }
+    else if (/^[1-9]$/.test(k)){ show(parseInt(k, 10) - 1); e.preventDefault(); }
+  });
+
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+  document.getElementById('notesbtn').addEventListener('click', toggleNotes);
+  help.addEventListener('click', function(){ help.classList.remove('open'); });
+
+  // touch / swipe
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 55){ dx < 0 ? next() : prev(); }
+    x0 = null;
+  }, {passive:true});
+
+  fit();
+  var start = parseInt((location.hash || '').replace('#',''), 10);
+  show(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+</body>
+</html>

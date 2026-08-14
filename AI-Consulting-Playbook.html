@@ -1,0 +1,3425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Strategy & Adoption Playbook | Enterprise Consulting Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --navy-900: #0c1425;
+    --navy-800: #111d35;
+    --navy-700: #1a2744;
+    --navy-600: #243352;
+    --navy-500: #334766;
+    --gold-500: #c9a227;
+    --gold-400: #d4b445;
+    --gold-300: #e0c76a;
+    --gold-600: #a88a1f;
+    --white: #ffffff;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --emerald-500: #10b981;
+    --emerald-600: #059669;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --amber-500: #f59e0b;
+    --red-500: #ef4444;
+    --purple-500: #8b5cf6;
+    --cyan-500: #06b6d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--gray-50);
+    color: var(--navy-800);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 50%, var(--navy-800) 100%);
+    color: var(--white);
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  .hero-content { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201, 162, 39, 0.15);
+    border: 1px solid var(--gold-500);
+    color: var(--gold-400);
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--white) 0%, var(--gold-300) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--gray-300);
+    max-width: 700px;
+    margin-bottom: 30px;
+    font-weight: 400;
+  }
+
+  .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; }
+  .hero-stat { text-align: left; }
+  .hero-stat-value { font-size: 2.5rem; font-weight: 700; color: var(--gold-400); }
+  .hero-stat-label { font-size: 0.85rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px; }
+
+  .nav-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+
+  .nav-tab {
+    padding: 14px 24px;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .nav-tab:hover { background: var(--gray-100); color: var(--navy-700); }
+  .nav-tab.active { background: var(--navy-800); color: var(--white); }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid var(--gray-200);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--gray-100);
+  }
+
+  .card-title { font-size: 1.4rem; font-weight: 700; color: var(--navy-800); }
+  .card-subtitle { font-size: 0.9rem; color: var(--gray-500); margin-top: 4px; }
+
+  .section-header { margin-bottom: 32px; }
+  .section-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--gold-500);
+    color: var(--navy-900);
+    font-weight: 800;
+    font-size: 1rem;
+    border-radius: 8px;
+    margin-right: 12px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--navy-800);
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .section-desc { color: var(--gray-600); font-size: 1rem; max-width: 800px; }
+
+  .grid { display: grid; gap: 24px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 1024px) {
+    .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .container { padding: 20px; }
+  }
+
+  .framework-card {
+    background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-700) 100%);
+    border-radius: 16px;
+    padding: 28px;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .framework-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(201,162,39,0.1) 0%, transparent 70%);
+  }
+
+  .framework-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .framework-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+  .framework-desc { font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+  .framework-features { list-style: none; }
+  .framework-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .framework-features li:last-child { border-bottom: none; }
+
+  .feature-check {
+    width: 20px;
+    height: 20px;
+    background: var(--gold-500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--navy-900);
+    flex-shrink: 0;
+  }
+
+  .metric-card {
+    text-align: center;
+    padding: 24px;
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--gray-200);
+  }
+
+  .metric-value { font-size: 2.5rem; font-weight: 800; color: var(--navy-800); margin-bottom: 4px; }
+  .metric-value.positive { color: var(--emerald-500); }
+  .metric-value.warning { color: var(--amber-500); }
+  .metric-value.negative { color: var(--red-500); }
+  .metric-label { font-size: 0.85rem; color: var(--gray-500); font-weight: 500; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-500) 0%, var(--gold-600) 100%);
+    color: var(--navy-900);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(201, 162, 39, 0.4);
+  }
+
+  .btn-secondary {
+    background: var(--gray-100);
+    color: var(--navy-700);
+    border: 1px solid var(--gray-300);
+  }
+  .btn-secondary:hover { background: var(--gray-200); }
+
+  .btn-dark { background: var(--navy-800); color: var(--white); }
+  .btn-dark:hover { background: var(--navy-700); }
+
+  .btn-danger { background: var(--red-500); color: var(--white); }
+  .btn-success { background: var(--emerald-500); color: var(--white); }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--white);
+    transition: all 0.2s ease;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--gold-500);
+    box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+  }
+
+  .form-textarea { min-height: 100px; resize: vertical; }
+
+  .table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+  th {
+    background: var(--navy-800);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  th:first-child { border-radius: 12px 0 0 0; }
+  th:last-child { border-radius: 0 12px 0 0; }
+  tr:hover td { background: var(--gray-50); }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pill-gold { background: rgba(201, 162, 39, 0.15); color: var(--gold-600); }
+  .pill-blue { background: rgba(59, 130, 246, 0.1); color: var(--blue-600); }
+  .pill-green { background: rgba(16, 185, 129, 0.1); color: var(--emerald-600); }
+  .pill-purple { background: rgba(139, 92, 246, 0.1); color: var(--purple-500); }
+  .pill-red { background: rgba(239, 68, 68, 0.1); color: var(--red-500); }
+
+  .alert {
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .alert-icon { font-size: 20px; flex-shrink: 0; }
+  .alert-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .alert-success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+  .alert-warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+
+  .chart-container {
+    position: relative;
+    height: 400px;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+  }
+
+  .inner-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--gray-100);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .inner-tab {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .inner-tab.active {
+    background: var(--white);
+    color: var(--navy-800);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  /* Spider Chart Styles */
+  .radar-container { position: relative; height: 450px; }
+
+  .dimension-scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
+  .dimension-score {
+    background: var(--gray-50);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+  }
+  .dimension-score-label { font-size: 0.8rem; color: var(--gray-500); margin-bottom: 4px; }
+  .dimension-score-value { font-size: 1.8rem; font-weight: 700; color: var(--navy-800); }
+  .dimension-score-bar { height: 6px; background: var(--gray-200); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+  .dimension-score-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+  /* Dynamic Questions */
+  .question-item {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .question-item:hover { border-color: var(--gold-500); }
+  .question-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .question-category { font-size: 0.75rem; color: var(--gold-600); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .question-actions { display: flex; gap: 8px; }
+  .question-actions button {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Flow Diagram */
+  .flow-diagram {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 30px;
+    overflow-x: auto;
+  }
+  .flow-nodes { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; }
+  .flow-node {
+    background: var(--white);
+    border: 2px solid var(--gray-300);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: center;
+    min-width: 160px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  .flow-node:hover { border-color: var(--gold-500); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .flow-node.start { border-color: var(--emerald-500); background: #ecfdf5; }
+  .flow-node.end { border-color: var(--blue-500); background: #eff6ff; }
+  .flow-node.decision { border-radius: 0; transform: rotate(0deg); border-color: var(--amber-500); background: #fffbeb; }
+  .flow-node-icon { font-size: 24px; margin-bottom: 8px; }
+  .flow-node-title { font-weight: 700; font-size: 0.9rem; color: var(--navy-800); }
+  .flow-node-desc { font-size: 0.75rem; color: var(--gray-500); margin-top: 4px; }
+  .flow-arrow {
+    font-size: 24px;
+    color: var(--gold-500);
+    padding: 0 12px;
+    font-weight: bold;
+  }
+
+  /* Scenario Cards */
+  .scenario-card {
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .scenario-card.best { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid var(--emerald-500); }
+  .scenario-card.likely { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid var(--blue-500); }
+  .scenario-card.worst { background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 2px solid var(--red-500); }
+  .scenario-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .scenario-value { font-size: 2rem; font-weight: 800; margin-bottom: 4px; }
+  .scenario-metric { font-size: 0.85rem; color: var(--gray-600); }
+
+  /* Methodology Source */
+  .source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* LLM Panel */
+  .llm-output {
+    background: var(--navy-900);
+    color: var(--gray-100);
+    border-radius: 12px;
+    padding: 24px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    width: min(700px, 95vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .modal-title { font-size: 1.3rem; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-400); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy-800);
+    color: var(--white);
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1100;
+    animation: slideIn 0.3s ease;
+  }
+  .toast.show { display: block; }
+  @keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .footer {
+    background: var(--navy-900);
+    color: var(--gray-400);
+    padding: 40px;
+    margin-top: 60px;
+  }
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer-brand { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--white); }
+
+  /* Formula Styles */
+  .formula-box {
+    background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+    border-left: 4px solid var(--gold-500);
+  }
+
+  .formula {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 1.1rem;
+    color: var(--gold-400);
+    font-weight: 600;
+    line-height: 1.8;
+  }
+
+  .formula-explanation {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--gray-50);
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+  }
+
+  .formula-explanation ul {
+    margin: 12px 0;
+    padding-left: 24px;
+  }
+
+  .formula-explanation li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+
+  .formula-explanation table {
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .formula-explanation th,
+  .formula-explanation td {
+    border: 1px solid var(--gray-300);
+    padding: 10px 14px;
+    text-align: left;
+  }
+
+  .formula-explanation th {
+    background: var(--navy-800);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .formula-explanation tr:nth-child(even) td {
+    background: var(--gray-50);
+  }
+
+  .formula-tab-content {
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* Mermaid Output Styles */
+  #mermaidOutput {
+    background: var(--navy-900);
+    color: #a5f3fc;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    border: 2px solid var(--navy-600);
+  }
+
+  /* Professional Table Enhancements */
+  .formula-explanation table tr:hover td {
+    background: #fef3c7;
+  }
+
+  /* Code block styling */
+  pre {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-500) var(--navy-800);
+  }
+
+  pre::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  pre::-webkit-scrollbar-track {
+    background: var(--navy-800);
+    border-radius: 4px;
+  }
+
+  pre::-webkit-scrollbar-thumb {
+    background: var(--gold-500);
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>Enterprise AI Framework</span>
+    </div>
+    <h1>AI Strategy & Adoption Playbook</h1>
+    <p class="hero-subtitle">
+      A comprehensive framework for AI readiness assessment, use case generation,
+      prioritization scoring, and ROI calculation to drive your AI transformation journey.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value" id="heroUseCaseCount">0</div>
+        <div class="hero-stat-label">Use Cases Generated</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value" id="heroMaturityScore">--</div>
+        <div class="hero-stat-label">Maturity Score</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">8</div>
+        <div class="hero-stat-label">Assessment Dimensions</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value" id="heroROI">--</div>
+        <div class="hero-stat-label">Projected ROI</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <button class="nav-tab active" onclick="showSection('overview')">Overview</button>
+    <button class="nav-tab" onclick="showSection('maturity')">Maturity Assessment</button>
+    <button class="nav-tab" onclick="showSection('questionnaire')">Dynamic Questionnaire</button>
+    <button class="nav-tab" onclick="showSection('usecases')">Use Case Generator</button>
+    <button class="nav-tab" onclick="showSection('flowdiagram')">Mermaid Diagrams</button>
+    <button class="nav-tab" onclick="showSection('scoring')">Scoring & Priority</button>
+    <button class="nav-tab" onclick="showSection('roi')">Advanced ROI</button>
+    <button class="nav-tab" onclick="showSection('formulas')">Formulas & Methodology</button>
+    <button class="nav-tab" onclick="showSection('settings')">Settings</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- OVERVIEW SECTION -->
+  <section id="section-overview" class="section active">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">1</span>
+        How to Use This Playbook
+      </h2>
+      <p class="section-desc">
+        Follow this step-by-step guide to assess your AI readiness, identify high-value use cases,
+        and build a compelling business case for AI adoption.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Getting Started Guide</h3>
+          <p class="card-subtitle">Complete these steps in order for best results</p>
+        </div>
+      </div>
+      <div class="grid grid-4">
+        <div class="framework-card" style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); padding: 20px;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--gold-400); margin-bottom: 8px;">Step 1</div>
+          <div style="font-weight: 700; margin-bottom: 8px;">Maturity Assessment</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">Rate your organization across 8 dimensions using the spider diagram to identify strengths and gaps.</div>
+        </div>
+        <div class="framework-card" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 20px;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--gold-400); margin-bottom: 8px;">Step 2</div>
+          <div style="font-weight: 700; margin-bottom: 8px;">Complete Questionnaire</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">Answer assessment questions to capture your organization's context, challenges, and opportunities.</div>
+        </div>
+        <div class="framework-card" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 20px;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--gold-400); margin-bottom: 8px;">Step 3</div>
+          <div style="font-weight: 700; margin-bottom: 8px;">Generate Use Cases</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">Use LLM to generate tailored AI use cases from your answers, or load pre-built templates.</div>
+        </div>
+        <div class="framework-card" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); padding: 20px;">
+          <div style="font-size: 2rem; font-weight: 800; color: var(--gold-400); margin-bottom: 8px;">Step 4</div>
+          <div style="font-weight: 700; margin-bottom: 8px;">Score, Prioritize & Calculate ROI</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">Score use cases, view portfolio chart, and build business case with NPV/IRR analysis.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Playbook Sections</h3>
+          <p class="card-subtitle">Navigate using the tabs above to access each module</p>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Purpose</th>
+              <th>Key Outputs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Maturity Assessment</strong></td>
+              <td>Evaluate organizational readiness across 8 key AI dimensions</td>
+              <td>Spider diagram, maturity score (1-5), gap analysis</td>
+            </tr>
+            <tr>
+              <td><strong>Dynamic Questionnaire</strong></td>
+              <td>Capture detailed context about processes, data, and pain points</td>
+              <td>Completed assessment, exportable answers</td>
+            </tr>
+            <tr>
+              <td><strong>Use Case Generator</strong></td>
+              <td>Generate AI use cases tailored to your organization</td>
+              <td>8-12 prioritized use cases with details</td>
+            </tr>
+            <tr>
+              <td><strong>Flow Diagrams</strong></td>
+              <td>Visualize implementation workflows and data pipelines</td>
+              <td>Process flows, implementation roadmaps</td>
+            </tr>
+            <tr>
+              <td><strong>Scoring & Priority</strong></td>
+              <td>Score and prioritize use cases with weighted criteria</td>
+              <td>Priority matrix, portfolio bubble chart</td>
+            </tr>
+            <tr>
+              <td><strong>Advanced ROI</strong></td>
+              <td>Build financial business case with scenario analysis</td>
+              <td>NPV, IRR, payback period, cash flow projections</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="framework-card" style="background: linear-gradient(135deg, #1e3a5f 0%, #0d2847 100%);">
+        <div class="framework-icon">&#x1F680;</div>
+        <h3 class="framework-title">Generation Framework</h3>
+        <p class="framework-desc">Creating new content, code, designs, and solutions using AI capabilities.</p>
+        <ul class="framework-features">
+          <li><span class="feature-check">&#x2713;</span> Content & Document Generation</li>
+          <li><span class="feature-check">&#x2713;</span> Code & Software Development</li>
+          <li><span class="feature-check">&#x2713;</span> Design & Creative Assets</li>
+          <li><span class="feature-check">&#x2713;</span> Data Synthesis & Augmentation</li>
+          <li><span class="feature-check">&#x2713;</span> Process & Workflow Automation</li>
+        </ul>
+      </div>
+
+      <div class="framework-card" style="background: linear-gradient(135deg, #2d1f47 0%, #1a1033 100%);">
+        <div class="framework-icon">&#x1F50D;</div>
+        <h3 class="framework-title">Evaluation Framework</h3>
+        <p class="framework-desc">Assessing, analyzing, and validating data, processes, and outcomes with AI.</p>
+        <ul class="framework-features">
+          <li><span class="feature-check">&#x2713;</span> Quality & Compliance Assessment</li>
+          <li><span class="feature-check">&#x2713;</span> Risk & Anomaly Detection</li>
+          <li><span class="feature-check">&#x2713;</span> Performance Analytics</li>
+          <li><span class="feature-check">&#x2713;</span> Sentiment & Feedback Analysis</li>
+          <li><span class="feature-check">&#x2713;</span> Decision Support Systems</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Key Industry Statistics (2024-2025)</h3>
+          <p class="card-subtitle">Current state of enterprise AI adoption</p>
+        </div>
+      </div>
+      <div class="grid grid-4">
+        <div class="metric-card">
+          <div class="metric-value positive">84%</div>
+          <div class="metric-label">Companies seeing AI ROI</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value warning">62%</div>
+          <div class="metric-label">Experimenting with AI Agents</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">2.5x</div>
+          <div class="metric-label">Revenue growth (AI leaders)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value positive">40%</div>
+          <div class="metric-label">Higher ROI with RAI governance</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATURITY ASSESSMENT SECTION (Spider Diagram) -->
+  <section id="section-maturity" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">2</span>
+        AI Maturity Assessment
+      </h2>
+      <p class="section-desc">
+        Evaluate your organization across 8 key dimensions to understand your current AI readiness
+        and identify areas for improvement.
+      </p>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">&#x1F4CA;</span>
+      <div>
+        <strong>Spider/Radar Chart Assessment</strong> - Rate each dimension from 1-5 to visualize
+        your AI maturity profile and identify gaps. The radar chart helps reveal patterns and
+        highlight which areas need the most investment.
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h4 style="margin-bottom: 20px;">Rate Each Dimension (1-5)</h4>
+        <div id="dimensionInputs"></div>
+        <button class="btn btn-primary" onclick="updateRadarChart()" style="margin-top: 20px; width: 100%;">
+          Update Maturity Profile
+        </button>
+      </div>
+
+      <div class="card">
+        <h4 style="margin-bottom: 20px;">AI Maturity Radar</h4>
+        <div class="radar-container">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom: 20px;">Dimension Scores & Gaps</h4>
+      <div class="dimension-scores" id="dimensionScores"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Maturity Level Interpretation</h3>
+          <p class="card-subtitle">Understanding your score and recommended next steps</p>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Score</th>
+              <th>Level</th>
+              <th>Description</th>
+              <th>Recommended Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="pill pill-red">1.0-1.9</span></td>
+              <td>Foundational</td>
+              <td>Minimal AI adoption, exploring concepts</td>
+              <td>Build awareness, identify quick wins, establish governance</td>
+            </tr>
+            <tr>
+              <td><span class="pill" style="background:#fef3c7;color:#92400e;">2.0-2.9</span></td>
+              <td>Experimenting</td>
+              <td>Isolated pilots without enterprise integration</td>
+              <td>Scale successful pilots, invest in data infrastructure</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-blue">3.0-3.9</span></td>
+              <td>Operationalizing</td>
+              <td>Production deployments with measurable impact</td>
+              <td>Expand across functions, build MLOps capabilities</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-green">4.0-4.4</span></td>
+              <td>Scaling</td>
+              <td>Enterprise-wide AI with significant ROI</td>
+              <td>Optimize for efficiency, explore agentic AI</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-gold">4.5-5.0</span></td>
+              <td>Transforming</td>
+              <td>AI-first organization with competitive advantage</td>
+              <td>Lead innovation, share best practices</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- DYNAMIC QUESTIONNAIRE SECTION -->
+  <section id="section-questionnaire" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">3</span>
+        Dynamic Questionnaire Builder
+      </h2>
+      <p class="section-desc">
+        Comprehensive assessment questions to capture your organization's context and needs.
+        Add, edit, or remove questions dynamically to customize for your requirements.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Organization Context</h3>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="form-group">
+          <label class="form-label">Organization Name</label>
+          <input type="text" class="form-input" id="orgName" placeholder="Enter organization name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Industry</label>
+          <select class="form-select" id="industrySelect">
+            <option value="financial">Financial Services</option>
+            <option value="healthcare">Healthcare & Life Sciences</option>
+            <option value="manufacturing">Manufacturing</option>
+            <option value="retail">Retail & Consumer</option>
+            <option value="technology">Technology</option>
+            <option value="telecom">Telecommunications</option>
+            <option value="energy">Energy & Utilities</option>
+            <option value="government">Government & Public Sector</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assessor Name</label>
+          <input type="text" class="form-input" id="assessorName" placeholder="Your name">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Assessment Questions</h3>
+          <p class="card-subtitle">Click on any question to expand and answer</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" onclick="addNewQuestion()">+ Add Question</button>
+          <button class="btn btn-primary" onclick="exportQuestionnaireData()">Export Answers</button>
+        </div>
+      </div>
+
+      <div class="inner-tabs" id="categoryTabs">
+        <button class="inner-tab active" onclick="filterQuestions('all')">All Categories</button>
+        <button class="inner-tab" onclick="filterQuestions('strategy')">Strategy</button>
+        <button class="inner-tab" onclick="filterQuestions('data')">Data</button>
+        <button class="inner-tab" onclick="filterQuestions('technology')">Technology</button>
+        <button class="inner-tab" onclick="filterQuestions('people')">People</button>
+        <button class="inner-tab" onclick="filterQuestions('process')">Process</button>
+        <button class="inner-tab" onclick="filterQuestions('governance')">Governance</button>
+      </div>
+
+      <div id="questionsContainer"></div>
+    </div>
+
+    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+      <button class="btn btn-secondary" onclick="saveQuestionnaireProgress()">Save Progress</button>
+      <button class="btn btn-primary" onclick="generateUseCasesFromAnswers()">Generate Use Cases with LLM</button>
+    </div>
+  </section>
+
+  <!-- USE CASE GENERATOR SECTION -->
+  <section id="section-usecases" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">4</span>
+        AI Use Case Generator
+      </h2>
+      <p class="section-desc">
+        Generate tailored AI use cases from your questionnaire responses using LLM,
+        or browse pre-built templates by industry and function.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">LLM Configuration</h3>
+          <p class="card-subtitle">Configure your API to generate custom use cases</p>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="form-group">
+          <label class="form-label">API Key</label>
+          <input type="password" class="form-input" id="llmApiKey" placeholder="sk-...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">API Base URL</label>
+          <input type="text" class="form-input" id="llmApiBase" value="https://api.openai.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Model</label>
+          <input type="text" class="form-input" id="llmModel" value="gpt-4o-mini">
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button class="btn btn-secondary" onclick="testLLMConnection()">Test Connection</button>
+        <button class="btn btn-primary" onclick="generateUseCasesFromAnswers()">Generate Use Cases</button>
+        <button class="btn btn-dark" onclick="loadTemplateUseCases()">Load Templates</button>
+      </div>
+      <div id="llmStatus" style="margin-top: 12px; font-size: 0.9rem;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Generated Use Cases</h3>
+          <p class="card-subtitle" id="useCaseCount">0 use cases</p>
+        </div>
+        <button class="btn btn-secondary" onclick="exportUseCases()">Export to Excel</button>
+      </div>
+
+      <div id="useCasesOutput" class="llm-output" style="display: none;"></div>
+      <div id="useCasesList"></div>
+    </div>
+
+    <div class="card" id="promptPreviewCard" style="display: none;">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">LLM Prompt Preview</h3>
+        </div>
+        <button class="btn btn-secondary" onclick="copyPrompt()">Copy Prompt</button>
+      </div>
+      <div id="promptPreview" class="llm-output"></div>
+    </div>
+  </section>
+
+  <!-- MERMAID DIAGRAM SECTION -->
+  <section id="section-flowdiagram" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">5</span>
+        Mermaid Diagram Generator
+      </h2>
+      <p class="section-desc">
+        Generate professional sequence diagrams and flowcharts from your process descriptions.
+        Copy the code and paste into <a href="https://mermaid.live" target="_blank" style="color: var(--gold-500);">mermaid.live</a> for visualization.
+      </p>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">&#x1F4CA;</span>
+      <div>
+        <strong>Mermaid Diagrams</strong> - Generate sequence diagrams and flowcharts that can be rendered
+        in documentation tools, GitHub, Confluence, or the Mermaid Live Editor.
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Sequence Diagram Generator</h3>
+            <p class="card-subtitle">Define actors and interactions</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Diagram Title</label>
+          <input type="text" class="form-input" id="seqDiagramTitle" placeholder="e.g., Document Processing Workflow" value="AI Use Case Process Flow">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Actors (comma-separated)</label>
+          <input type="text" class="form-input" id="seqActors" placeholder="e.g., User, System, AI Model, Database" value="User, Frontend, API Gateway, AI Service, Database">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Process Steps (one per line: From->To: Message)</label>
+          <textarea class="form-textarea" id="seqSteps" rows="8" placeholder="User->Frontend: Submit request
+Frontend->API Gateway: Forward request
+API Gateway->AI Service: Process with AI
+AI Service->Database: Store results
+Database->AI Service: Confirm
+AI Service->API Gateway: Return response
+API Gateway->Frontend: Display results
+Frontend->User: Show output">User->Frontend: Submit document
+Frontend->API Gateway: Upload request
+API Gateway->AI Service: Process document
+AI Service->AI Service: Extract information
+AI Service->Database: Store extracted data
+Database->AI Service: Confirm storage
+AI Service->API Gateway: Return results
+API Gateway->Frontend: Display extracted data
+Frontend->User: Show results</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="generateSequenceDiagram()" style="width: 100%;">Generate Sequence Diagram</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Flowchart Generator</h3>
+            <p class="card-subtitle">Define process steps and decisions</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Flowchart Title</label>
+          <input type="text" class="form-input" id="flowTitle" placeholder="e.g., AI Decision Process" value="AI Implementation Process">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Direction</label>
+          <select class="form-select" id="flowDirection">
+            <option value="TD">Top to Bottom (TD)</option>
+            <option value="LR">Left to Right (LR)</option>
+            <option value="TB">Top to Bottom (TB)</option>
+            <option value="RL">Right to Left (RL)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Process Steps (one per line, use --> for connections)</label>
+          <textarea class="form-textarea" id="flowSteps" rows="8" placeholder="A[Start] --> B[Step 1]
+B --> C{Decision?}
+C -->|Yes| D[Action 1]
+C -->|No| E[Action 2]
+D --> F[End]
+E --> F">A[Start: Identify Use Case] --> B[Assess Feasibility]
+B --> C{Data Available?}
+C -->|Yes| D[Build POC]
+C -->|No| E[Data Collection]
+E --> D
+D --> F{POC Successful?}
+F -->|Yes| G[Scale to Production]
+F -->|No| H[Iterate/Pivot]
+H --> D
+G --> I[Monitor & Optimize]
+I --> J[End: Continuous Improvement]</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="generateFlowchart()" style="width: 100%;">Generate Flowchart</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Generated Mermaid Code</h3>
+          <p class="card-subtitle">Copy this code to <a href="https://mermaid.live" target="_blank" style="color: var(--gold-500);">mermaid.live</a> for visualization</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" onclick="copyMermaidCode()">Copy Code</button>
+          <button class="btn btn-dark" onclick="openInMermaidLive()">Open in Mermaid Live</button>
+        </div>
+      </div>
+      <pre id="mermaidOutput" class="llm-output" style="white-space: pre-wrap; min-height: 200px;">%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227', 'secondaryColor': '#f8fafc', 'tertiaryColor': '#fff'}}}%%
+sequenceDiagram
+    title AI Use Case Process Flow
+    participant User
+    participant Frontend
+    participant API Gateway
+    participant AI Service
+    participant Database
+
+    User->>Frontend: Submit document
+    Frontend->>API Gateway: Upload request
+    API Gateway->>AI Service: Process document
+    AI Service->>AI Service: Extract information
+    AI Service->>Database: Store extracted data
+    Database-->>AI Service: Confirm storage
+    AI Service-->>API Gateway: Return results
+    API Gateway-->>Frontend: Display extracted data
+    Frontend-->>User: Show results</pre>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Generate from Questionnaire</h3>
+          <p class="card-subtitle">Auto-generate diagrams from your assessment answers</p>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label class="form-label">Select Question Category</label>
+          <select class="form-select" id="diagramCategory">
+            <option value="process">Process Questions</option>
+            <option value="data">Data Flow</option>
+            <option value="technology">Technology Stack</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Diagram Type</label>
+          <select class="form-select" id="autodiagramType">
+            <option value="sequence">Sequence Diagram</option>
+            <option value="flowchart">Flowchart</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="generateFromQuestionnaire()">Generate from Questionnaire Answers</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Pre-built Templates</h3>
+          <p class="card-subtitle">Common enterprise AI process diagrams</p>
+        </div>
+      </div>
+      <div class="grid grid-4" style="gap: 12px;">
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('aiPipeline')">AI/ML Pipeline</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('documentProcessing')">Document Processing</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('customerService')">Customer Service Bot</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('approvalWorkflow')">Approval Workflow</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('dataGovernance')">Data Governance</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('mlops')">MLOps Lifecycle</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('riskAssessment')">Risk Assessment</button>
+        <button class="btn btn-secondary" onclick="loadMermaidTemplate('changeManagement')">Change Management</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCORING & PRIORITIZATION SECTION -->
+  <section id="section-scoring" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">6</span>
+        Scoring & Prioritization
+      </h2>
+      <p class="section-desc">
+        Multi-criteria weighted scoring to prioritize AI use cases based on business value and feasibility.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom: 20px;">Scoring Weights (Total: 100%)</h4>
+      <div class="alert alert-warning" style="margin-bottom: 20px;">
+        <span class="alert-icon">&#x26A0;</span>
+        <div>Best practice: balance value creation, feasibility, risk, and costs when scoring use cases.</div>
+      </div>
+      <div class="grid grid-4" style="gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">Business Value</label>
+          <input type="number" class="form-input weight-input" id="wBusinessValue" value="25" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Feasibility</label>
+          <input type="number" class="form-input weight-input" id="wFeasibility" value="20" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Strategic Alignment</label>
+          <input type="number" class="form-input weight-input" id="wAlignment" value="15" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data Readiness</label>
+          <input type="number" class="form-input weight-input" id="wDataReadiness" value="15" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Risk (inverse)</label>
+          <input type="number" class="form-input weight-input" id="wRisk" value="10" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time to Value (inverse)</label>
+          <input type="number" class="form-input weight-input" id="wTimeToValue" value="10" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cost (inverse)</label>
+          <input type="number" class="form-input weight-input" id="wCost" value="5" min="0" max="100" onchange="updateWeightTotal()">
+        </div>
+        <div class="metric-card" style="display: flex; align-items: center; justify-content: center;">
+          <div>
+            <div class="metric-value" id="weightTotal">100%</div>
+            <div class="metric-label">Total Weight</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top: 24px;">
+      <div class="metric-card">
+        <div class="metric-value positive" id="highPriorityCount">0</div>
+        <div class="metric-label">High Priority (>3.5)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value warning" id="mediumPriorityCount">0</div>
+        <div class="metric-label">Medium Priority (2.0-3.5)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="lowPriorityCount">0</div>
+        <div class="metric-label">Low Priority (<2.0)</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <h4 style="margin-bottom: 20px;">Portfolio View (Bubble Chart)</h4>
+      <div class="chart-container">
+        <canvas id="portfolioChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Prioritized Use Cases</h3>
+        </div>
+        <button class="btn btn-primary" onclick="recalculateScores()">Recalculate Scores</button>
+      </div>
+      <div class="table-container">
+        <table id="scoringTable">
+          <thead>
+            <tr>
+              <th>Use Case</th>
+              <th>Value</th>
+              <th>Feasibility</th>
+              <th>Alignment</th>
+              <th>Data</th>
+              <th>Risk</th>
+              <th>TtV</th>
+              <th>Cost</th>
+              <th>Score</th>
+              <th>Priority</th>
+            </tr>
+          </thead>
+          <tbody id="scoringTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVANCED ROI CALCULATOR SECTION -->
+  <section id="section-roi" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">7</span>
+        Advanced ROI Calculator
+      </h2>
+      <p class="section-desc">
+        Comprehensive business case builder with NPV, IRR, payback analysis, and scenario modeling.
+        Based on Total Economic Impact (TEI) framework.
+      </p>
+    </div>
+
+    <div class="alert alert-info">
+      <span class="alert-icon">&#x1F4B0;</span>
+      <div>
+        <strong>Industry Benchmarks:</strong> Typical AI projects show 12-24 month payback, 10-30% cost savings,
+        and 2-5x revenue uplift. Successful implementations can achieve 200-400% ROI over 3 years.
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <h4 style="margin-bottom: 16px; color: var(--emerald-600);">Benefits (Annual @ 100% Adoption)</h4>
+        <div class="form-group">
+          <label class="form-label">Labor Hours Saved</label>
+          <input type="number" class="form-input roi-input" id="roiHoursSaved" placeholder="Hours/year" value="5000" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hourly Rate ($)</label>
+          <input type="number" class="form-input roi-input" id="roiHourlyRate" placeholder="$/hour" value="75" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Burden Rate (multiplier)</label>
+          <input type="number" class="form-input roi-input" id="roiBurden" placeholder="e.g., 1.3" value="1.3" step="0.1" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Error Reduction Value ($)</label>
+          <input type="number" class="form-input roi-input" id="roiErrorReduction" placeholder="$/year" value="50000" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Revenue Uplift ($)</label>
+          <input type="number" class="form-input roi-input" id="roiRevenueUplift" placeholder="$/year" value="100000" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cycle Time Savings ($)</label>
+          <input type="number" class="form-input roi-input" id="roiCycleTime" placeholder="$/year" value="25000" onchange="calculateROI()">
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin-bottom: 16px; color: var(--red-500);">Costs & Parameters</h4>
+        <div class="form-group">
+          <label class="form-label">CAPEX (Year 0)</label>
+          <input type="number" class="form-input roi-input" id="roiCapex" placeholder="One-time cost" value="200000" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">OPEX (Annual)</label>
+          <input type="number" class="form-input roi-input" id="roiOpex" placeholder="$/year" value="50000" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Training & Change Mgmt</label>
+          <input type="number" class="form-input roi-input" id="roiTraining" placeholder="One-time cost" value="30000" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Discount Rate (%)</label>
+          <input type="number" class="form-input roi-input" id="roiDiscount" value="12" onchange="calculateROI()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Analysis Horizon (years)</label>
+          <select class="form-select roi-input" id="roiHorizon" onchange="calculateROI()">
+            <option value="3">3 Years</option>
+            <option value="5" selected>5 Years</option>
+            <option value="7">7 Years</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adoption Ramp (% per year)</label>
+          <input type="text" class="form-input roi-input" id="roiAdoption" placeholder="e.g., 40,70,90,100,100" value="40,70,90,100,100" onchange="calculateROI()">
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, var(--navy-800), var(--navy-700)); color: var(--white);">
+        <h4 style="margin-bottom: 24px; color: var(--gold-400);">Base Case Results</h4>
+        <div style="display: grid; gap: 16px;">
+          <div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--gold-400);" id="roiNPV">$0</div>
+            <div style="font-size: 0.85rem; color: var(--gray-400);">Net Present Value (NPV)</div>
+          </div>
+          <div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--emerald-500);" id="roiIRR">0%</div>
+            <div style="font-size: 0.85rem; color: var(--gray-400);">Internal Rate of Return (IRR)</div>
+          </div>
+          <div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--amber-500);" id="roiPayback">-- mo</div>
+            <div style="font-size: 0.85rem; color: var(--gray-400);">Payback Period</div>
+          </div>
+          <div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--blue-500);" id="roiROI">0%</div>
+            <div style="font-size: 0.85rem; color: var(--gray-400);">Ramped ROI</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateROI()">
+          Recalculate
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Scenario Analysis</h3>
+          <p class="card-subtitle">Best, Likely, and Worst case projections</p>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="scenario-card best">
+          <div class="scenario-label" style="color: var(--emerald-600);">Best Case (+30%)</div>
+          <div class="scenario-value" id="scenarioBestNPV" style="color: var(--emerald-600);">$0</div>
+          <div class="scenario-metric">NPV</div>
+          <div class="scenario-value" id="scenarioBestIRR" style="color: var(--emerald-600); font-size: 1.5rem; margin-top: 12px;">0%</div>
+          <div class="scenario-metric">IRR</div>
+        </div>
+        <div class="scenario-card likely">
+          <div class="scenario-label" style="color: var(--blue-600);">Likely Case</div>
+          <div class="scenario-value" id="scenarioLikelyNPV" style="color: var(--blue-600);">$0</div>
+          <div class="scenario-metric">NPV</div>
+          <div class="scenario-value" id="scenarioLikelyIRR" style="color: var(--blue-600); font-size: 1.5rem; margin-top: 12px;">0%</div>
+          <div class="scenario-metric">IRR</div>
+        </div>
+        <div class="scenario-card worst">
+          <div class="scenario-label" style="color: var(--red-500);">Worst Case (-30%)</div>
+          <div class="scenario-value" id="scenarioWorstNPV" style="color: var(--red-500);">$0</div>
+          <div class="scenario-metric">NPV</div>
+          <div class="scenario-value" id="scenarioWorstIRR" style="color: var(--red-500); font-size: 1.5rem; margin-top: 12px;">0%</div>
+          <div class="scenario-metric">IRR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom: 20px;">Cash Flow Projection</h4>
+      <div class="chart-container" style="height: 300px;">
+        <canvas id="cashflowChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULAS & METHODOLOGY SECTION -->
+  <section id="section-formulas" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">8</span>
+        Formulas & Methodology
+      </h2>
+      <p class="section-desc">
+        Comprehensive documentation of all calculations, scoring models, and financial methodologies
+        used in this playbook for transparency and auditability.
+      </p>
+    </div>
+
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="showFormulaTab('financial')">Financial Metrics</button>
+      <button class="inner-tab" onclick="showFormulaTab('scoring')">Scoring Models</button>
+      <button class="inner-tab" onclick="showFormulaTab('tco')">TCO Framework</button>
+      <button class="inner-tab" onclick="showFormulaTab('sensitivity')">Sensitivity Analysis</button>
+      <button class="inner-tab" onclick="showFormulaTab('maturity')">Maturity Calculation</button>
+    </div>
+
+    <!-- Financial Metrics Tab -->
+    <div id="formulaTab-financial" class="formula-tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Return on Investment (ROI)</h3>
+            <p class="card-subtitle">Measures the efficiency of an investment</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">ROI % = ((Net Benefits - Total Investment) / Total Investment) x 100</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Components:</strong></p>
+          <ul>
+            <li><strong>Net Benefits</strong> = Labor Savings + Error Reduction + Revenue Uplift + Cycle Time Savings</li>
+            <li><strong>Labor Savings</strong> = Hours Saved x Hourly Rate x Burden Rate (typically 1.3x for benefits)</li>
+            <li><strong>Total Investment</strong> = CAPEX + OPEX + Training & Change Management</li>
+          </ul>
+          <p><strong>Interpretation:</strong> ROI > 100% indicates the investment has doubled in value. For AI projects, target ROI should exceed the organization's hurdle rate (typically 15-25%).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Net Present Value (NPV)</h3>
+            <p class="card-subtitle">The present value of future cash flows minus initial investment</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">NPV = -Initial Investment + Sum of [Cash Flow(t) / (1 + r)^t]</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Where:</strong></p>
+          <ul>
+            <li><strong>Cash Flow(t)</strong> = Net benefit in period t (Benefits - OPEX) adjusted for adoption ramp</li>
+            <li><strong>r</strong> = Discount rate (WACC + Risk Premium, typically 10-15%)</li>
+            <li><strong>t</strong> = Time period (years)</li>
+          </ul>
+          <p><strong>Decision Rule:</strong> Accept project if NPV > 0. Higher NPV is preferred when comparing projects.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Internal Rate of Return (IRR)</h3>
+            <p class="card-subtitle">The discount rate that makes NPV equal to zero</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">0 = -Initial Investment + Sum of [Cash Flow(t) / (1 + IRR)^t]</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Calculation Method:</strong> Solved iteratively (Newton-Raphson method) as there is no closed-form solution.</p>
+          <p><strong>Decision Rule:</strong> Accept if IRR > WACC (Weighted Average Cost of Capital). For AI projects, IRR > 25% is typically considered excellent.</p>
+          <p><strong>Benchmarks:</strong></p>
+          <ul>
+            <li>< 10%: Below typical corporate hurdle rate</li>
+            <li>10-20%: Acceptable</li>
+            <li>20-40%: Good</li>
+            <li>> 40%: Excellent</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Payback Period</h3>
+            <p class="card-subtitle">Time required to recover the initial investment</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Payback (months) = (Total Investment / Annual Net Benefit) x 12</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>With Adoption Ramp:</strong> Calculated by finding the point where cumulative cash flow turns positive.</p>
+          <p><strong>Benchmarks for AI Projects:</strong></p>
+          <ul>
+            <li>< 6 months: Ideal for pilot projects</li>
+            <li>6-12 months: Acceptable for departmental initiatives</li>
+            <li>12-24 months: Standard for enterprise implementations</li>
+            <li>> 24 months: Requires strong strategic justification</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Weighted Average Cost of Capital (WACC)</h3>
+            <p class="card-subtitle">Minimum return required on investments</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">WACC = (E/V x Re) + (D/V x Rd x (1-Tc))</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Where:</strong></p>
+          <ul>
+            <li><strong>E</strong> = Market value of equity</li>
+            <li><strong>D</strong> = Market value of debt</li>
+            <li><strong>V</strong> = E + D (Total firm value)</li>
+            <li><strong>Re</strong> = Cost of equity</li>
+            <li><strong>Rd</strong> = Cost of debt</li>
+            <li><strong>Tc</strong> = Corporate tax rate</li>
+          </ul>
+          <p><strong>Simplified:</strong> For AI project evaluation, use company's stated hurdle rate (typically 8-15%) plus a technology risk premium (2-5%).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scoring Models Tab -->
+    <div id="formulaTab-scoring" class="formula-tab-content" style="display: none;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Weighted Priority Score</h3>
+            <p class="card-subtitle">Multi-criteria decision analysis for use case prioritization</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Priority Score = Sum of (Criterion(i) x Weight(i)) for all criteria</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Default Criteria Weights:</strong></p>
+          <table style="width: 100%; margin: 16px 0;">
+            <tr><th>Criterion</th><th>Weight</th><th>Scale</th><th>Direction</th></tr>
+            <tr><td>Business Value</td><td>25%</td><td>1-5</td><td>Higher is better</td></tr>
+            <tr><td>Feasibility</td><td>20%</td><td>1-5</td><td>Higher is better</td></tr>
+            <tr><td>Strategic Alignment</td><td>15%</td><td>1-5</td><td>Higher is better</td></tr>
+            <tr><td>Data Readiness</td><td>15%</td><td>1-5</td><td>Higher is better</td></tr>
+            <tr><td>Risk</td><td>10%</td><td>1-5</td><td>Lower is better (inverted)</td></tr>
+            <tr><td>Time to Value</td><td>10%</td><td>1-5</td><td>Lower is better (inverted)</td></tr>
+            <tr><td>Cost</td><td>5%</td><td>1-5</td><td>Lower is better (inverted)</td></tr>
+          </table>
+          <p><strong>Score Interpretation:</strong></p>
+          <ul>
+            <li>Score > 3.5: High Priority</li>
+            <li>Score 2.0-3.5: Medium Priority</li>
+            <li>Score < 2.0: Low Priority</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">RICE Scoring Model</h3>
+            <p class="card-subtitle">Alternative prioritization framework (Reach, Impact, Confidence, Effort)</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">RICE Score = (Reach x Impact x Confidence) / Effort</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Components:</strong></p>
+          <ul>
+            <li><strong>Reach:</strong> Number of users/transactions affected per quarter (e.g., 1000 users)</li>
+            <li><strong>Impact:</strong> Effect on each user (3=Massive, 2=High, 1=Medium, 0.5=Low, 0.25=Minimal)</li>
+            <li><strong>Confidence:</strong> Certainty of estimates (100%=High, 80%=Medium, 50%=Low)</li>
+            <li><strong>Effort:</strong> Person-months required (e.g., 2 = two person-months)</li>
+          </ul>
+          <p><strong>Example:</strong> (5000 x 2 x 0.8) / 3 = 2,667 RICE score</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Value vs. Complexity Matrix</h3>
+            <p class="card-subtitle">Portfolio visualization framework</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">X-Axis = (Feasibility + (5 - Time to Value)) / 2<br>Y-Axis = (Business Value + (5 - Cost)) / 2</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Quadrant Interpretation:</strong></p>
+          <ul>
+            <li><strong>Top-Right (High Value, High Feasibility):</strong> Quick Wins - Implement first</li>
+            <li><strong>Top-Left (High Value, Low Feasibility):</strong> Strategic Initiatives - Plan carefully</li>
+            <li><strong>Bottom-Right (Low Value, High Feasibility):</strong> Fill-ins - Implement if resources allow</li>
+            <li><strong>Bottom-Left (Low Value, Low Feasibility):</strong> Deprioritize - Avoid or defer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TCO Framework Tab -->
+    <div id="formulaTab-tco" class="formula-tab-content" style="display: none;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Total Cost of Ownership (TCO)</h3>
+            <p class="card-subtitle">Comprehensive cost framework for AI initiatives</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">TCO = Initial Costs + Sum of (Operating Costs(t) / (1 + r)^t) + Hidden Costs</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Cost Categories:</strong></p>
+          <table style="width: 100%; margin: 16px 0;">
+            <tr><th>Category</th><th>Components</th><th>Typical % of Total</th></tr>
+            <tr><td>Infrastructure</td><td>GPU compute, storage, bandwidth, cloud services</td><td>20-35%</td></tr>
+            <tr><td>Data Preparation</td><td>Labeling, cleaning, sourcing, ETL pipelines</td><td>30-50%</td></tr>
+            <tr><td>Personnel</td><td>Data scientists, ML engineers, PMs</td><td>25-40%</td></tr>
+            <tr><td>Integration</td><td>API development, legacy system connections</td><td>15-25%</td></tr>
+            <tr><td>Security & Compliance</td><td>Audits, red teaming, bias testing</td><td>5-15%</td></tr>
+            <tr><td>Training & Change</td><td>User training, documentation, adoption</td><td>10-20%</td></tr>
+          </table>
+          <p><strong>Warning:</strong> 85% of organizations underestimate AI project costs by >10%. Always include a contingency buffer of 20-30%.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Ongoing Operational Costs</h3>
+            <p class="card-subtitle">Recurring costs after initial deployment</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Annual OPEX = Compute + Storage + Licenses + Maintenance + Retraining</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Key Considerations:</strong></p>
+          <ul>
+            <li><strong>Model Drift:</strong> 91% of ML models experience degradation over time, requiring retraining (15-25% additional compute)</li>
+            <li><strong>API Costs:</strong> For LLM-based solutions, estimate monthly token usage (e.g., 500K calls x $0.02 = $10K/month)</li>
+            <li><strong>Scaling:</strong> AI infrastructure costs scale non-linearly with usage</li>
+            <li><strong>Monitoring:</strong> Continuous monitoring tools and personnel (typically 10-15% of development cost annually)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sensitivity Analysis Tab -->
+    <div id="formulaTab-sensitivity" class="formula-tab-content" style="display: none;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Scenario Analysis</h3>
+            <p class="card-subtitle">Testing outcomes under different assumptions</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Best Case: Benefits x 1.3, Costs x 0.9<br>Likely Case: Base estimates<br>Worst Case: Benefits x 0.7, Costs x 1.2</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Methodology:</strong></p>
+          <ul>
+            <li><strong>Best Case (+30% benefits, -10% costs):</strong> Optimistic scenario with faster adoption, higher savings</li>
+            <li><strong>Likely Case:</strong> Base estimates from assessment</li>
+            <li><strong>Worst Case (-30% benefits, +20% costs):</strong> Conservative scenario with delays, overruns</li>
+          </ul>
+          <p><strong>Decision Framework:</strong> Project should show positive NPV even in worst case scenario for low-risk approval.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Break-Even Analysis</h3>
+            <p class="card-subtitle">Finding the point where benefits equal costs</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Break-Even Volume = Fixed Costs / (Benefit per Unit - Variable Cost per Unit)</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>For AI Projects:</strong></p>
+          <ul>
+            <li><strong>Break-Even Adoption Rate:</strong> Minimum adoption % needed to achieve positive ROI</li>
+            <li><strong>Break-Even Time:</strong> Number of months until cumulative benefits exceed cumulative costs</li>
+            <li><strong>Break-Even Efficiency:</strong> Minimum efficiency gain (%) required for positive business case</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Sensitivity Variables</h3>
+            <p class="card-subtitle">Key variables to test in sensitivity analysis</p>
+          </div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>High-Impact Variables (test +/- 20-30%):</strong></p>
+          <ul>
+            <li>Adoption rate / utilization</li>
+            <li>Hourly rate / labor cost</li>
+            <li>Hours saved / efficiency gain</li>
+            <li>Implementation timeline</li>
+          </ul>
+          <p><strong>Medium-Impact Variables (test +/- 10-20%):</strong></p>
+          <ul>
+            <li>Discount rate</li>
+            <li>OPEX / recurring costs</li>
+            <li>Training costs</li>
+          </ul>
+          <p><strong>Sensitivity Ratio:</strong> % change in NPV / % change in variable. Variables with ratio > 1 are "high sensitivity" and require careful estimation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maturity Calculation Tab -->
+    <div id="formulaTab-maturity" class="formula-tab-content" style="display: none;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">AI Maturity Score</h3>
+            <p class="card-subtitle">Aggregate organizational readiness assessment</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Overall Maturity = Sum of (Dimension Score(i)) / Number of Dimensions</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>8 Assessment Dimensions (1-5 scale each):</strong></p>
+          <table style="width: 100%; margin: 16px 0;">
+            <tr><th>Dimension</th><th>What it Measures</th></tr>
+            <tr><td>Strategy</td><td>AI vision, executive sponsorship, strategic alignment</td></tr>
+            <tr><td>Data</td><td>Data quality, accessibility, governance, integration</td></tr>
+            <tr><td>Technology</td><td>Infrastructure, MLOps, platforms, integration capabilities</td></tr>
+            <tr><td>People & Talent</td><td>Skills, talent availability, training readiness</td></tr>
+            <tr><td>Process</td><td>Workflow integration, change management, adoption readiness</td></tr>
+            <tr><td>Governance</td><td>Policies, oversight, accountability, risk management</td></tr>
+            <tr><td>Culture</td><td>Innovation mindset, experimentation, risk tolerance</td></tr>
+            <tr><td>Ethics & Trust</td><td>Responsible AI, bias detection, transparency, explainability</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Maturity Level Definitions</h3>
+            <p class="card-subtitle">Interpreting maturity scores</p>
+          </div>
+        </div>
+        <div class="formula-explanation">
+          <table style="width: 100%; margin: 16px 0;">
+            <tr><th>Score</th><th>Level</th><th>Characteristics</th></tr>
+            <tr><td>1.0 - 1.9</td><td>Foundational</td><td>Minimal AI adoption, exploring concepts, no formal strategy</td></tr>
+            <tr><td>2.0 - 2.9</td><td>Experimenting</td><td>Isolated pilots, limited scale, building foundational capabilities</td></tr>
+            <tr><td>3.0 - 3.9</td><td>Operationalizing</td><td>Production deployments, measurable impact, scaling in progress</td></tr>
+            <tr><td>4.0 - 4.4</td><td>Scaling</td><td>Enterprise-wide AI, significant ROI, mature MLOps</td></tr>
+            <tr><td>4.5 - 5.0</td><td>Transforming</td><td>AI-first organization, competitive advantage, industry leader</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Gap Analysis</h3>
+            <p class="card-subtitle">Identifying improvement areas</p>
+          </div>
+        </div>
+        <div class="formula-box">
+          <div class="formula">Gap = Target Score (5.0) - Current Score</div>
+        </div>
+        <div class="formula-explanation">
+          <p><strong>Prioritization Rule:</strong> Focus on dimensions with the largest gaps that are prerequisites for planned use cases.</p>
+          <p><strong>Interdependencies:</strong></p>
+          <ul>
+            <li>Data maturity is prerequisite for Technology advancement</li>
+            <li>Strategy and Culture enable People development</li>
+            <li>Governance is required before Scaling</li>
+            <li>Ethics & Trust are essential for regulated industries</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS SECTION -->
+  <section id="section-settings" class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="section-number">9</span>
+        Settings & Export
+      </h2>
+      <p class="section-desc">
+        Configure application settings, manage data, and export your work.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom: 20px;">Data Management</h4>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button class="btn btn-secondary" onclick="saveAllState()">Save All State</button>
+        <button class="btn btn-secondary" onclick="downloadJSON()">Download JSON</button>
+        <label class="btn btn-secondary" style="cursor: pointer;">
+          Load JSON
+          <input type="file" accept=".json" onchange="uploadJSON(this)" style="display: none;">
+        </label>
+        <button class="btn btn-primary" onclick="exportExcelFull()">Export Full Excel</button>
+        <button class="btn btn-danger" onclick="resetAllData()">Reset All Data</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin-bottom: 20px;">Application Settings</h4>
+      <div class="grid grid-3">
+        <div class="form-group">
+          <label class="form-label">Currency Symbol</label>
+          <input type="text" class="form-input" id="currencySymbol" value="$">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Default Horizon (years)</label>
+          <select class="form-select" id="defaultHorizon">
+            <option value="3">3 Years</option>
+            <option value="5" selected>5 Years</option>
+            <option value="7">7 Years</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Auto-save</label>
+          <select class="form-select" id="autoSave">
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Add Question Modal -->
+<div class="modal-backdrop" id="addQuestionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Add New Question</h3>
+      <button class="modal-close" onclick="closeModal('addQuestionModal')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-select" id="newQuestionCategory">
+        <option value="strategy">Strategy</option>
+        <option value="data">Data</option>
+        <option value="technology">Technology</option>
+        <option value="people">People</option>
+        <option value="process">Process</option>
+        <option value="governance">Governance</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Question</label>
+      <textarea class="form-textarea" id="newQuestionText" placeholder="Enter your question..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hint/Guidance (optional)</label>
+      <input type="text" class="form-input" id="newQuestionHint" placeholder="Help text for respondents">
+    </div>
+    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal('addQuestionModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewQuestion()">Add Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">AI Strategy Playbook</div>
+    <div style="font-size: 0.85rem;">Enterprise AI Adoption Framework v3.0</div>
+  </div>
+</footer>
+
+<script>
+// ==================== GLOBAL STATE ====================
+let state = {
+  organization: { name: '', industry: '', assessor: '' },
+  maturity: {
+    strategy: 3, data: 2, technology: 3, people: 2,
+    process: 3, governance: 2, culture: 2, ethics: 3
+  },
+  questions: [],
+  answers: {},
+  useCases: [],
+  weights: {
+    businessValue: 25, feasibility: 20, alignment: 15, dataReadiness: 15,
+    risk: 10, timeToValue: 10, cost: 5
+  },
+  roi: {}
+};
+
+// ==================== DIMENSION DEFINITIONS ====================
+const dimensions = [
+  { id: 'strategy', name: 'Strategy', desc: 'AI vision, leadership sponsorship, strategic alignment', color: '#3b82f6' },
+  { id: 'data', name: 'Data', desc: 'Data quality, accessibility, governance, integration', color: '#10b981' },
+  { id: 'technology', name: 'Technology', desc: 'Infrastructure, MLOps, platforms, integration', color: '#8b5cf6' },
+  { id: 'people', name: 'People & Talent', desc: 'Skills, talent availability, training readiness', color: '#f59e0b' },
+  { id: 'process', name: 'Process', desc: 'Workflow integration, change management, adoption', color: '#06b6d4' },
+  { id: 'governance', name: 'Governance', desc: 'Policies, oversight, accountability structures', color: '#ec4899' },
+  { id: 'culture', name: 'Culture', desc: 'Innovation mindset, experimentation, risk tolerance', color: '#84cc16' },
+  { id: 'ethics', name: 'Ethics & Trust', desc: 'Responsible AI, bias detection, transparency', color: '#f97316' }
+];
+
+// ==================== DEFAULT QUESTIONS ====================
+const defaultQuestions = [
+  // Strategy
+  { id: 'q1', category: 'strategy', question: 'Does your organization have a formal AI strategy aligned with business objectives?', hint: 'Consider documented AI roadmap, executive sponsorship, budget allocation' },
+  { id: 'q2', category: 'strategy', question: 'What are the top 3 strategic priorities for your department that AI could support?', hint: 'Think about growth, efficiency, risk reduction, customer experience' },
+  { id: 'q3', category: 'strategy', question: 'How does leadership view AI investment - cost center or value driver?', hint: 'Consider budget discussions, C-suite engagement, board visibility' },
+  { id: 'q4', category: 'strategy', question: 'What competitive pressure exists around AI adoption in your industry?', hint: 'Identify competitor AI initiatives, market expectations, disruption risk' },
+
+  // Data
+  { id: 'q5', category: 'data', question: 'What structured and unstructured data sources are available for AI initiatives?', hint: 'Databases, APIs, documents, logs, customer interactions, IoT data' },
+  { id: 'q6', category: 'data', question: 'How would you rate the quality, completeness, and accessibility of your data (1-5)?', hint: '1=Poor/inaccessible, 5=High-quality, governed, readily accessible' },
+  { id: 'q7', category: 'data', question: 'Do you have a unified data platform or data mesh architecture?', hint: 'Consider data warehouse, data lake, integration capabilities' },
+  { id: 'q8', category: 'data', question: 'What data governance and privacy controls are in place?', hint: 'Data classification, access controls, GDPR/CCPA compliance, data lineage' },
+
+  // Technology
+  { id: 'q9', category: 'technology', question: 'What is your current cloud infrastructure and AI platform capability?', hint: 'Cloud providers, ML platforms, GPU availability, API access' },
+  { id: 'q10', category: 'technology', question: 'Do you have MLOps capabilities for model deployment and monitoring?', hint: 'CI/CD for ML, model versioning, monitoring, A/B testing' },
+  { id: 'q11', category: 'technology', question: 'What existing AI/ML tools and frameworks are in use?', hint: 'TensorFlow, PyTorch, Hugging Face, Azure ML, AWS SageMaker, etc.' },
+  { id: 'q12', category: 'technology', question: 'How integrated is your technology stack for end-to-end AI solutions?', hint: 'API readiness, microservices, legacy system integration challenges' },
+
+  // People
+  { id: 'q13', category: 'people', question: 'What AI/ML skills exist in your organization (data scientists, ML engineers, etc.)?', hint: 'Team size, skill levels, hiring plans, partner/vendor capabilities' },
+  { id: 'q14', category: 'people', question: 'How would you assess the AI literacy across business users?', hint: 'Awareness, ability to identify use cases, comfort with AI outputs' },
+  { id: 'q15', category: 'people', question: 'What training and upskilling programs are available or planned?', hint: 'AI/ML courses, certifications, learning platforms, mentorship' },
+  { id: 'q16', category: 'people', question: 'How engaged is the executive team in AI initiatives?', hint: 'Champion presence, resource allocation, strategic involvement' },
+
+  // Process
+  { id: 'q17', category: 'process', question: 'What are the most time-consuming manual processes in your department?', hint: 'Data entry, report generation, review cycles, approvals' },
+  { id: 'q18', category: 'process', question: 'Where do errors or quality issues most frequently occur?', hint: 'High-volume transactions, handoffs, complex rules, time pressure' },
+  { id: 'q19', category: 'process', question: 'What decisions require significant research or analysis time?', hint: 'Pricing, risk assessment, resource allocation, forecasting' },
+  { id: 'q20', category: 'process', question: 'How well-documented and standardized are key processes?', hint: 'SOPs, process maps, compliance requirements, audit trails' },
+
+  // Governance
+  { id: 'q21', category: 'governance', question: 'Is there an AI governance committee or equivalent oversight structure?', hint: 'Cross-functional governance, decision rights, escalation paths' },
+  { id: 'q22', category: 'governance', question: 'What AI risk management frameworks or policies are in place?', hint: 'Risk assessment process, model validation, incident response' },
+  { id: 'q23', category: 'governance', question: 'How are AI models validated, monitored, and audited?', hint: 'Testing requirements, performance monitoring, bias detection, explainability' },
+  { id: 'q24', category: 'governance', question: 'What regulatory requirements impact your AI use (GDPR, sector-specific)?', hint: 'Data privacy, explainability requirements, sector regulations' }
+];
+
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+  loadState();
+  initDimensionInputs();
+  initQuestions();
+  initRadarChart();
+  initPortfolioChart();
+  initCashflowChart();
+  calculateROI();
+  updateHeroStats();
+});
+
+function loadState() {
+  const saved = localStorage.getItem('aiPlaybookState');
+  if (saved) {
+    try {
+      state = { ...state, ...JSON.parse(saved) };
+    } catch(e) { console.error('Failed to load state', e); }
+  }
+  if (!state.questions || state.questions.length === 0) {
+    state.questions = [...defaultQuestions];
+  }
+}
+
+function saveState() {
+  localStorage.setItem('aiPlaybookState', JSON.stringify(state));
+  showToast('Progress saved');
+}
+
+// ==================== NAVIGATION ====================
+function showSection(sectionId) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + sectionId).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ==================== RADAR CHART (Spider Diagram) ====================
+let radarChart = null;
+
+function initDimensionInputs() {
+  const container = document.getElementById('dimensionInputs');
+  container.innerHTML = dimensions.map(d => `
+    <div class="form-group" style="display: flex; align-items: center; gap: 12px;">
+      <label class="form-label" style="flex: 1; margin: 0;">${d.name}</label>
+      <input type="range" min="1" max="5" step="0.5" value="${state.maturity[d.id] || 3}"
+             id="dim_${d.id}" style="flex: 2;" onchange="updateDimensionValue('${d.id}', this.value)">
+      <span id="dimVal_${d.id}" style="width: 40px; font-weight: 700;">${state.maturity[d.id] || 3}</span>
+    </div>
+  `).join('');
+  updateDimensionScores();
+}
+
+function updateDimensionValue(dimId, value) {
+  state.maturity[dimId] = parseFloat(value);
+  document.getElementById('dimVal_' + dimId).textContent = value;
+  saveState();
+}
+
+function updateDimensionScores() {
+  const container = document.getElementById('dimensionScores');
+  container.innerHTML = dimensions.map(d => {
+    const score = state.maturity[d.id] || 3;
+    const pct = (score / 5) * 100;
+    let barColor = d.color;
+    return `
+      <div class="dimension-score">
+        <div class="dimension-score-label">${d.name}</div>
+        <div class="dimension-score-value">${score.toFixed(1)}</div>
+        <div class="dimension-score-bar">
+          <div class="dimension-score-fill" style="width: ${pct}%; background: ${barColor};"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function initRadarChart() {
+  const ctx = document.getElementById('radarChart');
+  if (!ctx) return;
+
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: dimensions.map(d => d.name),
+      datasets: [{
+        label: 'Current Maturity',
+        data: dimensions.map(d => state.maturity[d.id] || 3),
+        backgroundColor: 'rgba(201, 162, 39, 0.2)',
+        borderColor: 'rgba(201, 162, 39, 1)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(201, 162, 39, 1)',
+        pointRadius: 5
+      }, {
+        label: 'Target (5.0)',
+        data: dimensions.map(() => 5),
+        backgroundColor: 'rgba(100, 116, 139, 0.1)',
+        borderColor: 'rgba(100, 116, 139, 0.5)',
+        borderWidth: 1,
+        borderDash: [5, 5],
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0,
+          max: 5,
+          ticks: { stepSize: 1 },
+          pointLabels: { font: { size: 12, weight: '600' } }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+}
+
+function updateRadarChart() {
+  if (!radarChart) return;
+  radarChart.data.datasets[0].data = dimensions.map(d => state.maturity[d.id] || 3);
+  radarChart.update();
+  updateDimensionScores();
+  updateHeroStats();
+  saveState();
+  showToast('Maturity profile updated');
+}
+
+// ==================== QUESTIONNAIRE ====================
+function initQuestions() {
+  renderQuestions();
+}
+
+function renderQuestions(filter = 'all') {
+  const container = document.getElementById('questionsContainer');
+  let filtered = state.questions;
+  if (filter !== 'all') {
+    filtered = state.questions.filter(q => q.category === filter);
+  }
+
+  container.innerHTML = filtered.map((q, idx) => `
+    <div class="question-item" data-id="${q.id}" data-category="${q.category}">
+      <div class="question-header">
+        <span class="question-category">${q.category}</span>
+        <div class="question-actions">
+          <button onclick="editQuestion('${q.id}')" style="background: var(--gray-100); color: var(--gray-600);">&#x270F;</button>
+          <button onclick="deleteQuestion('${q.id}')" style="background: #fee2e2; color: var(--red-500);">&#x2715;</button>
+        </div>
+      </div>
+      <div class="form-label" style="font-size: 1rem; margin-bottom: 8px;">${q.question}</div>
+      ${q.hint ? `<div style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 12px;">${q.hint}</div>` : ''}
+      <textarea class="form-textarea" id="answer_${q.id}" placeholder="Enter your answer..."
+                onchange="saveAnswer('${q.id}', this.value)">${state.answers[q.id] || ''}</textarea>
+    </div>
+  `).join('');
+}
+
+function filterQuestions(category) {
+  document.querySelectorAll('#categoryTabs .inner-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderQuestions(category);
+}
+
+function saveAnswer(qId, value) {
+  state.answers[qId] = value;
+  saveState();
+}
+
+function addNewQuestion() {
+  document.getElementById('addQuestionModal').classList.add('show');
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('show');
+}
+
+function saveNewQuestion() {
+  const category = document.getElementById('newQuestionCategory').value;
+  const question = document.getElementById('newQuestionText').value;
+  const hint = document.getElementById('newQuestionHint').value;
+
+  if (!question.trim()) {
+    alert('Please enter a question');
+    return;
+  }
+
+  const newQ = {
+    id: 'q_custom_' + Date.now(),
+    category: category,
+    question: question,
+    hint: hint
+  };
+
+  state.questions.push(newQ);
+  saveState();
+  renderQuestions();
+  closeModal('addQuestionModal');
+  showToast('Question added');
+
+  // Clear form
+  document.getElementById('newQuestionText').value = '';
+  document.getElementById('newQuestionHint').value = '';
+}
+
+function deleteQuestion(qId) {
+  if (!confirm('Delete this question?')) return;
+  state.questions = state.questions.filter(q => q.id !== qId);
+  delete state.answers[qId];
+  saveState();
+  renderQuestions();
+  showToast('Question deleted');
+}
+
+function editQuestion(qId) {
+  const q = state.questions.find(x => x.id === qId);
+  if (!q) return;
+  const newText = prompt('Edit question:', q.question);
+  if (newText && newText.trim()) {
+    q.question = newText.trim();
+    saveState();
+    renderQuestions();
+  }
+}
+
+function exportQuestionnaireData() {
+  const data = state.questions.map(q => ({
+    Category: q.category,
+    Question: q.question,
+    Answer: state.answers[q.id] || ''
+  }));
+  downloadCSV(data, 'questionnaire_answers.csv');
+  showToast('Questionnaire exported');
+}
+
+// ==================== LLM USE CASE GENERATION ====================
+async function testLLMConnection() {
+  const apiKey = document.getElementById('llmApiKey').value;
+  const apiBase = document.getElementById('llmApiBase').value;
+  const model = document.getElementById('llmModel').value;
+
+  if (!apiKey) {
+    document.getElementById('llmStatus').innerHTML = '<span style="color: var(--red-500);">Please enter API key</span>';
+    return;
+  }
+
+  document.getElementById('llmStatus').innerHTML = '<span style="color: var(--amber-500);">Testing connection...</span>';
+
+  try {
+    const response = await fetch(`${apiBase}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: [{ role: 'user', content: 'Say hello' }],
+        max_tokens: 10
+      })
+    });
+
+    if (response.ok) {
+      document.getElementById('llmStatus').innerHTML = '<span style="color: var(--emerald-500);">Connection successful!</span>';
+    } else {
+      const error = await response.json();
+      document.getElementById('llmStatus').innerHTML = `<span style="color: var(--red-500);">Error: ${error.error?.message || 'Unknown error'}</span>`;
+    }
+  } catch (e) {
+    document.getElementById('llmStatus').innerHTML = `<span style="color: var(--red-500);">Connection failed: ${e.message}</span>`;
+  }
+}
+
+async function generateUseCasesFromAnswers() {
+  const apiKey = document.getElementById('llmApiKey').value;
+  const apiBase = document.getElementById('llmApiBase').value;
+  const model = document.getElementById('llmModel').value;
+
+  // Build context from answers
+  const answeredQuestions = state.questions
+    .filter(q => state.answers[q.id] && state.answers[q.id].trim().length > 10)
+    .map(q => `[${q.category.toUpperCase()}] ${q.question}\nAnswer: ${state.answers[q.id]}`);
+
+  const prompt = buildUseCasePrompt(answeredQuestions);
+
+  // Show prompt preview
+  document.getElementById('promptPreviewCard').style.display = 'block';
+  document.getElementById('promptPreview').textContent = prompt;
+
+  if (!apiKey) {
+    document.getElementById('llmStatus').innerHTML = '<span style="color: var(--amber-500);">Configure API key to generate with LLM. Showing prompt preview.</span>';
+    return;
+  }
+
+  document.getElementById('llmStatus').innerHTML = '<span style="color: var(--amber-500);">Generating use cases...</span>';
+
+  try {
+    const response = await fetch(`${apiBase}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: [
+          { role: 'system', content: 'You are an AI strategy consultant. Generate practical, implementable AI use cases based on the assessment responses. Format each use case as structured JSON.' },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 4000,
+        temperature: 0.7
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      document.getElementById('useCasesOutput').style.display = 'block';
+      document.getElementById('useCasesOutput').textContent = content;
+      parseAndDisplayUseCases(content);
+      document.getElementById('llmStatus').innerHTML = '<span style="color: var(--emerald-500);">Use cases generated successfully!</span>';
+    } else {
+      const error = await response.json();
+      document.getElementById('llmStatus').innerHTML = `<span style="color: var(--red-500);">Error: ${error.error?.message || 'Unknown error'}</span>`;
+    }
+  } catch (e) {
+    document.getElementById('llmStatus').innerHTML = `<span style="color: var(--red-500);">Error: ${e.message}</span>`;
+  }
+}
+
+function buildUseCasePrompt(answers) {
+  const org = document.getElementById('orgName').value || 'the organization';
+  const industry = document.getElementById('industrySelect').value || 'enterprise';
+
+  return `
+Based on the following AI readiness assessment for ${org} in the ${industry} industry, generate 8-12 prioritized AI use cases.
+
+ASSESSMENT RESPONSES:
+${answers.join('\n\n')}
+
+MATURITY SCORES:
+${dimensions.map(d => `- ${d.name}: ${state.maturity[d.id]}/5`).join('\n')}
+
+For each use case, provide:
+1. Title
+2. Description (2-3 sentences)
+3. Category (Generation or Evaluation)
+4. Target Function (HR, Finance, Legal, IT, Operations, Sales, Marketing, Customer Service)
+5. Expected Benefits (quantified where possible)
+6. Required Data Sources
+7. Implementation Complexity (Low/Medium/High)
+8. Time to Value (weeks)
+9. Estimated Annual Value ($)
+10. Key Dependencies
+11. Risk Tier (Low/Medium/High)
+12. Suggested KPIs
+
+Format as JSON array. Focus on practical, implementable solutions aligned with the organization's current maturity level.
+`;
+}
+
+function parseAndDisplayUseCases(content) {
+  // Try to extract JSON from the response
+  try {
+    let jsonStr = content;
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      jsonStr = jsonMatch[0];
+    }
+    const useCases = JSON.parse(jsonStr);
+    state.useCases = useCases;
+    renderUseCaseCards(useCases);
+    updateHeroStats();
+    saveState();
+  } catch (e) {
+    console.log('Could not parse as JSON, displaying raw output');
+  }
+}
+
+function loadTemplateUseCases() {
+  const templates = [
+    { title: 'Automated Document Processing', description: 'Extract and classify information from invoices, contracts, and forms using AI.', category: 'Evaluation', function: 'Finance', complexity: 'Medium', timeToValue: 8, annualValue: 150000, risk: 'Low' },
+    { title: 'Intelligent Customer Support', description: '24/7 AI chatbot for customer inquiries with seamless human handoff.', category: 'Generation', function: 'Customer Service', complexity: 'Medium', timeToValue: 6, annualValue: 200000, risk: 'Low' },
+    { title: 'Resume Screening & Ranking', description: 'AI-powered candidate evaluation against job requirements with bias detection.', category: 'Evaluation', function: 'HR', complexity: 'Medium', timeToValue: 4, annualValue: 80000, risk: 'Medium' },
+    { title: 'Contract Review Assistant', description: 'Analyze contracts for risk clauses, compliance issues, and deviations from standard terms.', category: 'Evaluation', function: 'Legal', complexity: 'High', timeToValue: 12, annualValue: 250000, risk: 'Medium' },
+    { title: 'Predictive Maintenance', description: 'ML-based equipment failure prediction to reduce downtime and maintenance costs.', category: 'Evaluation', function: 'Operations', complexity: 'High', timeToValue: 16, annualValue: 500000, risk: 'Medium' },
+    { title: 'Content Generation Engine', description: 'Generate blog posts, social media content, and email campaigns aligned with brand voice.', category: 'Generation', function: 'Marketing', complexity: 'Low', timeToValue: 4, annualValue: 100000, risk: 'Low' },
+    { title: 'Lead Scoring & Prioritization', description: 'ML-powered lead qualification based on behavioral signals and firmographics.', category: 'Evaluation', function: 'Sales', complexity: 'Medium', timeToValue: 6, annualValue: 300000, risk: 'Low' },
+    { title: 'IT Helpdesk Automation', description: 'L1 ticket resolution with knowledge base search and automated troubleshooting.', category: 'Generation', function: 'IT', complexity: 'Low', timeToValue: 4, annualValue: 120000, risk: 'Low' }
+  ];
+
+  state.useCases = templates;
+  renderUseCaseCards(templates);
+  updateHeroStats();
+  saveState();
+  showToast('Template use cases loaded');
+}
+
+function renderUseCaseCards(useCases) {
+  document.getElementById('useCaseCount').textContent = `${useCases.length} use cases`;
+  const container = document.getElementById('useCasesList');
+
+  container.innerHTML = useCases.map((uc, idx) => `
+    <div class="card" style="margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <span class="pill ${uc.category === 'Generation' ? 'pill-purple' : 'pill-blue'}" style="margin-right: 8px;">${uc.category}</span>
+          <span class="pill pill-gold">${uc.function || 'General'}</span>
+          <h4 style="margin-top: 12px; margin-bottom: 8px;">${uc.title}</h4>
+          <p style="color: var(--gray-600); margin-bottom: 12px;">${uc.description}</p>
+        </div>
+        <button class="btn btn-secondary" onclick="scoreUseCase(${idx})">Score</button>
+      </div>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.85rem; color: var(--gray-500);">
+        <span>Complexity: <strong>${uc.complexity}</strong></span>
+        <span>Time to Value: <strong>${uc.timeToValue} weeks</strong></span>
+        <span>Est. Value: <strong>$${(uc.annualValue || 0).toLocaleString()}/yr</strong></span>
+        <span>Risk: <strong>${uc.risk}</strong></span>
+      </div>
+    </div>
+  `).join('');
+
+  // Update flow diagram dropdown
+  const select = document.getElementById('flowUseCaseSelect');
+  select.innerHTML = '<option value="">-- Select a use case --</option>' +
+    useCases.map((uc, idx) => `<option value="${idx}">${uc.title}</option>`).join('');
+}
+
+// ==================== FLOW DIAGRAMS ====================
+function renderUseCaseFlow() {
+  const select = document.getElementById('flowUseCaseSelect');
+  const idx = select.value;
+  const container = document.getElementById('useCaseFlowDiagram');
+
+  if (!idx) {
+    container.style.display = 'none';
+    return;
+  }
+
+  const uc = state.useCases[idx];
+  container.style.display = 'block';
+
+  const steps = [
+    { icon: '&#x1F4DD;', title: 'Requirements', desc: 'Define scope & KPIs' },
+    { icon: '&#x1F4BE;', title: 'Data Prep', desc: uc.category === 'Generation' ? 'Training data' : 'Feature engineering' },
+    { icon: '&#x1F916;', title: 'Model Dev', desc: uc.category === 'Generation' ? 'Fine-tune LLM' : 'Train classifier' },
+    { icon: '&#x1F9EA;', title: 'Testing', desc: 'Validate & iterate' },
+    { icon: '&#x1F680;', title: 'Deploy', desc: 'API/Integration' },
+    { icon: '&#x1F4CA;', title: 'Monitor', desc: 'Track KPIs' }
+  ];
+
+  container.innerHTML = `
+    <h4 style="margin-bottom: 16px;">${uc.title} Implementation Flow</h4>
+    <div class="flow-nodes">
+      ${steps.map((s, i) => `
+        <div class="flow-node ${i === 0 ? 'start' : i === steps.length - 1 ? 'end' : ''}">
+          <div class="flow-node-icon">${s.icon}</div>
+          <div class="flow-node-title">${s.title}</div>
+          <div class="flow-node-desc">${s.desc}</div>
+        </div>
+        ${i < steps.length - 1 ? '<div class="flow-arrow">&#x2192;</div>' : ''}
+      `).join('')}
+    </div>
+  `;
+}
+
+// ==================== SCORING & PRIORITIZATION ====================
+let portfolioChart = null;
+
+function initPortfolioChart() {
+  const ctx = document.getElementById('portfolioChart');
+  if (!ctx) return;
+
+  portfolioChart = new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        label: 'High Priority',
+        data: [],
+        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+        borderColor: 'rgba(16, 185, 129, 1)',
+        borderWidth: 2
+      }, {
+        label: 'Medium Priority',
+        data: [],
+        backgroundColor: 'rgba(245, 158, 11, 0.6)',
+        borderColor: 'rgba(245, 158, 11, 1)',
+        borderWidth: 2
+      }, {
+        label: 'Low Priority',
+        data: [],
+        backgroundColor: 'rgba(100, 116, 139, 0.6)',
+        borderColor: 'rgba(100, 116, 139, 1)',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'Use Case Portfolio: Feasibility vs Value', font: { size: 16, weight: 'bold' } }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Feasibility + Speed', font: { weight: 'bold' } }, min: 0, max: 10 },
+        y: { title: { display: true, text: 'Business Value + ROI', font: { weight: 'bold' } }, min: 0, max: 10 }
+      }
+    }
+  });
+}
+
+function updateWeightTotal() {
+  const inputs = document.querySelectorAll('.weight-input');
+  let total = 0;
+  inputs.forEach(inp => total += parseInt(inp.value) || 0);
+  const el = document.getElementById('weightTotal');
+  el.textContent = total + '%';
+  el.className = 'metric-value ' + (total === 100 ? 'positive' : 'negative');
+}
+
+function scoreUseCase(idx) {
+  const uc = state.useCases[idx];
+  // Generate random scores for demo (in real app, would open modal for user input)
+  uc.scores = {
+    businessValue: Math.floor(Math.random() * 3) + 3,
+    feasibility: Math.floor(Math.random() * 3) + 3,
+    alignment: Math.floor(Math.random() * 3) + 2,
+    dataReadiness: Math.floor(Math.random() * 3) + 2,
+    risk: Math.floor(Math.random() * 3) + 1,
+    timeToValue: Math.floor(Math.random() * 3) + 1,
+    cost: Math.floor(Math.random() * 3) + 1
+  };
+  recalculateScores();
+  showToast('Use case scored');
+}
+
+function recalculateScores() {
+  const tbody = document.getElementById('scoringTableBody');
+  const weights = {
+    businessValue: parseInt(document.getElementById('wBusinessValue').value) / 100,
+    feasibility: parseInt(document.getElementById('wFeasibility').value) / 100,
+    alignment: parseInt(document.getElementById('wAlignment').value) / 100,
+    dataReadiness: parseInt(document.getElementById('wDataReadiness').value) / 100,
+    risk: parseInt(document.getElementById('wRisk').value) / 100,
+    timeToValue: parseInt(document.getElementById('wTimeToValue').value) / 100,
+    cost: parseInt(document.getElementById('wCost').value) / 100
+  };
+
+  let high = 0, medium = 0, low = 0;
+  const highData = [], mediumData = [], lowData = [];
+
+  tbody.innerHTML = state.useCases.filter(uc => uc.scores).map(uc => {
+    const s = uc.scores;
+    const score = (
+      s.businessValue * weights.businessValue +
+      s.feasibility * weights.feasibility +
+      s.alignment * weights.alignment +
+      s.dataReadiness * weights.dataReadiness +
+      (5 - s.risk) * weights.risk +
+      (5 - s.timeToValue) * weights.timeToValue +
+      (5 - s.cost) * weights.cost
+    );
+
+    let priority, pillClass;
+    const bubbleData = { x: s.feasibility + (5 - s.timeToValue), y: s.businessValue + (5 - s.cost), r: score * 3 };
+
+    if (score > 3.5) { priority = 'High'; pillClass = 'pill-green'; high++; highData.push(bubbleData); }
+    else if (score > 2.0) { priority = 'Medium'; pillClass = 'pill-gold'; medium++; mediumData.push(bubbleData); }
+    else { priority = 'Low'; pillClass = ''; low++; lowData.push(bubbleData); }
+
+    return `
+      <tr>
+        <td><strong>${uc.title}</strong></td>
+        <td>${s.businessValue}</td>
+        <td>${s.feasibility}</td>
+        <td>${s.alignment}</td>
+        <td>${s.dataReadiness}</td>
+        <td>${s.risk}</td>
+        <td>${s.timeToValue}</td>
+        <td>${s.cost}</td>
+        <td><strong>${score.toFixed(2)}</strong></td>
+        <td><span class="pill ${pillClass}">${priority}</span></td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('highPriorityCount').textContent = high;
+  document.getElementById('mediumPriorityCount').textContent = medium;
+  document.getElementById('lowPriorityCount').textContent = low;
+
+  if (portfolioChart) {
+    portfolioChart.data.datasets[0].data = highData;
+    portfolioChart.data.datasets[1].data = mediumData;
+    portfolioChart.data.datasets[2].data = lowData;
+    portfolioChart.update();
+  }
+
+  saveState();
+}
+
+// ==================== ROI CALCULATOR ====================
+let cashflowChart = null;
+
+function initCashflowChart() {
+  const ctx = document.getElementById('cashflowChart');
+  if (!ctx) return;
+
+  cashflowChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+      datasets: [{
+        label: 'Cash Flow',
+        data: [0, 0, 0, 0, 0, 0],
+        backgroundColor: function(context) {
+          return context.raw >= 0 ? 'rgba(16, 185, 129, 0.7)' : 'rgba(239, 68, 68, 0.7)';
+        },
+        borderColor: function(context) {
+          return context.raw >= 0 ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)';
+        },
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Annual Cash Flow Projection' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+function calculateROI() {
+  const hoursSaved = parseFloat(document.getElementById('roiHoursSaved').value) || 0;
+  const hourlyRate = parseFloat(document.getElementById('roiHourlyRate').value) || 0;
+  const burden = parseFloat(document.getElementById('roiBurden').value) || 1;
+  const errorReduction = parseFloat(document.getElementById('roiErrorReduction').value) || 0;
+  const revenueUplift = parseFloat(document.getElementById('roiRevenueUplift').value) || 0;
+  const cycleTime = parseFloat(document.getElementById('roiCycleTime').value) || 0;
+
+  const capex = parseFloat(document.getElementById('roiCapex').value) || 0;
+  const opex = parseFloat(document.getElementById('roiOpex').value) || 0;
+  const training = parseFloat(document.getElementById('roiTraining').value) || 0;
+  const discountRate = parseFloat(document.getElementById('roiDiscount').value) / 100 || 0.12;
+  const horizon = parseInt(document.getElementById('roiHorizon').value) || 5;
+
+  const adoptionStr = document.getElementById('roiAdoption').value || '40,70,90,100,100';
+  const adoptionRamp = adoptionStr.split(',').map(x => parseFloat(x.trim()) / 100);
+
+  // Calculate full annual benefits
+  const laborBenefits = hoursSaved * hourlyRate * burden;
+  const totalBenefitsFull = laborBenefits + errorReduction + revenueUplift + cycleTime;
+
+  // Build cash flows
+  const cashFlows = [-capex - training];
+  for (let i = 1; i <= horizon; i++) {
+    const adoption = adoptionRamp[i - 1] || 1;
+    const yearBenefit = totalBenefitsFull * adoption - opex;
+    cashFlows.push(yearBenefit);
+  }
+
+  // Calculate NPV
+  let npv = 0;
+  for (let i = 0; i < cashFlows.length; i++) {
+    npv += cashFlows[i] / Math.pow(1 + discountRate, i);
+  }
+
+  // Calculate IRR (Newton-Raphson approximation)
+  let irr = 0.1;
+  for (let iter = 0; iter < 100; iter++) {
+    let npvIrr = 0, dnpv = 0;
+    for (let i = 0; i < cashFlows.length; i++) {
+      npvIrr += cashFlows[i] / Math.pow(1 + irr, i);
+      if (i > 0) dnpv -= i * cashFlows[i] / Math.pow(1 + irr, i + 1);
+    }
+    if (Math.abs(npvIrr) < 1) break;
+    irr = irr - npvIrr / dnpv;
+    if (irr < -0.99) irr = -0.99;
+    if (irr > 10) irr = 10;
+  }
+
+  // Calculate Payback (undiscounted)
+  let cumulative = 0;
+  let paybackMonths = null;
+  for (let i = 0; i < cashFlows.length; i++) {
+    cumulative += cashFlows[i];
+    if (cumulative >= 0 && paybackMonths === null) {
+      if (i === 0) paybackMonths = 0;
+      else {
+        const prevCum = cumulative - cashFlows[i];
+        const monthsInYear = (Math.abs(prevCum) / cashFlows[i]) * 12;
+        paybackMonths = (i - 1) * 12 + monthsInYear;
+      }
+    }
+  }
+
+  // Calculate Ramped ROI
+  let totalRampedBenefits = 0;
+  for (let i = 1; i <= horizon; i++) {
+    const adoption = adoptionRamp[i - 1] || 1;
+    totalRampedBenefits += totalBenefitsFull * adoption;
+  }
+  const totalCosts = capex + training + opex * horizon;
+  const rampedROI = totalCosts > 0 ? ((totalRampedBenefits - totalCosts) / totalCosts) * 100 : 0;
+
+  // Update display
+  document.getElementById('roiNPV').textContent = '$' + formatNumber(npv);
+  document.getElementById('roiIRR').textContent = (irr * 100).toFixed(1) + '%';
+  document.getElementById('roiPayback').textContent = paybackMonths !== null ? Math.round(paybackMonths) + ' mo' : 'N/A';
+  document.getElementById('roiROI').textContent = rampedROI.toFixed(0) + '%';
+
+  // Update hero stat
+  document.getElementById('heroROI').textContent = rampedROI.toFixed(0) + '%';
+
+  // Scenario analysis
+  calculateScenarios(npv, irr, totalBenefitsFull, capex, opex, training, discountRate, horizon, adoptionRamp);
+
+  // Update cash flow chart
+  if (cashflowChart) {
+    cashflowChart.data.labels = ['Year 0'].concat([...Array(horizon)].map((_, i) => 'Year ' + (i + 1)));
+    cashflowChart.data.datasets[0].data = cashFlows;
+    cashflowChart.update();
+  }
+
+  saveState();
+}
+
+function calculateScenarios(baseNpv, baseIrr, baseBenefits, capex, opex, training, discount, horizon, adoption) {
+  // Best case: +30% benefits, -10% costs
+  const bestBenefits = baseBenefits * 1.3;
+  const bestCapex = capex * 0.9;
+  let bestCashFlows = [-bestCapex - training * 0.9];
+  for (let i = 1; i <= horizon; i++) {
+    bestCashFlows.push(bestBenefits * (adoption[i - 1] || 1) - opex * 0.9);
+  }
+  let bestNpv = 0;
+  for (let i = 0; i < bestCashFlows.length; i++) bestNpv += bestCashFlows[i] / Math.pow(1 + discount, i);
+
+  // Worst case: -30% benefits, +20% costs
+  const worstBenefits = baseBenefits * 0.7;
+  const worstCapex = capex * 1.2;
+  let worstCashFlows = [-worstCapex - training * 1.2];
+  for (let i = 1; i <= horizon; i++) {
+    worstCashFlows.push(worstBenefits * (adoption[i - 1] || 1) - opex * 1.2);
+  }
+  let worstNpv = 0;
+  for (let i = 0; i < worstCashFlows.length; i++) worstNpv += worstCashFlows[i] / Math.pow(1 + discount, i);
+
+  document.getElementById('scenarioBestNPV').textContent = '$' + formatNumber(bestNpv);
+  document.getElementById('scenarioBestIRR').textContent = (baseIrr * 1.3 * 100).toFixed(0) + '%';
+  document.getElementById('scenarioLikelyNPV').textContent = '$' + formatNumber(baseNpv);
+  document.getElementById('scenarioLikelyIRR').textContent = (baseIrr * 100).toFixed(0) + '%';
+  document.getElementById('scenarioWorstNPV').textContent = '$' + formatNumber(worstNpv);
+  document.getElementById('scenarioWorstIRR').textContent = Math.max(0, (baseIrr * 0.5 * 100)).toFixed(0) + '%';
+}
+
+function formatNumber(num) {
+  if (Math.abs(num) >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (Math.abs(num) >= 1000) return (num / 1000).toFixed(0) + 'K';
+  return num.toFixed(0);
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+function updateHeroStats() {
+  document.getElementById('heroUseCaseCount').textContent = state.useCases.length;
+  const avgMaturity = dimensions.reduce((sum, d) => sum + (state.maturity[d.id] || 3), 0) / dimensions.length;
+  document.getElementById('heroMaturityScore').textContent = avgMaturity.toFixed(1);
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptPreview').textContent;
+  navigator.clipboard.writeText(text);
+  showToast('Prompt copied to clipboard');
+}
+
+function saveQuestionnaireProgress() {
+  saveState();
+  showToast('Questionnaire progress saved');
+}
+
+function saveAllState() {
+  saveState();
+  showToast('All data saved');
+}
+
+function downloadJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ai-playbook-data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('JSON downloaded');
+}
+
+function uploadJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      state = JSON.parse(e.target.result);
+      saveState();
+      location.reload();
+    } catch (err) {
+      alert('Invalid JSON file');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function downloadCSV(data, filename) {
+  const headers = Object.keys(data[0] || {});
+  const csvContent = [
+    headers.join(','),
+    ...data.map(row => headers.map(h => `"${(row[h] || '').toString().replace(/"/g, '""')}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportExcelFull() {
+  if (typeof XLSX === 'undefined') {
+    alert('Excel library not loaded');
+    return;
+  }
+
+  const wb = XLSX.utils.book_new();
+
+  // Maturity sheet
+  const maturityData = dimensions.map(d => ({ Dimension: d.name, Score: state.maturity[d.id] || 3 }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(maturityData), 'Maturity');
+
+  // Questions sheet
+  const questionData = state.questions.map(q => ({
+    Category: q.category,
+    Question: q.question,
+    Answer: state.answers[q.id] || ''
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(questionData), 'Questionnaire');
+
+  // Use Cases sheet
+  if (state.useCases.length > 0) {
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.useCases), 'Use Cases');
+  }
+
+  XLSX.writeFile(wb, 'ai-playbook-export.xlsx');
+  showToast('Excel exported');
+}
+
+function exportUseCases() {
+  if (state.useCases.length === 0) {
+    alert('No use cases to export');
+    return;
+  }
+  downloadCSV(state.useCases, 'use-cases.csv');
+  showToast('Use cases exported');
+}
+
+function resetAllData() {
+  if (!confirm('This will delete all saved data. Continue?')) return;
+  localStorage.removeItem('aiPlaybookState');
+  location.reload();
+}
+
+// ==================== MERMAID DIAGRAM FUNCTIONS ====================
+function generateSequenceDiagram() {
+  const title = document.getElementById('seqDiagramTitle').value || 'Sequence Diagram';
+  const actorsStr = document.getElementById('seqActors').value || '';
+  const stepsStr = document.getElementById('seqSteps').value || '';
+
+  const actors = actorsStr.split(',').map(a => a.trim()).filter(a => a);
+  const steps = stepsStr.split('\n').filter(s => s.trim());
+
+  let mermaid = `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227', 'secondaryColor': '#f8fafc', 'tertiaryColor': '#fff'}}}%%\nsequenceDiagram\n`;
+  mermaid += `    title ${title}\n`;
+
+  actors.forEach(actor => {
+    mermaid += `    participant ${actor.replace(/\s+/g, '_')}\n`;
+  });
+
+  mermaid += '\n';
+
+  steps.forEach(step => {
+    const match = step.match(/(.+?)->(.+?):(.+)/);
+    if (match) {
+      const from = match[1].trim().replace(/\s+/g, '_');
+      const to = match[2].trim().replace(/\s+/g, '_');
+      const msg = match[3].trim();
+      const arrow = from === to ? '->>' : '->>';
+      mermaid += `    ${from}${arrow}${to}: ${msg}\n`;
+    }
+  });
+
+  document.getElementById('mermaidOutput').textContent = mermaid;
+  showToast('Sequence diagram generated');
+}
+
+function generateFlowchart() {
+  const title = document.getElementById('flowTitle').value || 'Flowchart';
+  const direction = document.getElementById('flowDirection').value || 'TD';
+  const stepsStr = document.getElementById('flowSteps').value || '';
+
+  let mermaid = `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%\nflowchart ${direction}\n`;
+  mermaid += `    %% ${title}\n`;
+
+  const steps = stepsStr.split('\n').filter(s => s.trim());
+  steps.forEach(step => {
+    mermaid += `    ${step}\n`;
+  });
+
+  document.getElementById('mermaidOutput').textContent = mermaid;
+  showToast('Flowchart generated');
+}
+
+function copyMermaidCode() {
+  const code = document.getElementById('mermaidOutput').textContent;
+  navigator.clipboard.writeText(code);
+  showToast('Mermaid code copied to clipboard');
+}
+
+function openInMermaidLive() {
+  const code = document.getElementById('mermaidOutput').textContent;
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({
+    code: code,
+    mermaid: { theme: 'default' },
+    autoSync: true,
+    updateDiagram: true
+  }))));
+  window.open(`https://mermaid.live/edit#pako:${encoded}`, '_blank');
+}
+
+function generateFromQuestionnaire() {
+  const category = document.getElementById('diagramCategory').value;
+  const type = document.getElementById('autodiagramType').value;
+
+  // Get relevant answers
+  const relevantQuestions = state.questions.filter(q => q.category === category);
+  const answers = relevantQuestions
+    .map(q => state.answers[q.id])
+    .filter(a => a && a.trim().length > 10);
+
+  if (answers.length === 0) {
+    showToast('Please answer questions in the ' + category + ' category first');
+    return;
+  }
+
+  // Generate based on category
+  let mermaid = '';
+  if (type === 'sequence') {
+    mermaid = generateSequenceFromAnswers(category, answers);
+  } else {
+    mermaid = generateFlowFromAnswers(category, answers);
+  }
+
+  document.getElementById('mermaidOutput').textContent = mermaid;
+  showToast('Diagram generated from questionnaire');
+}
+
+function generateSequenceFromAnswers(category, answers) {
+  let mermaid = `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%\nsequenceDiagram\n`;
+  mermaid += `    title ${category.charAt(0).toUpperCase() + category.slice(1)} Process Flow\n\n`;
+
+  if (category === 'process') {
+    mermaid += `    participant User\n    participant System\n    participant AI_Model\n    participant Database\n\n`;
+    mermaid += `    User->>System: Initiate Process\n`;
+    mermaid += `    System->>AI_Model: Send Data for Processing\n`;
+    mermaid += `    AI_Model->>AI_Model: Analyze & Generate Output\n`;
+    mermaid += `    AI_Model->>Database: Store Results\n`;
+    mermaid += `    Database-->>AI_Model: Confirm\n`;
+    mermaid += `    AI_Model-->>System: Return Results\n`;
+    mermaid += `    System-->>User: Display Output\n`;
+  } else if (category === 'data') {
+    mermaid += `    participant Source\n    participant ETL\n    participant DataLake\n    participant ML_Pipeline\n    participant Dashboard\n\n`;
+    mermaid += `    Source->>ETL: Extract Raw Data\n`;
+    mermaid += `    ETL->>ETL: Transform & Clean\n`;
+    mermaid += `    ETL->>DataLake: Load Processed Data\n`;
+    mermaid += `    DataLake->>ML_Pipeline: Feed Training Data\n`;
+    mermaid += `    ML_Pipeline->>ML_Pipeline: Train Model\n`;
+    mermaid += `    ML_Pipeline-->>Dashboard: Generate Insights\n`;
+  } else {
+    mermaid += `    participant Client\n    participant API\n    participant Service\n    participant Infrastructure\n\n`;
+    mermaid += `    Client->>API: Request\n`;
+    mermaid += `    API->>Service: Process\n`;
+    mermaid += `    Service->>Infrastructure: Execute\n`;
+    mermaid += `    Infrastructure-->>Service: Response\n`;
+    mermaid += `    Service-->>API: Result\n`;
+    mermaid += `    API-->>Client: Output\n`;
+  }
+
+  return mermaid;
+}
+
+function generateFlowFromAnswers(category, answers) {
+  let mermaid = `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%\nflowchart TD\n`;
+  mermaid += `    %% ${category.charAt(0).toUpperCase() + category.slice(1)} Workflow\n\n`;
+
+  if (category === 'process') {
+    mermaid += `    A[Start: Identify Pain Point] --> B[Document Current Process]\n`;
+    mermaid += `    B --> C{Suitable for AI?}\n`;
+    mermaid += `    C -->|Yes| D[Define Requirements]\n`;
+    mermaid += `    C -->|No| E[Consider Alternative Solutions]\n`;
+    mermaid += `    D --> F[Build POC]\n`;
+    mermaid += `    F --> G{POC Successful?}\n`;
+    mermaid += `    G -->|Yes| H[Scale to Production]\n`;
+    mermaid += `    G -->|No| I[Iterate & Refine]\n`;
+    mermaid += `    I --> F\n`;
+    mermaid += `    H --> J[Monitor & Optimize]\n`;
+    mermaid += `    E --> K[End]\n`;
+    mermaid += `    J --> K\n`;
+  } else if (category === 'data') {
+    mermaid += `    A[Data Sources] --> B[Data Ingestion]\n`;
+    mermaid += `    B --> C[Data Quality Check]\n`;
+    mermaid += `    C --> D{Quality OK?}\n`;
+    mermaid += `    D -->|Yes| E[Data Transformation]\n`;
+    mermaid += `    D -->|No| F[Data Cleansing]\n`;
+    mermaid += `    F --> C\n`;
+    mermaid += `    E --> G[Feature Engineering]\n`;
+    mermaid += `    G --> H[Data Storage]\n`;
+    mermaid += `    H --> I[ML Pipeline Ready]\n`;
+  } else {
+    mermaid += `    A[Requirements] --> B[Architecture Design]\n`;
+    mermaid += `    B --> C[Technology Selection]\n`;
+    mermaid += `    C --> D[Infrastructure Setup]\n`;
+    mermaid += `    D --> E[Integration Development]\n`;
+    mermaid += `    E --> F[Testing & Validation]\n`;
+    mermaid += `    F --> G{Tests Pass?}\n`;
+    mermaid += `    G -->|Yes| H[Deployment]\n`;
+    mermaid += `    G -->|No| I[Fix Issues]\n`;
+    mermaid += `    I --> F\n`;
+    mermaid += `    H --> J[Production]\n`;
+  }
+
+  return mermaid;
+}
+
+// Mermaid Templates
+const mermaidTemplates = {
+  aiPipeline: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+flowchart LR
+    subgraph Data["Data Layer"]
+        A[Data Sources] --> B[Data Lake]
+        B --> C[Feature Store]
+    end
+    subgraph Training["Training Pipeline"]
+        C --> D[Data Prep]
+        D --> E[Model Training]
+        E --> F[Model Registry]
+    end
+    subgraph Serving["Serving Layer"]
+        F --> G[Model Serving]
+        G --> H[API Gateway]
+        H --> I[Applications]
+    end
+    subgraph Monitoring["MLOps"]
+        G --> J[Monitoring]
+        J --> K[Alerts]
+        K --> E
+    end`,
+
+  documentProcessing: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+sequenceDiagram
+    title Document Processing Workflow
+    participant User
+    participant Upload_Service
+    participant OCR_Engine
+    participant NLP_Model
+    participant Database
+    participant Notification
+
+    User->>Upload_Service: Upload Document
+    Upload_Service->>OCR_Engine: Extract Text
+    OCR_Engine->>NLP_Model: Process Text
+    NLP_Model->>NLP_Model: Entity Extraction
+    NLP_Model->>NLP_Model: Classification
+    NLP_Model->>Database: Store Results
+    Database-->>Notification: Trigger Alert
+    Notification-->>User: Send Confirmation`,
+
+  customerService: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+sequenceDiagram
+    title AI Customer Service Bot
+    participant Customer
+    participant Chatbot
+    participant NLU_Engine
+    participant Knowledge_Base
+    participant Agent
+    participant CRM
+
+    Customer->>Chatbot: Send Message
+    Chatbot->>NLU_Engine: Parse Intent
+    NLU_Engine->>Knowledge_Base: Query FAQ
+    alt Answer Found
+        Knowledge_Base-->>Chatbot: Return Answer
+        Chatbot-->>Customer: Provide Response
+    else Escalation Needed
+        Knowledge_Base-->>Chatbot: No Match
+        Chatbot->>Agent: Transfer to Human
+        Agent->>CRM: Log Interaction
+        Agent-->>Customer: Personal Assistance
+    end`,
+
+  approvalWorkflow: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+flowchart TD
+    A[Request Submitted] --> B[AI Risk Assessment]
+    B --> C{Risk Level?}
+    C -->|Low| D[Auto-Approve]
+    C -->|Medium| E[Manager Review]
+    C -->|High| F[Committee Review]
+    E --> G{Approved?}
+    F --> G
+    G -->|Yes| H[Execute Request]
+    G -->|No| I[Reject with Reason]
+    D --> H
+    H --> J[Notify Requester]
+    I --> J
+    J --> K[Update Audit Log]`,
+
+  dataGovernance: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+flowchart TB
+    subgraph Governance["Data Governance Framework"]
+        A[Data Catalog] --> B[Data Quality]
+        B --> C[Data Lineage]
+        C --> D[Access Control]
+    end
+    subgraph Compliance["Compliance Layer"]
+        D --> E[Privacy Controls]
+        E --> F[Audit Logging]
+        F --> G[Retention Policies]
+    end
+    subgraph Operations["Operations"]
+        G --> H[Monitoring]
+        H --> I[Alerting]
+        I --> J[Remediation]
+    end`,
+
+  mlops: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+flowchart LR
+    subgraph Dev["Development"]
+        A[Experiment] --> B[Train]
+        B --> C[Evaluate]
+        C --> D[Register]
+    end
+    subgraph CI_CD["CI/CD Pipeline"]
+        D --> E[Build]
+        E --> F[Test]
+        F --> G[Package]
+    end
+    subgraph Prod["Production"]
+        G --> H[Deploy]
+        H --> I[Serve]
+        I --> J[Monitor]
+    end
+    J -->|Drift Detected| A`,
+
+  riskAssessment: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+flowchart TD
+    A[Identify Risk] --> B[Assess Probability]
+    A --> C[Assess Impact]
+    B --> D[Risk Score Matrix]
+    C --> D
+    D --> E{Score Level?}
+    E -->|Critical| F[Immediate Action]
+    E -->|High| G[Mitigation Plan]
+    E -->|Medium| H[Monitor]
+    E -->|Low| I[Accept]
+    F --> J[Implement Controls]
+    G --> J
+    J --> K[Review Effectiveness]
+    K --> A`,
+
+  changeManagement: `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%
+flowchart TD
+    A[Change Request] --> B[Impact Assessment]
+    B --> C[Stakeholder Analysis]
+    C --> D[Communication Plan]
+    D --> E[Training Program]
+    E --> F[Pilot Deployment]
+    F --> G{Pilot Success?}
+    G -->|Yes| H[Full Rollout]
+    G -->|No| I[Adjust Approach]
+    I --> F
+    H --> J[Adoption Monitoring]
+    J --> K[Feedback Collection]
+    K --> L[Continuous Improvement]`
+};
+
+function loadMermaidTemplate(templateName) {
+  const template = mermaidTemplates[templateName];
+  if (template) {
+    document.getElementById('mermaidOutput').textContent = template;
+    showToast(templateName + ' template loaded');
+  }
+}
+
+// ==================== FORMULA TAB FUNCTIONS ====================
+function showFormulaTab(tabName) {
+  // Hide all formula tab contents
+  document.querySelectorAll('.formula-tab-content').forEach(tab => {
+    tab.style.display = 'none';
+  });
+
+  // Show selected tab
+  const selectedTab = document.getElementById('formulaTab-' + tabName);
+  if (selectedTab) {
+    selectedTab.style.display = 'block';
+  }
+
+  // Update tab button states
+  document.querySelectorAll('#section-formulas .inner-tab').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+}
+
+// ==================== FLOW DIAGRAM LEGACY (keeping for compatibility) ====================
+function renderUseCaseFlow() {
+  const select = document.getElementById('flowUseCaseSelect');
+  if (!select) return;
+  const idx = select.value;
+  const container = document.getElementById('useCaseFlowDiagram');
+  if (!container) return;
+
+  if (!idx) {
+    container.style.display = 'none';
+    return;
+  }
+
+  const uc = state.useCases[idx];
+  if (!uc) return;
+
+  // Generate Mermaid code for the use case
+  let mermaid = `%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1e3a5f', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c9a227', 'lineColor': '#c9a227'}}}%%\nflowchart LR\n`;
+  mermaid += `    %% ${uc.title}\n`;
+  mermaid += `    A[Requirements] --> B[Data Prep]\n`;
+  mermaid += `    B --> C[${uc.category === 'Generation' ? 'Model Training' : 'Analysis'}]\n`;
+  mermaid += `    C --> D[Testing]\n`;
+  mermaid += `    D --> E[Deploy]\n`;
+  mermaid += `    E --> F[Monitor]\n`;
+
+  document.getElementById('mermaidOutput').textContent = mermaid;
+  showToast('Use case flow generated');
+}
+</script>
+
+</body>
+</html>

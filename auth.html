@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT + RBAC Middleware — How It Works</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242837;
+    --border: #2e3348;
+    --text: #e1e4ed;
+    --muted: #8b90a5;
+    --accent: #6c7aee;
+    --accent-glow: rgba(108,122,238,.15);
+    --green: #34d399;
+    --red: #f87171;
+    --orange: #fbbf24;
+    --cyan: #22d3ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 2rem; margin-bottom: 8px; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 1.05rem; margin-bottom: 40px; }
+  h2 { font-size: 1.35rem; margin: 48px 0 16px; color: var(--cyan); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  h3 { font-size: 1.1rem; margin: 24px 0 8px; }
+  p, li { color: var(--text); }
+  ul { padding-left: 24px; margin: 8px 0 16px; }
+  code { background: var(--surface2); padding: 2px 7px; border-radius: 4px; font-size: .92em; font-family: 'Fira Code', 'Cascadia Code', monospace; }
+
+  /* Status badge */
+  .status { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: .82rem; font-weight: 600; letter-spacing: .3px; }
+  .status-not-wired { background: rgba(251,191,36,.12); color: var(--orange); border: 1px solid rgba(251,191,36,.3); }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; }
+  .card-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+
+  /* Gap callout */
+  .gap { background: rgba(248,113,113,.06); border: 1px solid rgba(248,113,113,.25); border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+  .gap .label { color: var(--red); font-weight: 700; font-size: .85rem; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+
+  /* Role table */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .95rem; }
+  th { background: var(--surface2); text-align: left; padding: 10px 16px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: var(--accent-glow); }
+  .yes { color: var(--green); font-weight: 600; }
+  .no { color: var(--red); opacity: .5; }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 24px 0; flex-wrap: wrap; }
+  .flow-step { flex: 1; min-width: 160px; background: var(--surface); border: 1px solid var(--border); padding: 16px; text-align: center; position: relative; }
+  .flow-step:first-child { border-radius: 10px 0 0 10px; }
+  .flow-step:last-child { border-radius: 0 10px 10px 0; }
+  .flow-step .num { display: inline-block; width: 28px; height: 28px; line-height: 28px; background: var(--accent); color: #fff; border-radius: 50%; font-size: .8rem; font-weight: 700; margin-bottom: 6px; }
+  .flow-step .title { font-weight: 700; font-size: .9rem; }
+  .flow-step .desc { color: var(--muted); font-size: .8rem; margin-top: 4px; }
+  .flow-arrow { display: flex; align-items: center; font-size: 1.4rem; color: var(--accent); padding: 0 2px; }
+
+  /* Code block */
+  .codeblock { background: #0d0f16; border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; overflow-x: auto; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: .85rem; line-height: 1.8; white-space: pre; }
+  .codeblock .kw { color: #c792ea; }
+  .codeblock .fn { color: #82aaff; }
+  .codeblock .str { color: #c3e88d; }
+  .codeblock .cmt { color: #546e7a; }
+  .codeblock .cls { color: #ffcb6b; }
+  .codeblock .param { color: #f78c6c; }
+  .codeblock .op { color: #89ddff; }
+
+  /* Interactive demo */
+  .demo { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 24px 0; }
+  .demo h3 { margin-top: 0; color: var(--accent); }
+  .demo-row { display: flex; gap: 16px; margin: 12px 0; flex-wrap: wrap; align-items: center; }
+  .demo-row label { font-size: .85rem; color: var(--muted); min-width: 90px; }
+  select, input[type=text] { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; font-size: .9rem; min-width: 200px; }
+  select:focus, input:focus { outline: none; border-color: var(--accent); }
+  button { background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-size: .9rem; cursor: pointer; font-weight: 600; transition: .15s; }
+  button:hover { filter: brightness(1.15); }
+  .result { margin-top: 16px; padding: 16px; border-radius: 8px; font-family: monospace; font-size: .88rem; line-height: 1.6; min-height: 60px; }
+  .result-ok { background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.25); color: var(--green); }
+  .result-denied { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.25); color: var(--red); }
+  .result-info { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); }
+
+  /* Section links */
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 28px; margin: 24px 0; }
+  .toc a { color: var(--accent); text-decoration: none; display: block; padding: 4px 0; font-size: .95rem; }
+  .toc a:hover { text-decoration: underline; }
+
+  .file-ref { color: var(--muted); font-size: .8rem; font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>JWT + RBAC Middleware <span>Explainer</span></h1>
+<p class="subtitle">
+  How authentication and role-based access control work in the AI Agent Platform.
+  <br><span class="file-ref">Source: agents/servicenow_agent/src/middleware/auth.py</span>
+  &nbsp; <span class="status status-not-wired">NOT YET WIRED</span>
+</p>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <strong>Contents</strong>
+  <a href="#problem">1. The Problem (Security Gaps)</a>
+  <a href="#solution">2. The Solution (JWT + RBAC)</a>
+  <a href="#roles">3. The 4 Roles</a>
+  <a href="#flow">4. Request Flow (Step by Step)</a>
+  <a href="#jwt">5. How JWT Tokens Work</a>
+  <a href="#middleware">6. The Middleware Code Explained</a>
+  <a href="#wiring">7. How to Wire It In</a>
+  <a href="#demo">8. Interactive Demo</a>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="problem">1. The Problem (Security Gaps)</h2>
+
+<p>Two security audit findings (C1, C2) identified gaps in the current system:</p>
+
+<div class="gap">
+  <div class="label">C1 &mdash; No Authentication on Approval Endpoints</div>
+  <p>Anyone who can reach <code>POST /api/langgraph/approve/{id}</code> can approve a remediation plan. There's no check for who they are.</p>
+</div>
+
+<div class="gap">
+  <div class="label">C2 &mdash; Approver Identity from Request Body</div>
+  <p>The current code trusts <code>approved_by</code> from the JSON body. A user can type any name they want. There's no server-side identity verification.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">What This Means In Practice</div>
+  <p>Right now, the platform's <code>control_plane.py</code> only has <code>CORSMiddleware</code>. Any HTTP request to <code>/api/*</code> is processed without checking identity or permissions. This middleware module was written to close those gaps but <strong>has not been integrated yet</strong>.</p>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="solution">2. The Solution (JWT + RBAC)</h2>
+
+<div class="card">
+  <div class="card-title">Two-Layer Security</div>
+  <ul>
+    <li><strong>JWT (JSON Web Token)</strong> &mdash; Proves <em>who you are</em> (authentication). The server creates a signed token when you log in. Every subsequent request carries this token.</li>
+    <li><strong>RBAC (Role-Based Access Control)</strong> &mdash; Proves <em>what you can do</em> (authorization). Your role (viewer, operator, approver, admin) determines which endpoints you can access.</li>
+  </ul>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="roles">3. The 4 Roles</h2>
+
+<table>
+  <tr>
+    <th>Role</th>
+    <th>View Incidents</th>
+    <th>Trigger Workflows</th>
+    <th>Approve / Reject Plans</th>
+    <th>Change Config</th>
+    <th>Delete Resources</th>
+  </tr>
+  <tr>
+    <td><code>viewer</code></td>
+    <td class="yes">Yes</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+  </tr>
+  <tr>
+    <td><code>operator</code></td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+  </tr>
+  <tr>
+    <td><code>approver</code></td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+  </tr>
+  <tr>
+    <td><code>admin</code></td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+    <td class="yes">Yes</td>
+  </tr>
+</table>
+
+<div class="card">
+  <div class="card-title">Role Hierarchy</div>
+  <p>Higher roles <strong>inherit</strong> all permissions of lower roles. An <code>approver</code> can do everything an <code>operator</code> and <code>viewer</code> can do, plus approve/reject.</p>
+<div class="codeblock"><span class="cmt"># From auth.py</span>
+ROLE_HIERARCHY = {
+    Role.VIEWER:   {VIEWER},
+    Role.OPERATOR: {VIEWER, OPERATOR},
+    Role.APPROVER: {VIEWER, OPERATOR, APPROVER},
+    Role.ADMIN:    {VIEWER, OPERATOR, APPROVER, ADMIN},
+}</div>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="flow">4. Request Flow (Step by Step)</h2>
+
+<p>When a request hits <code>/api/*</code>, here's what happens:</p>
+
+<div class="flow">
+  <div class="flow-step">
+    <div class="num">1</div>
+    <div class="title">Request Arrives</div>
+    <div class="desc">Browser sends<br><code>POST /api/langgraph/approve/42</code><br>with <code>Authorization: Bearer &lt;token&gt;</code></div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="num">2</div>
+    <div class="title">Exempt Check</div>
+    <div class="desc">Is path <code>/health</code>, <code>/metrics</code>, or <code>/docs</code>?<br>If yes &rarr; skip auth.<br>If no &rarr; continue.</div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="num">3</div>
+    <div class="title">JWT Validation</div>
+    <div class="desc">Extract token from header.<br>Verify HMAC-SHA256 signature.<br>Check expiry timestamp.<br>Decode payload.</div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="num">4</div>
+    <div class="title">Role Check</div>
+    <div class="desc">Match endpoint to required role.<br><code>POST /approve/</code> needs <code>approver</code>.<br>Does user's role include it?</div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="num">5</div>
+    <div class="title">Result</div>
+    <div class="desc" style="color:var(--green)">200 OK &rarr; route handler runs</div>
+    <div class="desc" style="color:var(--red)">401/403 &rarr; rejected</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Dev Mode Bypass</div>
+  <p>When <code>ENVIRONMENT=local</code> and <code>AUTH_BYPASS=true</code> (the defaults), the middleware skips JWT validation and grants <code>admin</code> role to every request. This lets developers work without tokens. In production, these env vars must be changed.</p>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="jwt">5. How JWT Tokens Work</h2>
+
+<p>A JWT is three base64-encoded parts joined by dots:</p>
+
+<div class="codeblock"><span class="cmt">Header</span>.<span class="cmt">Payload</span>.<span class="cmt">Signature</span>
+
+<span class="cmt">Header  =</span> {"alg": "HS256", "typ": "JWT"}
+<span class="cmt">Payload =</span> {"sub": "sam@company.com", "role": "approver", "iat": 1707580800, "exp": 1707584400}
+<span class="cmt">Signature =</span> HMAC-SHA256(header.payload, <span class="str">JWT_SECRET</span>)</div>
+
+<div class="card">
+  <div class="card-title">Why No PyJWT Dependency?</div>
+  <p>This implementation uses Python's built-in <code>hmac</code> + <code>hashlib</code> modules. This means <strong>zero extra dependencies</strong> to install. The trade-off: it only supports HS256 (symmetric signing). For production with external identity providers (Okta, Auth0), you'd swap this for PyJWT with RS256 (asymmetric) support.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Token Lifecycle</div>
+  <ul>
+    <li><strong>Created</strong>: When user logs in, server calls <code>create_jwt(user_id, role)</code></li>
+    <li><strong>Sent</strong>: Browser stores token and sends it as <code>Authorization: Bearer &lt;token&gt;</code></li>
+    <li><strong>Verified</strong>: Middleware calls <code>verify_jwt(token)</code> on every request</li>
+    <li><strong>Expires</strong>: After <code>JWT_EXPIRY_SECONDS</code> (default 3600 = 1 hour), token is rejected</li>
+  </ul>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="middleware">6. The Middleware Code Explained</h2>
+
+<p>The file provides <strong>three ways</strong> to use authentication:</p>
+
+<div class="card">
+  <div class="card-title">Option A &mdash; RBACMiddleware (Global, Automatic)</div>
+  <p>A Starlette middleware that intercepts <em>every</em> <code>/api/*</code> request. No changes needed to individual route handlers. This is the recommended approach.</p>
+<div class="codeblock"><span class="cmt"># What it does for every request:</span>
+<span class="kw">class</span> <span class="cls">RBACMiddleware</span>(BaseHTTPMiddleware):
+    <span class="kw">async def</span> <span class="fn">dispatch</span>(self, request, call_next):
+        <span class="cmt"># 1. Skip /health, /metrics, /docs</span>
+        <span class="cmt"># 2. Skip non-/api/ paths</span>
+        <span class="cmt"># 3. Dev bypass if ENVIRONMENT=local</span>
+        <span class="cmt"># 4. Extract Bearer token from header</span>
+        <span class="cmt"># 5. Verify JWT signature + expiry</span>
+        <span class="cmt"># 6. Attach user to request.state.user</span>
+        <span class="cmt"># 7. Check endpoint role requirements</span>
+        <span class="cmt"># 8. Return 401/403 or continue</span></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Option B &mdash; get_current_user (Per-Endpoint Dependency)</div>
+  <p>A FastAPI <code>Depends()</code> injection. Use this when you need the user object inside a specific handler.</p>
+<div class="codeblock"><span class="kw">from</span> fastapi <span class="kw">import</span> Depends
+
+<span class="kw">@app.post</span>(<span class="str">"/api/approve/{id}"</span>)
+<span class="kw">async def</span> <span class="fn">approve</span>(id: str, user: AuthenticatedUser = Depends(get_current_user)):
+    <span class="cmt"># user.user_id  = "sam@company.com" (from JWT, NOT from body)</span>
+    <span class="cmt"># user.role      = Role.APPROVER</span>
+    <span class="cmt"># user.has_role(Role.APPROVER) = True</span>
+    <span class="kw">if not</span> user.has_role(Role.APPROVER):
+        <span class="kw">raise</span> HTTPException(<span class="param">403</span>, <span class="str">"Insufficient permissions"</span>)</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Option C &mdash; @require_role Decorator</div>
+  <p>A decorator for route handlers. Assumes the middleware already set <code>request.state.user</code>.</p>
+<div class="codeblock"><span class="kw">@app.post</span>(<span class="str">"/api/approve/{id}"</span>)
+<span class="kw">@require_role</span>(Role.APPROVER)
+<span class="kw">async def</span> <span class="fn">approve</span>(id: str, request: Request):
+    user = request.state.user  <span class="cmt"># Already validated by decorator</span>
+    <span class="cmt"># Guaranteed to be at least APPROVER role</span></div>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="wiring">7. How to Wire It In</h2>
+
+<p>Currently, <code>control_plane.py</code> only adds CORS. To enable auth:</p>
+
+<div class="card">
+  <div class="card-title">Current Code (NO auth)</div>
+<div class="codeblock"><span class="cmt"># agents/servicenow_agent/src/api/control_plane.py — create_app()</span>
+
+app = FastAPI(title=<span class="str">"AI Agent Platform"</span>, lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[<span class="str">"*"</span>],
+    allow_methods=[<span class="str">"*"</span>],
+    allow_headers=[<span class="str">"*"</span>],
+)
+<span class="cmt"># &lt;-- No RBACMiddleware. Every /api/ request is unauthenticated.</span></div>
+</div>
+
+<div class="card" style="border-color: var(--green);">
+  <div class="card-title" style="color: var(--green);">What Needs to Change (2 lines)</div>
+<div class="codeblock"><span class="cmt"># Add this import at the top:</span>
+<span class="kw">from</span> agents.servicenow_agent.src.middleware <span class="kw">import</span> RBACMiddleware
+
+<span class="cmt"># Add this line AFTER CORSMiddleware:</span>
+app.add_middleware(RBACMiddleware)
+
+<span class="cmt"># That's it. All /api/* endpoints are now protected.</span>
+<span class="cmt"># /health, /metrics, /docs remain open.</span>
+<span class="cmt"># Dev mode still bypasses auth (ENVIRONMENT=local).</span></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Endpoint &rarr; Role Mapping</div>
+  <p>The middleware uses this map to decide the minimum role for each endpoint:</p>
+<div class="codeblock">ENDPOINT_ROLES = {
+    <span class="str">"GET  /api/incidents"</span>:            Role.VIEWER,
+    <span class="str">"GET  /api/langgraph/incidents"</span>:   Role.VIEWER,
+    <span class="str">"POST /api/langgraph/approve/"</span>:    Role.APPROVER,    <span class="cmt"># Closes C1</span>
+    <span class="str">"POST /api/langgraph/reject/"</span>:     Role.APPROVER,
+    <span class="str">"POST /api/langgraph/workflow"</span>:     Role.OPERATOR,
+    <span class="str">"POST /api/v2/data-agent/"</span>:        Role.OPERATOR,
+    <span class="str">"PUT  /api/config"</span>:                Role.ADMIN,
+    <span class="str">"DELETE /api/"</span>:                    Role.ADMIN,
+}</div>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="demo">8. Interactive Demo</h2>
+
+<div class="demo">
+  <h3>Simulate a Request</h3>
+  <p style="color:var(--muted); font-size:.88rem; margin-bottom:16px;">Pick a role and endpoint to see what happens when the middleware processes the request.</p>
+
+  <div class="demo-row">
+    <label>Your Role:</label>
+    <select id="role">
+      <option value="viewer">viewer</option>
+      <option value="operator">operator</option>
+      <option value="approver" selected>approver</option>
+      <option value="admin">admin</option>
+    </select>
+  </div>
+
+  <div class="demo-row">
+    <label>Endpoint:</label>
+    <select id="endpoint">
+      <option value="GET /api/incidents">GET /api/incidents (View incidents)</option>
+      <option value="POST /api/langgraph/workflow">POST /api/langgraph/workflow (Trigger workflow)</option>
+      <option value="POST /api/langgraph/approve/42" selected>POST /api/langgraph/approve/42 (Approve plan)</option>
+      <option value="POST /api/langgraph/reject/42">POST /api/langgraph/reject/42 (Reject plan)</option>
+      <option value="POST /api/v2/data-agent/pipeline">POST /api/v2/data-agent/pipeline (Create pipeline)</option>
+      <option value="PUT /api/config">PUT /api/config (Change config)</option>
+      <option value="DELETE /api/resource/1">DELETE /api/resource/1 (Delete resource)</option>
+      <option value="GET /health">GET /health (Health check - exempt)</option>
+      <option value="GET /metrics">GET /metrics (Metrics - exempt)</option>
+    </select>
+  </div>
+
+  <div class="demo-row">
+    <label>Auth Mode:</label>
+    <select id="authmode">
+      <option value="token">Valid JWT Token</option>
+      <option value="notoken">No Token (missing header)</option>
+      <option value="expired">Expired Token</option>
+      <option value="devbypass">Dev Bypass (ENVIRONMENT=local)</option>
+    </select>
+  </div>
+
+  <button onclick="simulate()">Simulate Request</button>
+
+  <div id="result" class="result result-info">Choose options above and click Simulate.</div>
+</div>
+
+<script>
+const ROLE_HIERARCHY = {
+  viewer:   new Set(["viewer"]),
+  operator: new Set(["viewer", "operator"]),
+  approver: new Set(["viewer", "operator", "approver"]),
+  admin:    new Set(["viewer", "operator", "approver", "admin"]),
+};
+
+const ENDPOINT_ROLES = {
+  "GET /api/incidents":               "viewer",
+  "GET /api/langgraph/incidents":     "viewer",
+  "POST /api/langgraph/approve/":     "approver",
+  "POST /api/langgraph/reject/":      "approver",
+  "POST /api/langgraph/workflow":     "operator",
+  "POST /api/v2/data-agent/":        "operator",
+  "PUT /api/config":                  "admin",
+  "DELETE /api/":                     "admin",
+};
+
+const EXEMPT = ["/health", "/metrics", "/docs", "/openapi.json"];
+
+function simulate() {
+  const role = document.getElementById("role").value;
+  const endpoint = document.getElementById("endpoint").value;
+  const authmode = document.getElementById("authmode").value;
+  const el = document.getElementById("result");
+  const path = endpoint.split(" ").slice(1).join(" ");
+
+  let lines = [];
+  lines.push(`REQUEST: ${endpoint}`);
+  lines.push(`AUTH MODE: ${authmode}`);
+  lines.push("---");
+
+  // Step 1: exempt check
+  const isExempt = EXEMPT.some(p => path.startsWith(p));
+  if (isExempt) {
+    lines.push("Step 1: Path is EXEMPT from auth (/health, /metrics, /docs)");
+    lines.push("Step 2: Middleware SKIPS authentication");
+    lines.push("");
+    lines.push("RESULT: 200 OK - Request passes through without auth");
+    el.className = "result result-ok";
+    el.textContent = lines.join("\n");
+    return;
+  }
+  lines.push("Step 1: Path starts with /api/ -> requires authentication");
+
+  // Step 2: dev bypass
+  if (authmode === "devbypass") {
+    lines.push("Step 2: ENVIRONMENT=local + AUTH_BYPASS=true -> dev bypass");
+    lines.push("Step 3: User set to dev-admin with role=admin");
+    lines.push("");
+    lines.push("RESULT: 200 OK - Dev bypass grants full access");
+    el.className = "result result-ok";
+    el.textContent = lines.join("\n");
+    return;
+  }
+
+  // Step 3: token check
+  if (authmode === "notoken") {
+    lines.push("Step 2: Authorization header is MISSING");
+    lines.push("");
+    lines.push('RESULT: 401 Unauthorized - {"detail": "Missing or invalid Authorization header"}');
+    el.className = "result result-denied";
+    el.textContent = lines.join("\n");
+    return;
+  }
+
+  if (authmode === "expired") {
+    lines.push("Step 2: Token found in Authorization header");
+    lines.push("Step 3: JWT verify -> signature OK, but exp < current time");
+    lines.push("");
+    lines.push('RESULT: 401 Unauthorized - {"detail": "Invalid or expired token"}');
+    el.className = "result result-denied";
+    el.textContent = lines.join("\n");
+    return;
+  }
+
+  // Valid token
+  lines.push("Step 2: Token found in Authorization: Bearer header");
+  lines.push("Step 3: JWT verify -> signature OK, not expired");
+  lines.push(`Step 4: Decoded payload -> sub="${role}@company.com", role="${role}"`);
+  lines.push(`Step 5: User attached to request.state.user`);
+
+  // Step 4: role check
+  let requiredRole = null;
+  for (const [pattern, minRole] of Object.entries(ENDPOINT_ROLES)) {
+    if (endpoint.startsWith(pattern)) {
+      requiredRole = minRole;
+      break;
+    }
+  }
+
+  if (requiredRole) {
+    const userRoles = ROLE_HIERARCHY[role];
+    const allowed = userRoles.has(requiredRole);
+    lines.push(`Step 6: Endpoint requires role="${requiredRole}"`);
+    lines.push(`Step 7: User role="${role}" includes {${[...userRoles].join(", ")}}`);
+
+    if (allowed) {
+      lines.push(`Step 8: ${requiredRole} is in user's role set -> ALLOWED`);
+      lines.push("");
+      lines.push(`RESULT: 200 OK - ${role} can access this endpoint`);
+      el.className = "result result-ok";
+    } else {
+      lines.push(`Step 8: ${requiredRole} is NOT in user's role set -> DENIED`);
+      lines.push("");
+      lines.push(`RESULT: 403 Forbidden - {"detail": "Insufficient permissions: requires ${requiredRole}"}`);
+      el.className = "result result-denied";
+    }
+  } else {
+    lines.push("Step 6: No specific role mapping for this endpoint");
+    lines.push("Step 7: Authenticated user -> allowed by default");
+    lines.push("");
+    lines.push("RESULT: 200 OK - Any authenticated user can access");
+    el.className = "result result-ok";
+  }
+
+  el.textContent = lines.join("\n");
+}
+</script>
+
+<!-- ================================================================== -->
+<h2>Architecture Diagram</h2>
+
+<div class="card">
+<div class="codeblock" style="font-size:.82rem; line-height:1.9;">
+                           AI Agent Platform — Auth Flow
+
+  Browser                    FastAPI (control_plane.py)                  Backend
+  -------                    ---------------------------                 -------
+
+  1. Login    ───────────►   POST /api/auth/login
+                             create_jwt("sam", "approver")
+              ◄───────────   { "token": "eyJhbG..." }
+
+  2. API Call ───────────►   POST /api/langgraph/approve/42
+                             Authorization: Bearer eyJhbG...
+                                  │
+                                  ▼
+                          ┌─────────────────┐
+                          │  RBACMiddleware  │
+                          ├─────────────────┤
+                          │ Exempt?   No     │
+                          │ Dev mode? No     │
+                          │ Token?    Yes    │
+                          │ Valid?    Yes    │
+                          │ Expired?  No     │
+                          │ Role?   approver │
+                          │ Need?   approver │
+                          │ Match?   YES ✓   │
+                          └────────┬────────┘
+                                   │
+                                   ▼
+                          Route handler runs        ──►  Kafka: incident.approved
+                          user = request.state.user       (approver from JWT, not body)
+                          user.user_id = "sam"
+</div>
+</div>
+
+<div class="card" style="margin-top: 48px; border-color: var(--muted); text-align:center;">
+  <p style="color:var(--muted); font-size:.85rem;">
+    Enterprise Agentic Platform &bull; JWT + RBAC Middleware Explainer<br>
+    Source: <code>agents/servicenow_agent/src/middleware/auth.py</code> (320 lines)
+  </p>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,3003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Gen AI & Agentic AI Consulting Framework</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg-primary: #0a0f1a;
+            --color-bg-secondary: #111827;
+            --color-bg-tertiary: #1f2937;
+            --color-bg-card: #161f2d;
+            --color-bg-elevated: #1e293b;
+            --color-accent-primary: #3b82f6;
+            --color-accent-secondary: #8b5cf6;
+            --color-accent-tertiary: #06b6d4;
+            --color-accent-success: #10b981;
+            --color-accent-warning: #f59e0b;
+            --color-accent-danger: #ef4444;
+            --color-text-primary: #f8fafc;
+            --color-text-secondary: #94a3b8;
+            --color-text-muted: #64748b;
+            --color-border-subtle: rgba(255,255,255,0.06);
+            --color-border-medium: rgba(255,255,255,0.1);
+            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --gradient-cool: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+            --shadow-xl: 0 25px 50px rgba(0,0,0,0.6);
+            --shadow-glow: 0 0 40px rgba(59,130,246,0.15);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        h1 { font-size: 3.5rem; }
+        h2 { font-size: 2.25rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.125rem; }
+
+        p { color: var(--color-text-secondary); }
+
+        a {
+            color: var(--color-accent-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover { color: var(--color-accent-tertiary); }
+
+        /* Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .container-narrow {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Background Effects */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse at 0% 0%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(139,92,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(6,182,212,0.03) 0%, transparent 60%);
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10,15,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border-subtle);
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-tertiary);
+        }
+
+        .nav-link.active {
+            color: var(--color-accent-primary);
+            background: rgba(59,130,246,0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 0 6rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-medium);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--color-accent-tertiary);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent-success);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero h1 {
+            margin-bottom: 1.5rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .hero h1 .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--color-border-subtle);
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 6rem 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            max-width: 800px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--color-border-medium);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .card-icon.secondary { background: var(--gradient-secondary); }
+        .card-icon.warm { background: var(--gradient-warm); }
+        .card-icon.cool { background: var(--gradient-cool); }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .card-content {
+            color: var(--color-text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        .card-content ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card-content li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .card-content li:last-child {
+            border-bottom: none;
+        }
+
+        .card-content li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent-primary);
+            font-weight: 600;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 992px) {
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* Phase Section */
+        .phase {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .phase-number {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            font-size: 2rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .phase-number.pre { background: var(--gradient-warm); }
+        .phase-number.agentic { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
+
+        .phase-info h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-info p {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        .phase-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .phase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-tertiary);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .phase-badge.duration {
+            color: var(--color-accent-tertiary);
+        }
+
+        .phase-badge.team {
+            color: var(--color-accent-success);
+        }
+
+        /* Deliverables */
+        .deliverables {
+            background: linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-elevated) 100%);
+            border: 1px solid var(--color-accent-primary);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .deliverables h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--color-accent-warning);
+            margin-bottom: 1.5rem;
+        }
+
+        .deliverables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .deliverable-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--radius-md);
+            font-size: 0.9375rem;
+        }
+
+        .deliverable-check {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-accent-success);
+            color: var(--color-bg-primary);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border-subtle);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9375rem;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        th {
+            background: var(--color-bg-tertiary);
+            font-weight: 600;
+            color: var(--color-accent-primary);
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background: rgba(59,130,246,0.03);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* RACI Badges */
+        .raci-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .raci-r { background: var(--color-accent-danger); color: white; }
+        .raci-a { background: var(--color-accent-warning); color: var(--color-bg-primary); }
+        .raci-c { background: var(--color-accent-tertiary); color: var(--color-bg-primary); }
+        .raci-i { background: var(--color-text-muted); color: white; }
+
+        /* Framework Cards */
+        .framework-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        .framework-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .framework-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .framework-desc {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Agentic Section */
+        .agentic-box {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(236,72,153,0.1) 100%);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            margin: 2rem 0;
+        }
+
+        .agentic-box h3 {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .agentic-box .subtitle {
+            color: var(--color-text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .agentic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .agentic-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+        }
+
+        .agentic-card h4 {
+            color: #ec4899;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .agentic-card p {
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Architecture Diagram */
+        .architecture-box {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .architecture-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .architecture-title h4 {
+            color: var(--color-accent-tertiary);
+        }
+
+        .architecture-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .arch-layer {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .layer-label {
+            width: 160px;
+            flex-shrink: 0;
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .layer-items {
+            flex: 1;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .layer-item {
+            padding: 0.625rem 1rem;
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            font-size: 0.8125rem;
+            transition: all 0.2s ease;
+        }
+
+        .layer-item:hover {
+            border-color: var(--color-accent-primary);
+            background: rgba(59,130,246,0.1);
+        }
+
+        .layer-item.highlight {
+            border-color: var(--color-accent-tertiary);
+            background: rgba(6,182,212,0.15);
+        }
+
+        /* Tabs */
+        .tabs {
+            margin: 2rem 0;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 50px;
+            color: var(--color-text-secondary);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--color-border-medium);
+            color: var(--color-text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--color-accent-primary);
+            border-color: var(--color-accent-primary);
+            color: white;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Governance Pillars */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .pillar {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pillar:hover {
+            border-color: var(--color-accent-primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pillar-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .pillar h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar p {
+            font-size: 0.8125rem;
+            line-height: 1.5;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-primary);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: calc(50% + 2.5rem);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: calc(50% + 2.5rem);
+        }
+
+        .timeline-content {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -2.5rem;
+            width: 16px;
+            height: 16px;
+            background: var(--color-accent-primary);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 20px var(--color-accent-primary);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            right: auto;
+            left: -2.5rem;
+        }
+
+        .timeline-content h4 {
+            color: var(--color-accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline-date {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(59,130,246,0.15);
+            border-radius: 20px;
+            font-size: 0.8125rem;
+            color: var(--color-accent-primary);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: #e6edf3;
+            line-height: 1.7;
+        }
+
+        .code-block .comment { color: #8b949e; }
+        .code-block .keyword { color: #ff7b72; }
+        .code-block .string { color: #a5d6ff; }
+        .code-block .function { color: #d2a8ff; }
+        .code-block .variable { color: #79c0ff; }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .metric-trend {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .metric-trend.up {
+            background: rgba(16,185,129,0.15);
+            color: var(--color-accent-success);
+        }
+
+        .metric-trend.down {
+            background: rgba(239,68,68,0.15);
+            color: var(--color-accent-danger);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-bar {
+            height: 6px;
+            background: var(--color-bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        /* Checklist */
+        .checklist {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+        }
+
+        .checklist h4 {
+            color: var(--color-accent-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-box {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--color-accent-primary);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-box:hover {
+            background: rgba(59,130,246,0.1);
+        }
+
+        .checklist-box.checked {
+            background: var(--color-accent-primary);
+        }
+
+        .checklist-box.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .checklist-text strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .checklist-text span {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin: 1.5rem 0;
+        }
+
+        .alert.warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+
+        .alert.info {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .alert.danger {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .alert h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .alert.warning h4 { color: var(--color-accent-warning); }
+        .alert.info h4 { color: var(--color-accent-primary); }
+        .alert.danger h4 { color: var(--color-accent-danger); }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 0;
+            text-align: center;
+            border-top: 1px solid var(--color-border-subtle);
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer .version {
+            display: inline-block;
+            background: var(--color-bg-card);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .phase-header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                padding-left: 3.5rem;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+
+            .timeline-content::after,
+            .timeline-item:nth-child(even) .timeline-content::after {
+                left: -2.5rem;
+                right: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.75rem; }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .arch-layer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .layer-label {
+                width: auto;
+                text-align: left;
+            }
+        }
+
+        /* Print */
+        @media print {
+            .header, .bg-gradient {
+                display: none;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .phase {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Utility Classes */
+        .text-gradient {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Enterprise AI Framework</div>
+                <nav class="nav">
+                    <a href="#overview" class="nav-link">Overview</a>
+                    <a href="#frameworks" class="nav-link">Frameworks</a>
+                    <a href="#phases" class="nav-link">Phases</a>
+                    <a href="#governance" class="nav-link">Governance</a>
+                    <a href="#security" class="nav-link">Security</a>
+                    <a href="#roadmap" class="nav-link">Roadmap</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <!-- Hero Section -->
+        <section class="hero" id="overview">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge">Enterprise Consulting Framework v4.0</div>
+                    <h1>
+                        <span class="gradient-text">Gen AI & Agentic AI</span><br>
+                        Consulting Methodology
+                    </h1>
+                    <p class="hero-description">
+                        A production-ready methodology synthesizing Big 4 consulting frameworks, 
+                        hyperscale cloud provider best practices, and emerging agentic AI patterns 
+                        for Fortune 500 AI transformation programs.
+                    </p>
+
+                    <div class="alert warning">
+                        <h4>⚠️ Industry Reality Check</h4>
+                        <p>74% of organizations have yet to show tangible AI value (BCG). Only 6% qualify as AI high performers achieving meaningful EBIT impact (McKinsey). 80% of AI projects fail to deliver outcomes—not due to model performance, but organizational, change management, and governance failures.</p>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">9</div>
+                            <div class="stat-label">Engagement Phases</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">60+</div>
+                            <div class="stat-label">Deliverables</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">12-24</div>
+                            <div class="stat-label">Months Duration</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">100+</div>
+                            <div class="stat-label">Quality Gates</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industry Frameworks Section -->
+        <section class="section" id="frameworks">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-label">📊 Industry Standards</div>
+                    <h2 class="section-title">Big 4 & Cloud Provider Frameworks</h2>
+                    <p class="section-description">
+                        Major consulting firms have developed remarkably similar frameworks despite different branding. 
+                        The common thread involves structured phases with quality gates at consistent points.
+                    </p>
+                </div>
+
+                <h3 class="mt-4 mb-3">Big 4 Consulting AI Frameworks</h3>
+                <div class="grid-3">
+                    <div class="framework-card">
+                        <div class="framework-logo">Deloitte</div>
+                        <div class="framework-name">Trustworthy AI Framework</div>
+                        <div class="framework-desc">
+                            Six dimensions of trust: Fairness, Transparency, Robustness, Safety, Accountability, and Privacy. 
+                            Aligns with NIST AI RMF for structured risk management and ethical application.
+                        </div>
+                    </div>
+                    <div class="framework-card">
+                        <div class="framework-logo">PwC</div>
+                        <div class="framework-name">Responsible AI Toolkit</div>
+                        <div class="framework-desc">
+                            Four pillars across 19 sub-domains: Principles/Governance, Risk/Policy/Control, 
+                            Technology/Enablers, and Training/Culture for comprehensive AI management.
+                        </div>
+                    </div>
+                    <div class="framework-card">
+                        <div class="framework-logo">KPMG</div>
+                        <div class="framework-name">Trusted AI Framework</div>
+                        <div class="framework-desc">
+                            10 ethical pillars spanning reliability through accountability. Includes AI Risk and 
+                            Controls Guide for systematic risk identification and mitigation.
+                        </div>
+                    </div>
+                    <div class="framework-card">
+                        <div class="framework-logo">EY</div>
+                        <div class="framework-name">Trusted AI Platform</div>
+                        <div class="framework-desc">
+                            Quantitative risk scoring with technical, stakeholder, and control effectiveness scores. 
+                            Enables measurable governance and compliance tracking.
+                        </div>
+                    </div>
+                    <div class="framework-card">
+                        <div class="framework-logo">Accenture</div>
+                        <div class="framework-name">Responsible AI Framework</div>
+                        <div class="framework-desc">
+                            Appointed Chief Responsible AI Officer in 2024. Focus on scaling GenAI responsibly 
+                            with embedded ethics throughout the AI lifecycle.
+                        </div>
+                    </div>
+                    <div class="framework-card">
+                        <div class="framework-logo">McKinsey</div>
+                        <div class="framework-name">Rewired Framework</div>
+                        <div class="framework-desc">
+                            QuantumBlack's comprehensive approach covering Strategy, Talent, Operating Model, 
+                            Technology, Data, and Adoption for enterprise transformation.
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-3">Cloud Provider MLOps Maturity Models</h3>
+                <div class="tabs">
+                    <div class="tab-nav">
+                        <button class="tab-btn active" onclick="switchTab(event, 'tab-google')">Google Cloud</button>
+                        <button class="tab-btn" onclick="switchTab(event, 'tab-aws')">AWS</button>
+                        <button class="tab-btn" onclick="switchTab(event, 'tab-azure')">Microsoft Azure</button>
+                    </div>
+
+                    <div id="tab-google" class="tab-panel active">
+                        <div class="card">
+                            <div class="card-content">
+                                <p><strong>Google's Three-Level MLOps Maturity Model:</strong></p>
+                                <ul>
+                                    <li><strong>Level 0 - Manual Process:</strong> Manual model training, deployment, and monitoring. No automation.</li>
+                                    <li><strong>Level 1 - ML Pipeline Automation:</strong> Automated training pipelines, continuous training, but manual deployment.</li>
+                                    <li><strong>Level 2 - Full CI/CD Integration:</strong> Automated training, validation, and deployment. Complete MLOps with Model Registry, Feature Store, and monitoring.</li>
+                                </ul>
+                                <p class="mt-2"><strong>Key Services:</strong> Vertex AI, Vertex AI Agent Builder, Cloud Composer, BigQuery ML, Model Armor for responsible AI.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-aws" class="tab-panel">
+                        <div class="card">
+                            <div class="card-content">
+                                <p><strong>AWS Four-Stage MLOps Maturity:</strong></p>
+                                <ul>
+                                    <li><strong>Initial:</strong> Experimentation phase with manual processes and ad-hoc workflows.</li>
+                                    <li><strong>Repeatable:</strong> Standardized processes, version control, basic automation.</li>
+                                    <li><strong>Scalable:</strong> Automated pipelines, model registry, feature store implementation.</li>
+                                    <li><strong>Optimized:</strong> Full MLOps with auto-retraining, drift detection, and continuous monitoring.</li>
+                                </ul>
+                                <p class="mt-2"><strong>Key Services:</strong> SageMaker, Bedrock, SageMaker Clarify, Bedrock Guardrails (6 safeguard policies).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-azure" class="tab-panel">
+                        <div class="card">
+                            <div class="card-content">
+                                <p><strong>Microsoft Five-Level MLOps Maturity:</strong></p>
+                                <ul>
+                                    <li><strong>Level 0:</strong> No automation, manual everything.</li>
+                                    <li><strong>Level 1:</strong> DevOps automation only, no ML-specific pipelines.</li>
+                                    <li><strong>Level 2:</strong> Training pipeline automation.</li>
+                                    <li><strong>Level 3:</strong> Model deployment automation with CI/CD.</li>
+                                    <li><strong>Level 4:</strong> Fully automated operations with auto-retraining triggers.</li>
+                                </ul>
+                                <p class="mt-2"><strong>Key Services:</strong> Azure ML, Azure OpenAI, Responsible AI Dashboard, 10 design areas in Well-Architected Framework for AI.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert info">
+                    <h4>💡 Common Capability Requirements at Mature Stages</h4>
+                    <p>All three providers converge on: Model Registry with version control and approval workflows, Feature Store separating online/offline stores, Automated pipelines for continuous training, Model monitoring for drift detection, and Responsible AI tooling.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 0: Pre-Engagement -->
+        <section class="phase" id="phases">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number pre">0</div>
+                    <div class="phase-info">
+                        <h2>Pre-Engagement & Sales Qualification</h2>
+                        <p>Establishing engagement foundation, stakeholder alignment, and commercial framework before formal consulting begins.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 2-4 Weeks</span>
+                            <span class="phase-badge team">👥 Sales, Engagement Lead, Legal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon warm">🎯</div>
+                            <div>
+                                <div class="card-title">Client Context Analysis</div>
+                                <div class="card-subtitle">Understanding the organizational landscape</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Industry vertical analysis and competitive landscape mapping</li>
+                                <li>Executive stakeholder identification (C-suite, BU leaders, IT leadership)</li>
+                                <li>Current digital transformation maturity assessment</li>
+                                <li>Existing AI/ML initiatives and technical debt inventory</li>
+                                <li>Regulatory and compliance environment analysis</li>
+                                <li>Budget allocation patterns and investment appetite</li>
+                                <li>Organizational change readiness indicators</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon warm">📋</div>
+                            <div>
+                                <div class="card-title">Engagement Definition</div>
+                                <div class="card-subtitle">Scoping and commercial framework</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Strategic objectives alignment (cost reduction, revenue growth, innovation)</li>
+                                <li>Success metrics and KPI framework definition</li>
+                                <li>Expected business outcomes quantification</li>
+                                <li>Risk appetite and tolerance thresholds</li>
+                                <li>Commercial terms (T&M, Fixed-price, Outcome-based)</li>
+                                <li>IP ownership and licensing arrangements</li>
+                                <li>Exit clauses and transition provisions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Agentic AI Pre-Engagement Considerations</h3>
+                    <p class="subtitle">Specific qualification activities for autonomous AI implementations</p>
+                    <div class="agentic-grid">
+                        <div class="agentic-card">
+                            <h4>🔗 Autonomy Assessment</h4>
+                            <p>Evaluate organizational readiness for autonomous AI decision-making. Assess risk tolerance for agent-initiated actions and establish preliminary boundaries for agent authority levels.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>⚡ Integration Complexity</h4>
+                            <p>Map existing systems agents will interact with. Identify API availability, data access patterns, and real-time requirements for multi-agent orchestration.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🛡️ Control Requirements</h4>
+                            <p>Define human-in-the-loop requirements early. Establish audit trail expectations and regulatory compliance needs for autonomous operations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 0 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Signed Master Services Agreement (MSA)</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Statement of Work (SOW) v1.0</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Project Charter Document</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Stakeholder Register & RACI Matrix</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Communication Plan</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Preliminary Risk Register</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 1: Discovery & Assessment -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">1</div>
+                    <div class="phase-info">
+                        <h2>Discovery & AI Readiness Assessment</h2>
+                        <p>Deep-dive analysis using MITRE/Microsoft frameworks for organizational capabilities, data landscape, and AI opportunity mapping.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 4-8 Weeks</span>
+                            <span class="phase-badge team">👥 CoE Lead, Business Analysts, Data Engineers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🔍</div>
+                            <div>
+                                <div class="card-title">Business & Strategic Review</div>
+                                <div class="card-subtitle">Aligning AI with business objectives</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Strategic objectives deep-dive with executive interviews</li>
+                                <li>Value chain analysis and process decomposition</li>
+                                <li>Competitive intelligence and market positioning</li>
+                                <li>Business model canvas for AI-enabled transformation</li>
+                                <li>Revenue stream identification for AI monetization</li>
+                                <li>Customer journey mapping for experience enhancement</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🏗️</div>
+                            <div>
+                                <div class="card-title">Technical Infrastructure Assessment</div>
+                                <div class="card-subtitle">Evaluating current technology stack</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Cloud infrastructure maturity (GCP, AWS, Azure readiness)</li>
+                                <li>Data warehouse and lakehouse architecture review</li>
+                                <li>API gateway and integration layer assessment</li>
+                                <li>Security infrastructure and IAM capabilities</li>
+                                <li>DevOps/MLOps toolchain evaluation</li>
+                                <li>Monitoring and observability stack review</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon secondary">📊</div>
+                            <div>
+                                <div class="card-title">Data Maturity Assessment</div>
+                                <div class="card-subtitle">Evaluating data readiness for AI</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Data inventory and catalog completeness</li>
+                                <li>Data quality scoring (completeness, accuracy, timeliness)</li>
+                                <li>Data lineage and provenance documentation</li>
+                                <li>Master data management capabilities</li>
+                                <li>Data governance framework maturity</li>
+                                <li>Real-time data streaming capabilities</li>
+                                <li>Unstructured data management (documents, images, video)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon secondary">💡</div>
+                            <div>
+                                <div class="card-title">Use Case Discovery & Prioritization</div>
+                                <div class="card-subtitle">Identifying high-value opportunities</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Department-by-department opportunity interviews</li>
+                                <li>Pain point cataloging and prioritization</li>
+                                <li>Business value potential scoring (revenue, cost, risk)</li>
+                                <li>Technical feasibility assessment</li>
+                                <li>Time-to-value estimation</li>
+                                <li>Dependency mapping between use cases</li>
+                                <li>Create shortlist of 3-10 prioritized use cases</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Agentic AI Discovery Dimensions</h3>
+                    <p class="subtitle">Additional discovery activities specific to multi-agent and autonomous AI systems</p>
+                    <div class="agentic-grid">
+                        <div class="agentic-card">
+                            <h4>🔄 Process Autonomy Mapping</h4>
+                            <p>Identify processes suitable for autonomous agent execution. Map decision points, approval workflows, and exception handling that agents could manage independently.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🌐 Tool & API Landscape</h4>
+                            <p>Inventory all systems, APIs, and tools that agents would need to access. Assess authentication methods, rate limits, and real-time availability requirements.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🧠 Knowledge Base Assessment</h4>
+                            <p>Evaluate existing knowledge repositories for RAG integration. Assess document formats, update frequency, and semantic search readiness.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>⚖️ Decision Authority Matrix</h4>
+                            <p>Map current decision-making authority levels. Identify which decisions could be delegated to agents and establish escalation thresholds.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Data Quality Score</span>
+                            <span class="metric-trend up">Target: 85%+</span>
+                        </div>
+                        <div class="metric-value">---%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Data Governance</span>
+                            <span class="metric-trend up">Target: 80%+</span>
+                        </div>
+                        <div class="metric-value">---%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">API Readiness</span>
+                            <span class="metric-trend up">Target: 90%+</span>
+                        </div>
+                        <div class="metric-value">---%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Real-time Readiness</span>
+                            <span class="metric-trend up">Target: 75%+</span>
+                        </div>
+                        <div class="metric-value">---%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 1 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> AI Readiness Assessment Report</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Data Maturity Scorecard</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Technical Infrastructure Assessment</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Use Case Catalog (50-100 opportunities)</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Prioritized Use Case Shortlist (5-15)</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Business Case Templates per Use Case</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2: Strategy & Roadmap -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">2</div>
+                    <div class="phase-info">
+                        <h2>AI Strategy & Roadmap Development</h2>
+                        <p>Crafting strategic vision, value framework, operating model, and multi-year transformation roadmap aligned with business objectives.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 4-6 Weeks</span>
+                            <span class="phase-badge team">👥 Strategy Lead, CoE Lead, Executive Sponsors</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🎯</div>
+                            <div>
+                                <div class="card-title">Vision & Strategic Alignment</div>
+                                <div class="card-subtitle">Defining the AI transformation north star</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>AI vision statement development and socialization</li>
+                                <li>Strategic pillar definition (efficiency, growth, innovation)</li>
+                                <li>Business strategy to AI strategy mapping</li>
+                                <li>Competitive differentiation through AI positioning</li>
+                                <li>Build vs. Buy vs. Partner decision framework</li>
+                                <li>Long-term AI operating model vision</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📊</div>
+                            <div>
+                                <div class="card-title">Value Framework & KPIs</div>
+                                <div class="card-subtitle">Measuring AI success</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>AI value realization framework (Two-Horizon Model)</li>
+                                <li>Four-Pillar Matrix: Efficiency, Revenue, Risk, Agility</li>
+                                <li>KPI hierarchy (strategic → operational → technical)</li>
+                                <li>Baseline measurement and benchmarking</li>
+                                <li>Leading vs. lagging indicator definition</li>
+                                <li>Executive dashboard design specifications</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon secondary">🏛️</div>
+                            <div>
+                                <div class="card-title">AI Operating Model Design</div>
+                                <div class="card-subtitle">Organizational structure for AI</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Center of Excellence (CoE) structure and charter</li>
+                                <li>Federated vs. centralized model evaluation</li>
+                                <li>Roles and responsibilities definition (RACI)</li>
+                                <li>Skills matrix and career progression framework</li>
+                                <li>Vendor and partner management model</li>
+                                <li>Budget allocation and chargeback model</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon secondary">🗺️</div>
+                            <div>
+                                <div class="card-title">Implementation Roadmap</div>
+                                <div class="card-subtitle">Phased transformation plan</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Phase-wise implementation sequencing</li>
+                                <li>Quick wins vs. strategic initiatives balance</li>
+                                <li>Dependency mapping and critical path analysis</li>
+                                <li>Resource loading and capacity planning</li>
+                                <li>Technology wave planning</li>
+                                <li>Scale triggers and graduation criteria</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert info">
+                    <h4>💡 McKinsey's High Performer Characteristics</h4>
+                    <p>The 6% of organizations achieving meaningful AI value share: Bold transformation ambitions (3x more likely to aim enterprise-wide), Growth and innovation goals beyond efficiency, Fundamental workflow redesign (nearly 3x more likely), Committed senior leadership engagement, Higher investment (35% commit >20% of digital budgets to AI).</p>
+                </div>
+
+                <h3 class="mt-4 mb-3">📅 Typical Enterprise AI Transformation Roadmap</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Foundation Phase</h4>
+                            <p>Data infrastructure, governance framework, CoE establishment, initial PoCs</p>
+                            <span class="timeline-date">Months 1-6</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Acceleration Phase</h4>
+                            <p>Production deployments, scaling successful pilots, capability building</p>
+                            <span class="timeline-date">Months 6-12</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Optimization Phase</h4>
+                            <p>Cross-functional AI integration, advanced use cases, agentic capabilities</p>
+                            <span class="timeline-date">Months 12-18</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Transformation Phase</h4>
+                            <p>AI-native operations, autonomous workflows, continuous innovation</p>
+                            <span class="timeline-date">Months 18-24+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 2 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> AI Strategy Document (Executive Summary)</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Detailed Implementation Roadmap</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Value Framework & KPI Dashboard Design</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> AI Operating Model Blueprint</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Investment Case & Budget Model</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> CoE Charter & RACI Matrix</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 3: Technical Architecture -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">3</div>
+                    <div class="phase-info">
+                        <h2>Technical & Data Architecture Design</h2>
+                        <p>Enterprise-grade architecture design aligned with AWS Well-Architected ML Lens and Azure AI Well-Architected Framework.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 4-8 Weeks</span>
+                            <span class="phase-badge team">👥 Enterprise Architects, ML Engineers, Security</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">☁️</div>
+                            <div>
+                                <div class="card-title">Cloud & Infrastructure Architecture</div>
+                                <div class="card-subtitle">Foundation for scalable AI</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Multi-cloud / hybrid cloud strategy alignment</li>
+                                <li>Compute infrastructure design (GPU clusters, serverless)</li>
+                                <li>Container orchestration strategy (Kubernetes, GKE, EKS, AKS)</li>
+                                <li>Service mesh and API gateway design</li>
+                                <li>Infrastructure as Code (Terraform, Pulumi) strategy</li>
+                                <li>Cost optimization and FinOps framework</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📊</div>
+                            <div>
+                                <div class="card-title">Data Architecture</div>
+                                <div class="card-subtitle">Data platform for AI/ML</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Data lakehouse architecture (BigQuery, Databricks, Synapse)</li>
+                                <li>Real-time streaming architecture (Kafka, Pub/Sub, Kinesis)</li>
+                                <li>Feature Store design (online/offline separation)</li>
+                                <li>Vector database selection (Pinecone, Weaviate, Milvus)</li>
+                                <li>Data pipeline orchestration (Airflow, Composer, MWAA)</li>
+                                <li>Data quality framework and monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon secondary">🤖</div>
+                            <div>
+                                <div class="card-title">AI/ML Platform Architecture</div>
+                                <div class="card-subtitle">MLOps foundation</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Model Registry with version control and approval workflows</li>
+                                <li>Model serving infrastructure (online/batch)</li>
+                                <li>Experiment tracking (MLflow, Weights & Biases)</li>
+                                <li>Model monitoring and drift detection</li>
+                                <li>A/B testing and canary deployment framework</li>
+                                <li>LLM fine-tuning and adaptation infrastructure</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon secondary">🔒</div>
+                            <div>
+                                <div class="card-title">Security Architecture</div>
+                                <div class="card-subtitle">AI-specific security controls</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Zero-trust security model design</li>
+                                <li>Identity and access management (IAM) design</li>
+                                <li>Data encryption strategy (at-rest, in-transit)</li>
+                                <li>Security monitoring and SIEM integration</li>
+                                <li>Vulnerability management and scanning</li>
+                                <li>Compliance automation (SOC2, GDPR, HIPAA)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Multi-Agent System Architecture</h3>
+                    <p class="subtitle">Enterprise architecture patterns for agentic AI (Based on InfoQ Framework)</p>
+                    
+                    <div class="architecture-box">
+                        <div class="architecture-title">
+                            <h4>Enterprise Multi-Agent Architecture Layers</h4>
+                        </div>
+                        <div class="architecture-layers">
+                            <div class="arch-layer">
+                                <span class="layer-label">Presentation Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item">Chat Interface</span>
+                                    <span class="layer-item">API Gateway</span>
+                                    <span class="layer-item">Webhook Handlers</span>
+                                    <span class="layer-item">Event Triggers</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Orchestration Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item highlight">LangGraph Orchestrator</span>
+                                    <span class="layer-item highlight">Workflow Engine</span>
+                                    <span class="layer-item">State Machine</span>
+                                    <span class="layer-item">Router Agent</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Agent Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item highlight">Specialist Agents</span>
+                                    <span class="layer-item highlight">Supervisor Agents</span>
+                                    <span class="layer-item">Planning Agents</span>
+                                    <span class="layer-item">Execution Agents</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Memory Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item">Short-term Memory</span>
+                                    <span class="layer-item">Long-term Memory</span>
+                                    <span class="layer-item highlight">Shared State Store</span>
+                                    <span class="layer-item">Conversation History</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Knowledge Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item highlight">Vector Store (RAG)</span>
+                                    <span class="layer-item">Document Store</span>
+                                    <span class="layer-item">Knowledge Graph</span>
+                                    <span class="layer-item">Entity Store</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Tool Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item">Enterprise APIs</span>
+                                    <span class="layer-item">Database Connectors</span>
+                                    <span class="layer-item">Code Execution</span>
+                                    <span class="layer-item">External Services</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Observability Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item highlight">Trace Collector</span>
+                                    <span class="layer-item highlight">Metrics Pipeline</span>
+                                    <span class="layer-item">Log Aggregator</span>
+                                    <span class="layer-item">Alert Manager</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <span class="layer-label">Governance Layer</span>
+                                <div class="layer-items">
+                                    <span class="layer-item">Policy Engine</span>
+                                    <span class="layer-item highlight">Guardrails</span>
+                                    <span class="layer-item highlight">Audit Logger</span>
+                                    <span class="layer-item">Compliance Checker</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="mt-3 mb-2" style="color: var(--color-text-primary);">Agent Framework Comparison</h4>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Framework</th>
+                                    <th>Strengths</th>
+                                    <th>Best For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>LangGraph</strong></td>
+                                    <td>Structured workflows, state management, enterprise deployment options</td>
+                                    <td>Complex production workflows requiring governance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Microsoft Agent Framework</strong></td>
+                                    <td>Unifies AutoGen + Semantic Kernel, thread-based state, .NET support</td>
+                                    <td>Microsoft-centric enterprises</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CrewAI</strong></td>
+                                    <td>Role-based simplicity, 5.76x faster in benchmarks, SOC 2/HIPAA ready</td>
+                                    <td>Rapid prototyping with compliance needs</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AutoGen</strong></td>
+                                    <td>Conversational coordination, asynchronous event-driven architecture</td>
+                                    <td>Dynamic multi-agent research projects</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 3 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> High-Level Design (HLD) Document</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Low-Level Design (LLD) Document</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Data Architecture Blueprint</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Security Architecture Document</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Technology Selection Matrix</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Architecture Decision Records (ADRs)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 4: PoC -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">4</div>
+                    <div class="phase-info">
+                        <h2>Proof of Concept (PoC) & Pilot Phase</h2>
+                        <p>Rapid validation of AI solutions with controlled scope, measurable outcomes, and defined success criteria.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 6-12 Weeks per PoC</span>
+                            <span class="phase-badge team">👥 Data Scientists, ML Engineers, Business SMEs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🎯</div>
+                            <div>
+                                <div class="card-title">PoC Scoping & Data Preparation</div>
+                                <div class="card-subtitle">Setting up for success</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Use case scope definition and boundaries</li>
+                                <li>Success criteria and acceptance thresholds</li>
+                                <li>Data extraction and sampling strategy</li>
+                                <li>Data quality assessment and cleansing</li>
+                                <li>Feature engineering and selection</li>
+                                <li>Train/validation/test split design</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🧠</div>
+                            <div>
+                                <div class="card-title">Model Development & Evaluation</div>
+                                <div class="card-subtitle">Building and validating AI solutions</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Model architecture selection and justification</li>
+                                <li>Prompt engineering (for LLM-based solutions)</li>
+                                <li>RAG pipeline development and optimization</li>
+                                <li>Technical metrics evaluation (accuracy, latency)</li>
+                                <li>Business metrics validation against KPIs</li>
+                                <li>Bias and fairness assessment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist mt-3">
+                    <h4>✅ PoC Go/No-Go Checklist</h4>
+                    <div class="checklist-item">
+                        <div class="checklist-box" onclick="this.classList.toggle('checked')"></div>
+                        <div class="checklist-text">
+                            <strong>Technical Performance Met</strong>
+                            <span>Model accuracy, latency, and throughput meet defined thresholds (typically >80% accuracy on representative data)</span>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checklist-box" onclick="this.classList.toggle('checked')"></div>
+                        <div class="checklist-text">
+                            <strong>Business Value Validated</strong>
+                            <span>Projected ROI and business metrics are achievable based on PoC results</span>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checklist-box" onclick="this.classList.toggle('checked')"></div>
+                        <div class="checklist-text">
+                            <strong>Data Requirements Feasible</strong>
+                            <span>Required data is available, of sufficient quality, and can be maintained</span>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checklist-box" onclick="this.classList.toggle('checked')"></div>
+                        <div class="checklist-text">
+                            <strong>User Acceptance Achieved</strong>
+                            <span>Target users have validated the solution meets their needs</span>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checklist-box" onclick="this.classList.toggle('checked')"></div>
+                        <div class="checklist-text">
+                            <strong>Security & Compliance Cleared</strong>
+                            <span>Solution meets security requirements and regulatory compliance</span>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checklist-box" onclick="this.classList.toggle('checked')"></div>
+                        <div class="checklist-text">
+                            <strong>Scalability Path Defined</strong>
+                            <span>Clear technical path to production scale with cost projections</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 4 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Working PoC Prototype</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> PoC Evaluation Report</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Technical Performance Analysis</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Business Value Validation Report</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Go/No-Go Recommendation</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Production Readiness Assessment</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 5: Implementation -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">5</div>
+                    <div class="phase-info">
+                        <h2>Implementation & Production Deployment</h2>
+                        <p>Enterprise-grade deployment with MLOps pipelines, CI/CD automation, and operational excellence frameworks.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 3-9+ Months</span>
+                            <span class="phase-badge team">👥 Platform Team, ML Engineers, DevOps, Security</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🏗️</div>
+                            <div>
+                                <div class="card-title">Production Infrastructure</div>
+                                <div class="card-subtitle">Enterprise-ready deployment</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Production environment provisioning (IaC)</li>
+                                <li>High-availability architecture implementation</li>
+                                <li>Auto-scaling configuration and testing</li>
+                                <li>Disaster recovery and backup systems</li>
+                                <li>SSL/TLS certificate management</li>
+                                <li>Load balancing and traffic management</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🔄</div>
+                            <div>
+                                <div class="card-title">MLOps Pipeline Implementation</div>
+                                <div class="card-subtitle">Continuous ML delivery</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>CI/CD pipeline for model deployment</li>
+                                <li>Automated model training pipelines</li>
+                                <li>Model versioning and registry setup</li>
+                                <li>Feature store implementation</li>
+                                <li>Data validation and quality gates</li>
+                                <li>A/B testing and canary deployment automation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert info">
+                    <h4>💡 MLOps CI/CD Best Practices</h4>
+                    <p>ML CI/CD extends traditional DevOps: Pipeline CI builds and tests components → Pipeline CD deploys to target environments → Automated triggers execute training → Model CD deploys trained models. Testing must cover data validation, feature validation, unit tests, model training tests, integration tests, and infrastructure compatibility. 91% of ML models experience degradation over time—monitoring is essential.</p>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Agentic AI Production Deployment</h3>
+                    <p class="subtitle">Production deployment considerations for autonomous multi-agent systems</p>
+                    
+                    <div class="code-block">
+                        <pre><span class="comment"># Example: LangGraph Agent Deployment Configuration</span>
+
+<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, END
+<span class="keyword">from</span> langgraph.checkpoint.postgres <span class="keyword">import</span> PostgresSaver
+<span class="keyword">from</span> langchain_google_vertexai <span class="keyword">import</span> ChatVertexAI
+
+<span class="comment"># Production-grade checkpointer for state persistence</span>
+<span class="variable">checkpointer</span> = PostgresSaver.from_conn_string(
+    conn_string=<span class="string">"postgresql://user:pass@prod-db:5432/agents"</span>,
+    pool_size=<span class="string">20</span>,
+    max_overflow=<span class="string">10</span>
+)
+
+<span class="comment"># Agent configuration with guardrails</span>
+<span class="variable">agent_config</span> = {
+    <span class="string">"model"</span>: ChatVertexAI(model=<span class="string">"gemini-1.5-pro"</span>, temperature=<span class="string">0</span>),
+    <span class="string">"guardrails"</span>: {
+        <span class="string">"max_iterations"</span>: <span class="string">50</span>,
+        <span class="string">"timeout_seconds"</span>: <span class="string">300</span>,
+        <span class="string">"require_approval"</span>: [<span class="string">"financial_transaction"</span>, <span class="string">"data_deletion"</span>]
+    },
+    <span class="string">"observability"</span>: {
+        <span class="string">"trace_enabled"</span>: <span class="string">True</span>,
+        <span class="string">"langsmith_project"</span>: <span class="string">"prod-agents"</span>
+    }
+}</pre>
+                    </div>
+
+                    <div class="agentic-grid">
+                        <div class="agentic-card">
+                            <h4>⚡ Agent Scaling Strategy</h4>
+                            <p>Horizontal scaling of agent workers with proper state isolation. Configure auto-scaling based on queue depth and latency metrics.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🔒 Production Guardrails</h4>
+                            <p>Deploy rate limiting and circuit breakers for agent actions. Implement real-time content filtering and PII detection.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>📊 Agent Monitoring</h4>
+                            <p>Real-time dashboards for agent performance and behavior. Anomaly detection for unexpected agent actions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 5 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Production-Ready AI Solution</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> MLOps Pipeline Documentation</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Runbook & Operations Manual</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Monitoring & Alerting Setup</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Performance Baseline Report</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> SLA/SLO Documentation</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 6: Governance -->
+        <section class="phase" id="governance">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">6</div>
+                    <div class="phase-info">
+                        <h2>AI Governance & Responsible AI</h2>
+                        <p>Establishing governance frameworks aligned with NIST AI RMF, ISO 42001, EU AI Act, and industry-specific regulations.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ Ongoing (embedded throughout)</span>
+                            <span class="phase-badge team">👥 Compliance, Legal, Risk Management, CoE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mb-3">🏛️ AI Governance Pillars (NIST AI RMF Aligned)</h3>
+                <div class="pillars-grid">
+                    <div class="pillar">
+                        <div class="pillar-icon">⚖️</div>
+                        <h4>Fairness</h4>
+                        <p>Bias detection, mitigation, equitable outcomes</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">🔍</div>
+                        <h4>Transparency</h4>
+                        <p>Explainable AI, decision documentation</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">🛡️</div>
+                        <h4>Privacy</h4>
+                        <p>Data protection, consent management</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">🔒</div>
+                        <h4>Security</h4>
+                        <p>Model security, adversarial robustness</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">📋</div>
+                        <h4>Accountability</h4>
+                        <p>Clear ownership, audit trails</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">🎯</div>
+                        <h4>Reliability</h4>
+                        <p>Consistent performance, safety</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-3">📜 Regulatory Compliance Frameworks</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🇺🇸</div>
+                            <div>
+                                <div class="card-title">NIST AI RMF 1.0</div>
+                                <div class="card-subtitle">US Framework (January 2023, updated 2024)</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p><strong>Four Core Functions:</strong></p>
+                            <ul>
+                                <li><strong>GOVERN:</strong> Organizational culture, policies, accountability structures</li>
+                                <li><strong>MAP:</strong> Context identification, risk categorization, stakeholder analysis</li>
+                                <li><strong>MEASURE:</strong> Quantitative/qualitative risk analysis, metrics, testing</li>
+                                <li><strong>MANAGE:</strong> Risk prioritization, treatment plans, monitoring</li>
+                            </ul>
+                            <p class="mt-2"><strong>7 Trustworthy Characteristics:</strong> Valid/Reliable, Safe, Secure/Resilient, Accountable/Transparent, Explainable/Interpretable, Privacy-Enhanced, Fair</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🌐</div>
+                            <div>
+                                <div class="card-title">ISO/IEC 42001</div>
+                                <div class="card-subtitle">World's First Certifiable AI Management System</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Published December 2023 - first certifiable AIMS standard</li>
+                                <li>Two-stage audit process by accredited bodies (ANAB, UKAS, SAC)</li>
+                                <li>Certificates valid for 3 years with annual surveillance audits</li>
+                                <li>Plan-Do-Check-Act methodology</li>
+                                <li>Controls: AI governance, impact assessment, data quality, model lifecycle</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert danger mt-3">
+                    <h4>⚠️ EU AI Act Compliance Timeline (Now Active)</h4>
+                    <p>
+                        <strong>Feb 2, 2025:</strong> Prohibited AI practices ban (social scoring, emotion inference at work, untargeted facial recognition)<br>
+                        <strong>Aug 2, 2025:</strong> GPAI obligations take effect<br>
+                        <strong>Aug 2, 2026:</strong> High-risk AI under Annex III (employment, education, critical infrastructure)<br>
+                        <strong>Aug 2, 2027:</strong> High-risk AI in regulated products under Annex I<br>
+                        <strong>Penalties:</strong> Up to €35 million or 7% of global turnover for prohibited practices violations
+                    </p>
+                </div>
+
+                <h3 class="mt-4 mb-3">🏭 Industry-Specific Regulations</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Industry</th>
+                                <th>Regulation</th>
+                                <th>Key Requirements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Financial Services</strong></td>
+                                <td>SR 11-7</td>
+                                <td>Model risk management, independent validation functions, documentation requirements</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Healthcare</strong></td>
+                                <td>FDA AI/ML Guidance</td>
+                                <td>10 Good ML Practice principles, Predetermined Change Control Plans (Dec 2024)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Healthcare</strong></td>
+                                <td>HIPAA</td>
+                                <td>BAA with AI vendors, AI-specific risk analysis, re-identification risk assessment</td>
+                            </tr>
+                            <tr>
+                                <td><strong>All Industries</strong></td>
+                                <td>GDPR/CCPA</td>
+                                <td>Data protection, consent management, right to explanation, cross-border transfers</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Agentic AI Governance Framework</h3>
+                    <p class="subtitle">Specialized governance for autonomous AI systems (EU AI Act Article 14 mandates HITL for high-risk AI)</p>
+                    <div class="agentic-grid">
+                        <div class="agentic-card">
+                            <h4>🎚️ Autonomy Levels & Controls</h4>
+                            <p>Define clear autonomy tiers with corresponding control mechanisms. Implement progressive autonomy based on demonstrated reliability. Establish override mechanisms and emergency stops.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🔐 Action Authorization</h4>
+                            <p>Implement tiered authorization for agent actions based on risk and impact. Define approval workflows for sensitive operations. Confidence thresholds below 0.7 typically route to human review.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>📝 Decision Audit Trail</h4>
+                            <p>Comprehensive logging of agent reasoning chains. Immutable audit records for all autonomous decisions capturing decision triggers, model confidence, and policy context.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>👥 Human-in-the-Loop (HITL)</h4>
+                            <p>Define mandatory human checkpoints in critical workflows. Approval gates for sensitive actions. Research shows proper HITL design is non-negotiable for enterprise deployments.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-3">👥 AI Governance RACI Matrix</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Activity</th>
+                                <th>AI CoE</th>
+                                <th>Business Owner</th>
+                                <th>IT/Security</th>
+                                <th>Legal/Compliance</th>
+                                <th>Executive Sponsor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AI Ethics Policy Development</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                            </tr>
+                            <tr>
+                                <td>Bias Assessment & Mitigation</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                            </tr>
+                            <tr>
+                                <td>Model Security Review</td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                            </tr>
+                            <tr>
+                                <td>Regulatory Compliance</td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                            </tr>
+                            <tr>
+                                <td>Production Deployment Approval</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td>Agent Autonomy Level Changes</td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 1rem;">
+                    <strong>Legend:</strong> 
+                    <span class="raci-badge raci-r" style="margin-left: 0.5rem;">R</span> Responsible
+                    <span class="raci-badge raci-a" style="margin-left: 0.5rem;">A</span> Accountable
+                    <span class="raci-badge raci-c" style="margin-left: 0.5rem;">C</span> Consulted
+                    <span class="raci-badge raci-i" style="margin-left: 0.5rem;">I</span> Informed
+                </p>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 6 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> AI Ethics Policy Document</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Bias Assessment Framework</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Model Cards for All Models</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Compliance Audit Report</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Risk Register & Mitigations</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Agentic AI Controls Framework</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 7: Security -->
+        <section class="phase" id="security">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">7</div>
+                    <div class="phase-info">
+                        <h2>AI Security & Risk Management</h2>
+                        <p>Implementing AI-specific security controls addressing OWASP Top 10 for LLMs and emerging threat vectors.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ Ongoing (embedded throughout)</span>
+                            <span class="phase-badge team">👥 Security Team, ML Engineers, Risk Management</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mb-3">🔐 OWASP Top 10 for LLMs (2025)</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Vulnerability</th>
+                                <th>Enterprise Impact</th>
+                                <th>Mitigation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>LLM01</strong></td>
+                                <td>Prompt Injection</td>
+                                <td>User prompts alter behavior unexpectedly</td>
+                                <td>Input validation, structured prompts, semantic filtering</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM02</strong></td>
+                                <td>Sensitive Information Disclosure</td>
+                                <td>Confidential data exposure in outputs</td>
+                                <td>Output filtering, PII detection, content moderation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM03</strong></td>
+                                <td>Supply Chain</td>
+                                <td>Compromised models, data, dependencies</td>
+                                <td>ML-BOM, signature verification, artifact scanning</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM04</strong></td>
+                                <td>Data and Model Poisoning</td>
+                                <td>Corrupted training undermines reliability</td>
+                                <td>Data validation, provenance tracking, anomaly detection</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM05</strong></td>
+                                <td>Improper Output Handling</td>
+                                <td>Enables downstream exploits (XSS, SSRF)</td>
+                                <td>Output sanitization, type validation, encoding</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM06</strong></td>
+                                <td>Excessive Agency</td>
+                                <td>Unchecked autonomous actions</td>
+                                <td>Least privilege, action approval, rate limiting</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM07</strong></td>
+                                <td>System Prompt Leakage</td>
+                                <td>Hidden prompts exposed to users</td>
+                                <td>Prompt protection, output filtering</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LLM08</strong></td>
+                                <td>Vector and Embedding Weaknesses</td>
+                                <td>RAG system vulnerabilities</td>
+                                <td>Input validation, access controls, monitoring</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert danger mt-3">
+                    <h4>⚠️ Critical Security Warning</h4>
+                    <p>OpenAI's guardrails framework was bypassed via simple prompt injection in October 2025 research. Organizations cannot rely solely on LLM-based safety judges. Research shows embedding-based anomaly detection reduces attack success rates from 73.2% to 8.7%. Multi-layer defense is mandatory.</p>
+                </div>
+
+                <div class="grid-2 mt-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon warm">⚠️</div>
+                            <div>
+                                <div class="card-title">AI-Specific Attack Vectors</div>
+                                <div class="card-subtitle">Beyond traditional cybersecurity</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Data Poisoning:</strong> Manipulates training data to alter model behavior (targeted or stealth)</li>
+                                <li><strong>Model Extraction:</strong> Duplicates models through API queries; simpler models most vulnerable</li>
+                                <li><strong>Adversarial Examples:</strong> Fools models through imperceptible input modifications</li>
+                                <li><strong>Membership Inference:</strong> Determines if specific data was in training sets</li>
+                                <li><strong>Model Inversion:</strong> Reconstructs training data from model outputs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon cool">🛡️</div>
+                            <div>
+                                <div class="card-title">Defense Strategies</div>
+                                <div class="card-subtitle">Multi-layer protection</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Input Gatekeeping:</strong> Regex + MiniBERT-based detection for prompt injection</li>
+                                <li><strong>Structured Prompts:</strong> Separate trusted from untrusted content</li>
+                                <li><strong>Semantic Validation:</strong> Critic-based alignment checks on outputs</li>
+                                <li><strong>ML-BOM:</strong> CycloneDX/SPDX standards for supply chain security</li>
+                                <li><strong>Circuit Breakers:</strong> Rate limiting and automatic shutoffs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Agentic AI Security Controls</h3>
+                    <p class="subtitle">Specialized security for autonomous agents (Based on CoSAI Framework v1.0, 2025)</p>
+                    <div class="agentic-grid">
+                        <div class="agentic-card">
+                            <h4>🔒 Agent Guardrails</h4>
+                            <p>Amazon Bedrock Guardrails provides 6 safeguard policies. Multi-layer defense: input validation, system prompt protection, output filtering. Rate limiting and action approval workflows.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🔍 Anomaly Detection</h4>
+                            <p>Monitor agent behavior patterns for deviations. Detect suspicious action sequences. Research shows 67% reduction in injection success rates with F1-score 0.91.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🚨 Incident Response</h4>
+                            <p>CoSAI Framework adapts NIST IR lifecycle: Preparation → Detection/Analysis → Containment/Eradication/Recovery → Post-Incident. Develop playbooks for prompt injection, data poisoning, model extraction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 7 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> AI Security Architecture Document</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Threat Model & Risk Assessment</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Guardrails Implementation Guide</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Incident Response Playbooks</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Security Monitoring Dashboard</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Red Team Assessment Report</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 8: Change Management -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">8</div>
+                    <div class="phase-info">
+                        <h2>Organizational Enablement & Change Management</h2>
+                        <p>Building internal AI capabilities using McKinsey's 5-step Gen AI change management framework and Gartner AI literacy model.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ 3-6 Months (overlapping with implementation)</span>
+                            <span class="phase-badge team">👥 Change Management, HR, Training, CoE Lead</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert info">
+                    <h4>💡 Key Insight: People Determine Success</h4>
+                    <p>AI adoption fails primarily through people challenges, not technology limitations. Companies involving 7%+ of employees in transformation double their chances of positive total shareholder return. The EU AI Act mandates AI literacy proportional to role, technical knowledge, and context.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🎓</div>
+                            <div>
+                                <div class="card-title">AI Literacy Framework</div>
+                                <div class="card-subtitle">Role-based competency development (Gartner Model)</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Value Competencies:</strong> Use cases, benefits, domain expertise for business users</li>
+                                <li><strong>Engineering Competencies:</strong> Design, build-buy decisions, model selection for technical teams</li>
+                                <li><strong>Governance Competencies:</strong> Regulations, ethics, risk for leaders and compliance</li>
+                                <li>Blend formal learning with just-in-time content</li>
+                                <li>Social learning through CoEs and communities of practice</li>
+                                <li>On-the-job experiential learning with coaching</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🏛️</div>
+                            <div>
+                                <div class="card-title">AI Center of Excellence Models</div>
+                                <div class="card-subtitle">Evolving organizational structures (Microsoft CAF)</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Centralized (Early Stage):</strong> Consolidates expertise, accelerates initial adoption, ensures control</li>
+                                <li><strong>Federated (Large Enterprises):</strong> Divisional CoEs connected through shared governance network</li>
+                                <li><strong>Advisory (Mature Stage):</strong> CoE provides guidance while frontline teams own delivery</li>
+                                <li><strong>Core Team:</strong> Executive sponsors, senior data scientists, ML engineers, governance experts, security specialists</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <div class="card-icon secondary">🔄</div>
+                        <div>
+                            <div class="card-title">McKinsey's 5-Step Gen AI Change Management</div>
+                            <div class="card-subtitle">Outcomes over tools approach</div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li><strong>Step 1:</strong> Craft a North Star based on business value, not technology capabilities</li>
+                            <li><strong>Step 2:</strong> Build trust with accessible data, clear governance, and transparent communication</li>
+                            <li><strong>Step 3:</strong> Reimagine workflows to evolve toward AI-augmented teams, not just tool adoption</li>
+                            <li><strong>Step 4:</strong> Rethink organizational structures - from MVO (lean, automated) to Augmented Teams</li>
+                            <li><strong>Step 5:</strong> Empower employees to learn through progressive skill building and experimentation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="agentic-box">
+                    <h3>🤖 Workforce Transformation for Agentic AI</h3>
+                    <p class="subtitle">McKinsey's progression model for human-agent collaboration</p>
+                    <div class="agentic-grid">
+                        <div class="agentic-card">
+                            <h4>📊 Stage 1: Stand-alone Agents</h4>
+                            <p>Humans using individual agents for discrete tasks. Focus on tool proficiency and prompt engineering skills.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🔄 Stage 2: Agent Groups</h4>
+                            <p>Groups of agents completing workflows with human management. Focus on orchestration and supervision skills.</p>
+                        </div>
+                        <div class="agentic-card">
+                            <h4>🌐 Stage 3: Agentic Swarms</h4>
+                            <p>Autonomous agent systems operating with human oversight. Focus on governance, exception handling, and strategic direction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Phase 8 Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Training Curriculum & Materials</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> AI Literacy Assessment Framework</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> CoE Charter & Operating Model</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Change Management Plan</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Adoption Metrics Dashboard</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Champion Network Charter</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 9: Continuous Operations -->
+        <section class="phase">
+            <div class="container">
+                <div class="phase-header">
+                    <div class="phase-number">9</div>
+                    <div class="phase-info">
+                        <h2>Continuous Operations & Value Optimization</h2>
+                        <p>Ongoing optimization, model lifecycle management, and continuous improvement using Two-Horizon ROI measurement.</p>
+                        <div class="phase-meta">
+                            <span class="phase-badge duration">⏱️ Ongoing</span>
+                            <span class="phase-badge team">👥 Platform Ops, CoE, Finance, Business Units</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert warning">
+                    <h4>💰 Total Cost of Ownership Reality</h4>
+                    <p>Initial vendor quotes represent only 40-60% of actual Year 1 costs. Enterprise implementations typically cost 3-5x advertised subscription prices. Average monthly enterprise AI spending reached $85,521 in 2025 (36% increase from 2024), with 56% of companies missing AI cost forecasts by 11-25%. Key hidden costs: Data pipeline optimization (up to 63%), Change management (20-30%), Integration with legacy systems.</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📊</div>
+                            <div>
+                                <div class="card-title">Value Measurement Framework</div>
+                                <div class="card-subtitle">Two-Horizon ROI Model</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Trending ROI:</strong> Early progress indicators, leading metrics</li>
+                                <li><strong>Realized ROI:</strong> Tangible financial value over extended periods</li>
+                                <li><strong>Four-Pillar Matrix:</strong> Efficiency gains, Revenue generation, Risk mitigation, Business agility</li>
+                                <li><strong>KPI Tiers:</strong> Model Quality → System Performance → Business Impact</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">🔄</div>
+                            <div>
+                                <div class="card-title">Model Lifecycle Management</div>
+                                <div class="card-subtitle">Continuous improvement</div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Model Stages:</strong> Preview → GA → Legacy (30+ days notice) → Deprecated (90+ days) → Retired</li>
+                                <li><strong>Drift Detection:</strong> Data drift, Concept drift, Prediction drift, Upstream data change</li>
+                                <li><strong>Retraining Triggers:</strong> Performance-based, Schedule-based, Data-driven, Drift-based</li>
+                                <li>91% of ML models experience degradation over time (MIT research)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-3">📈 Operational Metrics Dashboard</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Model Accuracy</span>
+                            <span class="metric-trend up">↑ 2.3%</span>
+                        </div>
+                        <div class="metric-value">94.7%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 94.7%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">System Availability</span>
+                            <span class="metric-trend up">↑ 0.1%</span>
+                        </div>
+                        <div class="metric-value">99.9%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 99.9%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Agent Success Rate</span>
+                            <span class="metric-trend up">↑ 3.2%</span>
+                        </div>
+                        <div class="metric-value">87.3%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 87.3%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Human Escalation Rate</span>
+                            <span class="metric-trend up">↓ 8%</span>
+                        </div>
+                        <div class="metric-value">12.7%</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 12.7%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">Cost per Inference</span>
+                            <span class="metric-trend up">↓ 15%</span>
+                        </div>
+                        <div class="metric-value">$0.002</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 25%"></div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-label">User Satisfaction</span>
+                            <span class="metric-trend up">↑ 5pts</span>
+                        </div>
+                        <div class="metric-value">4.6/5</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" style="width: 92%"></div></div>
+                    </div>
+                </div>
+
+                <div class="deliverables">
+                    <h4>📦 Ongoing Deliverables</h4>
+                    <div class="deliverables-grid">
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Monthly Performance Reports</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Quarterly Business Reviews</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Model Health Dashboards</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Cost Optimization Reports</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Innovation Pipeline Updates</div>
+                        <div class="deliverable-item"><span class="deliverable-check">✓</span> Roadmap Refinements</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Roadmap -->
+        <section class="section" id="roadmap">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-label">📅 Implementation Guide</div>
+                    <h2 class="section-title">24-Month Enterprise AI Transformation Roadmap</h2>
+                    <p class="section-description">
+                        Phased approach with quality gates, RACI assignments, and success criteria for each milestone.
+                    </p>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Timeline</th>
+                                <th>Key Activities</th>
+                                <th>Quality Gate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Foundation</strong></td>
+                                <td>Months 1-3</td>
+                                <td>AI readiness assessment, governance charter, use case portfolio, architecture blueprint</td>
+                                <td>Readiness score baseline, governance charter approved</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pilot</strong></td>
+                                <td>Months 4-6</td>
+                                <td>2-3 validated PoCs, refined business cases, production-ready pipelines</td>
+                                <td>PoC accuracy >80%, ROI hypothesis confirmed</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scale</strong></td>
+                                <td>Months 7-12</td>
+                                <td>Enterprise deployment, CoE operating model, governance automation</td>
+                                <td>Production deployment successful, CoE approved</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Optimize</strong></td>
+                                <td>Months 13-18</td>
+                                <td>MLOps Level 2-3 maturity, advanced monitoring, ISO 42001 preparation</td>
+                                <td>Automated retraining operational, gap analysis complete</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Transform</strong></td>
+                                <td>Months 19-24</td>
+                                <td>Agentic AI pilots with HITL governance, certification audit, value measurement</td>
+                                <td>Certification achieved, ROI documented</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert info mt-3">
+                    <h4>🎯 Key Success Factors for Enterprise AI</h4>
+                    <p>
+                        <strong>1. Bold Transformation:</strong> Set enterprise-wide ambitions, not incremental improvements (3x more likely to succeed)<br>
+                        <strong>2. Workflow Redesign:</strong> Fundamentally reimagine processes, don't just add AI to existing workflows<br>
+                        <strong>3. Executive Commitment:</strong> Active senior leadership engagement throughout transformation<br>
+                        <strong>4. Appropriate Investment:</strong> Top performers commit >20% of digital budgets to AI<br>
+                        <strong>5. Fast Scaling:</strong> Scale quickly once value is proven across functions<br>
+                        <strong>6. Progressive Autonomy:</strong> For agentic AI, start with high oversight and increase autonomy as trust builds
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p><strong>Enterprise Gen AI & Agentic AI Consulting Framework</strong></p>
+                <p>Synthesizing Big 4 Methodologies, Cloud Provider Best Practices, and Emerging Agentic AI Patterns</p>
+                <p style="font-size: 0.875rem; margin-top: 1rem;">
+                    Sources: Deloitte Trustworthy AI, PwC Responsible AI Toolkit, KPMG Trusted AI, EY Trusted AI Platform, 
+                    McKinsey QuantumBlack, NIST AI RMF, ISO 42001, EU AI Act, AWS Well-Architected ML Lens, 
+                    Azure AI Well-Architected Framework, Google MLOps Guide, OWASP Top 10 for LLMs
+                </p>
+                <span class="version">Version 4.0 | Last Updated: January 2026</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Active navigation highlighting
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

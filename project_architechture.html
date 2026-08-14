@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise AI Incident Management Platform v5.0 - Architecture Guide</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #e2e8f0;
+            --border: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { font-size: 2.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+        h2 { color: var(--secondary); border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin: 2rem 0 1rem; }
+        h3 { color: var(--success); margin: 1.5rem 0 0.5rem; }
+        h4 { color: var(--warning); margin: 1rem 0 0.5rem; }
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        .tag-primary { background: var(--primary); }
+        .tag-secondary { background: var(--secondary); }
+        .tag-success { background: var(--success); }
+        .tag-warning { background: var(--warning); color: #000; }
+        .tag-danger { background: var(--danger); }
+        code {
+            background: #0d1117;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+        pre {
+            background: #0d1117;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        pre code { padding: 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border: 1px solid var(--border); }
+        th { background: var(--primary); }
+        tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+        .diagram {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .diagram pre { background: transparent; text-align: left; display: inline-block; }
+        .flow-step {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            border-radius: 8px;
+            margin: 0.25rem;
+            font-size: 0.85rem;
+        }
+        .arrow { color: var(--success); font-weight: bold; margin: 0 0.5rem; }
+        ul { margin-left: 1.5rem; }
+        li { margin: 0.5rem 0; }
+        .toc { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; margin: 1rem 0; }
+        .toc ul { list-style: none; margin: 0; }
+        .toc li { margin: 0.3rem 0; }
+        .toc a { color: var(--secondary); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin: 0.25rem;
+        }
+        .metric { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .formula {
+            background: #1e1e2e;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            border-left: 4px solid var(--success);
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header style="text-align: center; margin-bottom: 2rem;">
+            <h1>Enterprise AI Incident Management Platform</h1>
+            <p style="font-size: 1.2rem; color: var(--secondary);">Version 5.0 - Hybrid Protocol Architecture</p>
+            <div style="margin-top: 1rem;">
+                <span class="tag tag-primary">LangGraph</span>
+                <span class="tag tag-secondary">Swarm RAG</span>
+                <span class="tag tag-success">A2A Protocol</span>
+                <span class="tag tag-warning">MCP</span>
+                <span class="tag tag-danger">EU AI Act</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#overview">1. Platform Overview</a></li>
+                <li><a href="#architecture">2. System Architecture</a></li>
+                <li><a href="#workflow">3. LangGraph Workflow (14 Steps)</a></li>
+                <li><a href="#rag">4. RAG System & Formulas</a></li>
+                <li><a href="#agents">5. Agent System</a></li>
+                <li><a href="#protocols">6. Protocol Layer (A2A, MCP, Kafka)</a></li>
+                <li><a href="#guardrails">7. AI Guardrails & Safety</a></li>
+                <li><a href="#compliance">8. EU AI Act Compliance</a></li>
+                <li><a href="#observability">9. Observability & Monitoring</a></li>
+                <li><a href="#files">10. File Structure & Components</a></li>
+                <li><a href="#incident-lifecycle">11. Incident Resolution Lifecycle</a></li>
+                <li><a href="#improvements">12. Future Improvements</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1: Overview -->
+        <section id="overview">
+            <h2>1. Platform Overview</h2>
+            <div class="card">
+                <p>An enterprise-grade AI-powered incident management platform that automates the detection, classification, and remediation of IT infrastructure incidents. The platform integrates with ServiceNow for ticket management, uses hybrid RAG for intelligent script matching, and executes remediation through GitHub Actions.</p>
+
+                <h4>Key Capabilities</h4>
+                <div class="grid">
+                    <div class="badge"><span class="metric">50+</span> Automated Scripts</div>
+                    <div class="badge"><span class="metric">95%</span> Classification Accuracy</div>
+                    <div class="badge"><span class="metric">&lt;5s</span> Analysis Time</div>
+                    <div class="badge"><span class="metric">14</span> Workflow Nodes</div>
+                </div>
+
+                <h4>Technology Stack</h4>
+                <ul>
+                    <li><strong>Backend:</strong> FastAPI (Python 3.12), LangGraph, OpenAI GPT-4</li>
+                    <li><strong>Frontend:</strong> Next.js 14, React Query, TailwindCSS</li>
+                    <li><strong>Databases:</strong> Weaviate (Vector), Neo4j (Graph), PostgreSQL, Redis</li>
+                    <li><strong>Streaming:</strong> Apache Kafka (incident events)</li>
+                    <li><strong>Execution:</strong> GitHub Actions (remediation scripts)</li>
+                    <li><strong>Integration:</strong> ServiceNow (ITSM), Slack (approvals)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Architecture -->
+        <section id="architecture">
+            <h2>2. System Architecture</h2>
+
+            <div class="diagram">
+                <pre>
++---------------------+     +---------------------+     +---------------------+
+|    ServiceNow       |     |    GCP Monitoring   |     |    Manual Input     |
+|    (Incidents)      |     |    (VM Alerts)      |     |    (API/UI)         |
++----------+----------+     +----------+----------+     +----------+----------+
+           |                           |                           |
+           v                           v                           v
++--------------------------------------------------------------------------+
+|                           KAFKA EVENT BUS                                  |
+|  Topics: servicenow.incidents | gcp.alerts | agent.events                 |
++--------------------------------------------------------------------------+
+           |
+           v
++--------------------------------------------------------------------------+
+|                        LANGGRAPH ORCHESTRATOR                              |
+|  [Ingest] -> [Parse] -> [Classify] -> [Swarm RAG] -> [Plan] -> [Judge]   |
+|      -> [Control Plane] -> [Approval] -> [Execute] -> [Verify] -> [Close] |
++--------------------------------------------------------------------------+
+           |                           |                           |
+           v                           v                           v
++------------------+    +------------------+    +------------------+
+|   SWARM RAG      |    |   CONTROL PLANE  |    |   EXECUTION      |
+|   - Vector Agent |    |   - Risk Assess  |    |   - GitHub Agent |
+|   - Graph Agent  |    |   - Policy Check |    |   - Terraform    |
+|   - Keyword Agent|    |   - Approval     |    |   - Ansible      |
++------------------+    +------------------+    +------------------+
+           |                           |                           |
+           v                           v                           v
++------------------+    +------------------+    +------------------+
+|   WEAVIATE       |    |   REDIS          |    |   GITHUB ACTIONS |
+|   (Embeddings)   |    |   (State/Cache)  |    |   (Execution)    |
++------------------+    +------------------+    +------------------+
+           |
+           v
++------------------+
+|   NEO4J          |
+|   (Knowledge)    |
++------------------+
+                </pre>
+            </div>
+
+            <h3>Design Patterns Used</h3>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4>Swarm Pattern</h4>
+                    <p>Multiple specialized agents evaluate scripts in parallel, then consensus agent aggregates results.</p>
+                    <code>backend/rag/swarm_script_selector.py</code>
+                </div>
+                <div class="card">
+                    <h4>Circuit Breaker</h4>
+                    <p>Prevents cascade failures by opening circuits when external services fail repeatedly.</p>
+                    <code>backend/utils/circuit_breaker.py</code>
+                </div>
+                <div class="card">
+                    <h4>HITL (Human-in-the-Loop)</h4>
+                    <p>Risk-based approval routing ensures human oversight for critical actions.</p>
+                    <code>backend/agents/control_plane.py</code>
+                </div>
+                <div class="card">
+                    <h4>Event Sourcing</h4>
+                    <p>All incidents flow through Kafka topics with full audit trail.</p>
+                    <code>backend/streaming/kafka_producer.py</code>
+                </div>
+                <div class="card">
+                    <h4>LLM-as-Judge</h4>
+                    <p>Separate LLM evaluates plan quality, safety, and feasibility before execution.</p>
+                    <code>backend/orchestrator/llm_judge.py</code>
+                </div>
+                <div class="card">
+                    <h4>Separation of Concerns</h4>
+                    <p>Planning (LLM) separated from Execution (deterministic) for safety.</p>
+                    <code>backend/agents/execution_orchestrator.py</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: LangGraph Workflow -->
+        <section id="workflow">
+            <h2>3. LangGraph Workflow (14 Steps)</h2>
+
+            <div class="card">
+                <h4>State Machine Flow</h4>
+                <div class="diagram">
+                    <div class="flow-step">1. Ingest</div><span class="arrow">-></span>
+                    <div class="flow-step">2. Parse</div><span class="arrow">-></span>
+                    <div class="flow-step">3. Classify</div><span class="arrow">-></span>
+                    <div class="flow-step">4. Swarm RAG</div><span class="arrow">-></span>
+                    <div class="flow-step">5. Generate Plan</div><span class="arrow">-></span>
+                    <div class="flow-step">6. Judge Eval</div><span class="arrow">-></span>
+                    <div class="flow-step">7. Control Plane</div><span class="arrow">-></span>
+                    <div class="flow-step">8. Approval</div><span class="arrow">-></span>
+                    <div class="flow-step">9. Execute</div><span class="arrow">-></span>
+                    <div class="flow-step">10. Verify</div><span class="arrow">-></span>
+                    <div class="flow-step">11. Close</div><span class="arrow">-></span>
+                    <div class="flow-step">12. Feedback</div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Node Name</th>
+                        <th>Function</th>
+                        <th>File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Ingest</td><td>Receive incident from Kafka event</td><td><code>langgraph_workflow.py:130</code></td></tr>
+                    <tr><td>2</td><td>Parse</td><td>Extract context from raw incident</td><td><code>langgraph_workflow.py:142</code></td></tr>
+                    <tr><td>3</td><td>Classify</td><td>LLM classifies incident type (infra, network, db)</td><td><code>langgraph_workflow.py:167</code></td></tr>
+                    <tr><td>4</td><td>Swarm RAG</td><td>Multi-agent search for remediation scripts</td><td><code>langgraph_workflow.py:195</code></td></tr>
+                    <tr><td>5</td><td>Generate Plan</td><td>LLM creates remediation plan with steps</td><td><code>langgraph_workflow.py:227</code></td></tr>
+                    <tr><td>6</td><td>Judge Evaluation</td><td>LLM-as-Judge scores plan quality/safety</td><td><code>langgraph_workflow.py:264</code></td></tr>
+                    <tr><td>7</td><td>Control Plane</td><td>Risk assessment and approval routing</td><td><code>langgraph_workflow.py:315</code></td></tr>
+                    <tr><td>8</td><td>Await Approval</td><td>HITL approval for medium/high risk</td><td><code>langgraph_workflow.py:369</code></td></tr>
+                    <tr><td>9</td><td>Execute</td><td>Trigger GitHub Actions workflow</td><td><code>langgraph_workflow.py:394</code></td></tr>
+                    <tr><td>10</td><td>Verify</td><td>Confirm fix was successful</td><td><code>langgraph_workflow.py:435</code></td></tr>
+                    <tr><td>11</td><td>Close Ticket</td><td>Update ServiceNow incident to resolved</td><td><code>langgraph_workflow.py:455</code></td></tr>
+                    <tr><td>12</td><td>Feedback Loop</td><td>Update RAG with success/failure data</td><td><code>langgraph_workflow.py:482</code></td></tr>
+                </tbody>
+            </table>
+
+            <h4>Workflow State Schema</h4>
+            <pre><code>class WorkflowState(TypedDict):
+    incident_id: str           # Unique incident identifier
+    status: str                # Current status (NEW, ENRICHED, JUDGED, APPROVED, EXECUTED)
+    parsed_context: Dict       # Extracted incident context
+    classification: str        # Incident type (infrastructure, network, database)
+    rag_results: List[Dict]    # Matched scripts from RAG
+    plan: Dict                 # Generated remediation plan
+    judge_score: Dict          # LLM-as-Judge evaluation
+    approval_route: str        # auto_approve | async_approve | manual_approve | reject
+    execution_output: Dict     # GitHub Actions result
+    fix_verified: bool         # Verification status
+    step_history: List[str]    # Audit trail of steps executed</code></pre>
+        </section>
+
+        <!-- Section 4: RAG System -->
+        <section id="rag">
+            <h2>4. RAG System & Formulas</h2>
+
+            <h3>Hybrid Search Architecture</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>Vector Search (Weaviate)</h4>
+                    <p>Semantic similarity using OpenAI embeddings (text-embedding-3-small)</p>
+                    <code>backend/rag/embedding_service.py</code>
+                    <div class="formula">
+                        vector_score = cosine_similarity(query_embedding, script_embedding)
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>Graph Search (Neo4j)</h4>
+                    <p>Knowledge graph with FIXED_BY relationships and success rates</p>
+                    <code>backend/rag/neo4j_client.py</code>
+                    <div class="formula">
+                        graph_score = (success_rate * 0.6) + (execution_count * 0.3) + (recency * 0.1)
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>Keyword Search (BM25)</h4>
+                    <p>Traditional keyword matching with TF-IDF scoring</p>
+                    <code>backend/rag/hybrid_search_engine.py</code>
+                    <div class="formula">
+                        bm25_score = sum(idf(term) * tf(term, doc) * (k1 + 1) / (tf + k1))
+                    </div>
+                </div>
+            </div>
+
+            <h3>Final Score Calculation</h3>
+            <div class="formula">
+                <strong>Hybrid Score Formula:</strong><br><br>
+                final_score = (vector_weight * vector_score) + (graph_weight * graph_score) + (keyword_weight * keyword_score) + (metadata_boost)<br><br>
+                <strong>Default Weights:</strong><br>
+                - vector_weight = 0.4 (semantic similarity)<br>
+                - graph_weight = 0.35 (historical success)<br>
+                - keyword_weight = 0.25 (keyword overlap)<br>
+                - metadata_boost = 0.1 (category/service match)
+            </div>
+
+            <h3>Swarm Script Selector</h3>
+            <p>Multi-agent evaluation system using specialized agents:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Weight</th>
+                        <th>Evaluation Criteria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>SemanticAgent</td><td>40%</td><td>Keyword/pattern match, vector score</td></tr>
+                    <tr><td>SafetyAgent</td><td>35%</td><td>Risk level, blast radius, rollback availability</td></tr>
+                    <tr><td>ContextAgent</td><td>25%</td><td>Historical patterns, graph relationships</td></tr>
+                    <tr><td>ConsensusAgent</td><td>-</td><td>Aggregates weighted scores, makes final decision</td></tr>
+                </tbody>
+            </table>
+
+            <h4>Consensus Decision Formula</h4>
+            <div class="formula">
+                final_score = sum(agent_score * agent_weight * agent_confidence) / sum(agent_weight * agent_confidence)<br><br>
+                Auto-approve if: final_score >= 0.5 AND risk_level in ['low', 'medium'] AND no_approval_flags
+            </div>
+        </section>
+
+        <!-- Section 5: Agents -->
+        <section id="agents">
+            <h2>5. Agent System</h2>
+
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4>ServiceNow Agent</h4>
+                    <span class="tag tag-primary">ITSM</span>
+                    <p>Manages incidents in ServiceNow: create, update, close tickets.</p>
+                    <code>backend/agents/servicenow/agent.py</code>
+                </div>
+                <div class="card">
+                    <h4>Infrastructure Agent</h4>
+                    <span class="tag tag-success">Remediation</span>
+                    <p>Handles GCP VM operations: start, stop, restart instances.</p>
+                    <code>backend/agents/infra/enhanced_agent.py</code>
+                </div>
+                <div class="card">
+                    <h4>Jira Agent</h4>
+                    <span class="tag tag-secondary">Tracking</span>
+                    <p>Creates/updates Jira tickets for incident tracking.</p>
+                    <code>backend/agents/jira/agent.py</code>
+                </div>
+                <div class="card">
+                    <h4>Control Plane</h4>
+                    <span class="tag tag-warning">Governance</span>
+                    <p>Policy enforcement and approval routing based on risk.</p>
+                    <code>backend/agents/control_plane.py</code>
+                </div>
+                <div class="card">
+                    <h4>Execution Orchestrator</h4>
+                    <span class="tag tag-danger">Execution</span>
+                    <p>No-LLM executor that triggers GitHub Actions workflows.</p>
+                    <code>backend/agents/execution_orchestrator.py</code>
+                </div>
+                <div class="card">
+                    <h4>LLM Judge</h4>
+                    <span class="tag tag-primary">Validation</span>
+                    <p>Evaluates plan quality, safety, and feasibility.</p>
+                    <code>backend/orchestrator/llm_judge.py</code>
+                </div>
+            </div>
+
+            <h3>Agent Communication (A2A Protocol)</h3>
+            <pre><code>@dataclass
+class AgentMessage:
+    message_id: str
+    sender_id: str
+    receiver_id: str
+    message_type: MessageType  # REQUEST | RESPONSE | BROADCAST | HEARTBEAT
+    payload: Dict[str, Any]
+    correlation_id: str
+    timestamp: datetime
+
+# Message Types
+- JudgeEvaluateMessage: Request plan evaluation
+- JudgeScoreMessage: Return evaluation scores
+- AgentExecuteMessage: Request action execution
+- AgentResultMessage: Return execution result</code></pre>
+        </section>
+
+        <!-- Section 6: Protocols -->
+        <section id="protocols">
+            <h2>6. Protocol Layer</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>A2A (Agent-to-Agent)</h4>
+                    <span class="tag tag-success">Google Protocol</span>
+                    <p>WebSocket-based mesh network for real-time agent communication.</p>
+                    <ul>
+                        <li>Service Discovery</li>
+                        <li>Request/Response patterns</li>
+                        <li>Broadcast messaging</li>
+                        <li>Health monitoring</li>
+                    </ul>
+                    <code>backend/agents/a2a/mesh.py</code>
+                </div>
+                <div class="card">
+                    <h4>MCP (Model Context Protocol)</h4>
+                    <span class="tag tag-secondary">Anthropic Protocol</span>
+                    <p>Standardized interface for LLM tool access.</p>
+                    <ul>
+                        <li>RAG Server (search tools)</li>
+                        <li>ServiceNow Server (ITSM tools)</li>
+                        <li>Execution Server (action tools)</li>
+                    </ul>
+                    <code>backend/mcp/servers/rag_server.py</code>
+                </div>
+                <div class="card">
+                    <h4>Kafka (Event Streaming)</h4>
+                    <span class="tag tag-warning">Apache Kafka</span>
+                    <p>Event-driven architecture for incident flow.</p>
+                    <ul>
+                        <li><code>servicenow.incidents</code> - New incidents</li>
+                        <li><code>gcp.alerts</code> - GCP monitoring alerts</li>
+                        <li><code>agent.events</code> - Agent activity</li>
+                    </ul>
+                    <code>backend/streaming/kafka_producer.py</code>
+                </div>
+            </div>
+
+            <h3>Protocol Flow Diagram</h3>
+            <div class="diagram">
+                <pre>
+ServiceNow ---> [Kafka: servicenow.incidents] ---> Orchestrator
+                                                       |
+                    +----------------------------------+----------------------------------+
+                    |                                  |                                  |
+                    v                                  v                                  v
+            [A2A: RAG Agent]                  [A2A: Judge Agent]                 [MCP: Tools]
+            Search scripts                   Evaluate plan                     Execute actions
+                    |                                  |                                  |
+                    +----------------------------------+----------------------------------+
+                                                       |
+                                                       v
+                                            [GitHub Actions API]
+                                            Execute remediation
+                </pre>
+            </div>
+        </section>
+
+        <!-- Section 7: Guardrails -->
+        <section id="guardrails">
+            <h2>7. AI Guardrails & Safety</h2>
+
+            <div class="card">
+                <h4>Input Validation</h4>
+                <table>
+                    <tr><th>Check</th><th>Description</th><th>Action on Failure</th></tr>
+                    <tr><td>Prompt Injection</td><td>Detects "ignore instructions", "pretend to be", etc.</td><td>Block with score < 0.5</td></tr>
+                    <tr><td>Command Injection</td><td>Detects shell commands in incident text</td><td>Block with score 0.3</td></tr>
+                    <tr><td>PII Detection</td><td>SSN, credit cards, emails, phone numbers</td><td>Flag (don't block)</td></tr>
+                    <tr><td>Length Limit</td><td>Max 10,000 characters</td><td>Truncate</td></tr>
+                </table>
+                <code>backend/guardrails/llm_guardrails.py:52-206</code>
+            </div>
+
+            <div class="card">
+                <h4>Output Validation</h4>
+                <table>
+                    <tr><th>Check</th><th>Description</th><th>Patterns</th></tr>
+                    <tr><td>Harmful Commands</td><td>Destructive operations</td><td>rm -rf /, fork bombs, mkfs</td></tr>
+                    <tr><td>Secret Exposure</td><td>Credentials in output</td><td>password=, api_key=, token=</td></tr>
+                    <tr><td>Privilege Escalation</td><td>Dangerous permissions</td><td>chmod 777, sudo su -</td></tr>
+                    <tr><td>Format Validation</td><td>Expected JSON/script format</td><td>JSON parse, script headers</td></tr>
+                </table>
+                <code>backend/guardrails/llm_guardrails.py:212-316</code>
+            </div>
+
+            <div class="card">
+                <h4>Rate Limiting</h4>
+                <ul>
+                    <li>60 requests/minute per identifier</li>
+                    <li>500 requests/hour per identifier</li>
+                    <li>Sliding window with automatic cleanup</li>
+                </ul>
+                <code>backend/guardrails/llm_guardrails.py:322-368</code>
+            </div>
+        </section>
+
+        <!-- Section 8: Compliance -->
+        <section id="compliance">
+            <h2>8. EU AI Act Compliance</h2>
+
+            <div class="card">
+                <p><strong>Risk Classification:</strong> <span class="tag tag-danger">HIGH-RISK AI SYSTEM</span></p>
+                <p>This platform is classified as high-risk under EU AI Act because it affects critical infrastructure and makes automated decisions.</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr><th>Article</th><th>Requirement</th><th>Implementation</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Article 9</td>
+                        <td>Risk Management System</td>
+                        <td>LLM guardrails, circuit breakers, confidence thresholds</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                    <tr>
+                        <td>Article 10</td>
+                        <td>Data Governance</td>
+                        <td>RAG knowledge base, PII detection, bias mitigation</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                    <tr>
+                        <td>Article 11</td>
+                        <td>Technical Documentation</td>
+                        <td>Architecture docs, API docs, this guide</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                    <tr>
+                        <td>Article 12</td>
+                        <td>Record-Keeping</td>
+                        <td>Audit logging, LangFuse tracing, 90-day retention</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                    <tr>
+                        <td>Article 13</td>
+                        <td>Transparency</td>
+                        <td>AI disclosure, decision explanation, confidence scores</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                    <tr>
+                        <td>Article 14</td>
+                        <td>Human Oversight</td>
+                        <td>HITL approval workflow, override capability</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                    <tr>
+                        <td>Article 15</td>
+                        <td>Accuracy & Robustness</td>
+                        <td>Judge validation, circuit breakers, chaos testing</td>
+                        <td><span class="tag tag-success">Compliant</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Confidence Thresholds (Article 15)</h4>
+            <div class="formula">
+                auto_execute: >= 0.95 (auto-approve, immediate execution)<br>
+                recommend: >= 0.80 (suggest to user, single approval)<br>
+                human_review: >= 0.60 (require human review, dual approval)<br>
+                reject: < 0.60 (block execution, manual only)
+            </div>
+            <code>backend/config/thresholds.py</code>
+        </section>
+
+        <!-- Section 9: Observability -->
+        <section id="observability">
+            <h2>9. Observability & Monitoring</h2>
+
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4>Metrics (Prometheus)</h4>
+                    <ul>
+                        <li>incident_total{status}</li>
+                        <li>execution_duration_seconds</li>
+                        <li>rag_search_latency_seconds</li>
+                        <li>llm_tokens_used</li>
+                        <li>circuit_breaker_state</li>
+                    </ul>
+                    <code>/metrics</code>
+                </div>
+                <div class="card">
+                    <h4>Tracing (LangFuse)</h4>
+                    <ul>
+                        <li>LLM call traces</li>
+                        <li>Token usage tracking</li>
+                        <li>Latency breakdown</li>
+                        <li>Error analysis</li>
+                    </ul>
+                    <code>llm_intelligence.py</code>
+                </div>
+                <div class="card">
+                    <h4>Logging (Structlog)</h4>
+                    <ul>
+                        <li>JSON structured logs</li>
+                        <li>Correlation IDs</li>
+                        <li>Step-by-step audit</li>
+                        <li>Error context</li>
+                    </ul>
+                    <code>All modules</code>
+                </div>
+            </div>
+
+            <h3>Circuit Breaker States</h3>
+            <table>
+                <tr><th>Service</th><th>Failure Threshold</th><th>Recovery Time</th></tr>
+                <tr><td>GitHub API</td><td>5 failures</td><td>60 seconds</td></tr>
+                <tr><td>ServiceNow API</td><td>5 failures</td><td>60 seconds</td></tr>
+                <tr><td>OpenAI API</td><td>3 failures</td><td>30 seconds</td></tr>
+            </table>
+            <code>backend/utils/circuit_breaker.py</code>
+        </section>
+
+        <!-- Section 10: File Structure -->
+        <section id="files">
+            <h2>10. File Structure & Components</h2>
+
+            <h3>Backend Structure</h3>
+            <pre><code>backend/
+├── orchestrator/
+│   ├── main.py                  # FastAPI REST API (744 lines)
+│   ├── langgraph_workflow.py    # LangGraph state machine (708 lines)
+│   ├── llm_intelligence.py      # LLM analysis & matching
+│   ├── llm_judge.py             # LLM-as-Judge evaluation
+│   └── metrics.py               # Prometheus metrics
+├── agents/
+│   ├── base_agent.py            # Abstract base class
+│   ├── control_plane.py         # Risk assessment & routing (374 lines)
+│   ├── execution_orchestrator.py # No-LLM executor (431 lines)
+│   ├── servicenow/agent.py      # ServiceNow ITSM agent
+│   ├── jira/agent.py            # Jira integration
+│   ├── infra/enhanced_agent.py  # GCP infrastructure agent
+│   └── a2a/                     # Agent-to-Agent protocol
+│       ├── messages.py          # Message schemas
+│       ├── client.py            # A2A client
+│       └── mesh.py              # WebSocket mesh
+├── rag/
+│   ├── embedding_service.py     # OpenAI embeddings
+│   ├── hybrid_search_engine.py  # Combined search
+│   ├── swarm_retriever.py       # Multi-agent retrieval
+│   ├── swarm_script_selector.py # Swarm decision (543 lines)
+│   ├── script_ingestion.py      # Script indexing
+│   ├── neo4j_client.py          # Graph database
+│   └── weaviate_client.py       # Vector database
+├── guardrails/
+│   └── llm_guardrails.py        # Input/output validation (596 lines)
+├── governance/
+│   ├── eu_ai_act_compliance.py  # EU AI Act (393 lines)
+│   ├── audit_logger.py          # Decision logging
+│   └── data_retention.py        # Data lifecycle
+├── streaming/
+│   ├── kafka_producer.py        # Event publishing
+│   ├── incident_consumer.py     # Event consumption
+│   └── servicenow_producer.py   # ServiceNow polling
+├── mcp/
+│   └── servers/rag_server.py    # MCP RAG tools
+├── config/
+│   └── thresholds.py            # Confidence thresholds
+└── utils/
+    ├── circuit_breaker.py       # Resilience patterns
+    ├── redis_client.py          # Cache/state
+    ├── github_actions.py        # GitHub API
+    └── slack_notifier.py        # Slack approvals</code></pre>
+
+            <h3>Frontend Structure</h3>
+            <pre><code>frontend/src/
+├── app/
+│   ├── page.tsx                 # Dashboard
+│   ├── incidents/page.tsx       # Incident list
+│   └── layout.tsx               # Root layout
+├── components/
+│   ├── dashboard/               # Dashboard widgets
+│   ├── incidents/               # Incident components
+│   ├── layout/Sidebar.tsx       # Navigation
+│   └── chat/ChatWrapper.tsx     # AI chat interface
+└── lib/
+    ├── api.ts                   # API client
+    └── constants.ts             # Configuration</code></pre>
+
+            <h3>Scripts</h3>
+            <pre><code>scripts/
+├── agentic_workflow.py          # E2E workflow runner (500+ lines)
+├── start_gcp_instance.sh        # GCP VM start script
+├── health_check.sh              # Health verification
+├── disk_cleanup.sh              # Disk space remediation
+└── service_restart.sh           # Service restart script</code></pre>
+        </section>
+
+        <!-- Section 11: Incident Lifecycle -->
+        <section id="incident-lifecycle">
+            <h2>11. Incident Resolution Lifecycle</h2>
+
+            <div class="card">
+                <h4>End-to-End Flow Example: "GCP VM is down"</h4>
+                <ol style="margin-left: 1.5rem;">
+                    <li><strong>Detection:</strong> ServiceNow ticket created "test-vm-01 is terminated"</li>
+                    <li><strong>Ingestion:</strong> Kafka consumer picks up from servicenow.incidents topic</li>
+                    <li><strong>Classification:</strong> LLM classifies as "infrastructure/gcp"</li>
+                    <li><strong>RAG Search:</strong> Swarm agents search for matching scripts
+                        <ul>
+                            <li>Vector: 0.92 match to "Start GCP Instance"</li>
+                            <li>Graph: 8 historical successes for VM start</li>
+                            <li>Keywords: "terminated", "vm", "gcp" matched</li>
+                        </ul>
+                    </li>
+                    <li><strong>Plan Generation:</strong> LLM creates 3-step plan
+                        <ul>
+                            <li>Step 1: Validate VM exists</li>
+                            <li>Step 2: Execute start_gcp_instance.sh</li>
+                            <li>Step 3: Verify VM is running</li>
+                        </ul>
+                    </li>
+                    <li><strong>Judge Evaluation:</strong> Quality: 8.5, Safety: PASS, Feasibility: 7.5</li>
+                    <li><strong>Control Plane:</strong> Risk: MEDIUM, Route: async_approve</li>
+                    <li><strong>Approval:</strong> Slack notification sent, user approves</li>
+                    <li><strong>Execution:</strong> GitHub Actions shell-execute.yml triggered</li>
+                    <li><strong>Verification:</strong> VM status checked, confirmed RUNNING</li>
+                    <li><strong>Closure:</strong> ServiceNow ticket updated to "Resolved"</li>
+                    <li><strong>Feedback:</strong> Neo4j updated with FIXED_BY relationship</li>
+                </ol>
+            </div>
+
+            <h4>Status Transitions</h4>
+            <div class="diagram">
+                <pre>
+NEW --> RECEIVED --> ENRICHED --> JUDGED --> PLAN_GENERATED
+                                                   |
+                              +--------------------+--------------------+
+                              |                    |                    |
+                              v                    v                    v
+                        APPROVED            PENDING_APPROVAL         REJECTED
+                              |                    |                    |
+                              v                    v                    |
+                         EXECUTING           (wait for human)          |
+                              |                    |                    |
+                              v                    v                    |
+                         EXECUTED <----------------+                    |
+                              |                                         |
+                              v                                         |
+                         VERIFIED                                       |
+                              |                                         |
+                              v                                         |
+                          CLOSED <--------------------------------------+
+                </pre>
+            </div>
+        </section>
+
+        <!-- Section 12: Future Improvements -->
+        <section id="improvements">
+            <h2>12. Future Improvements</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>RAG Enhancements</h4>
+                    <span class="tag tag-secondary">Medium Priority</span>
+                    <ul>
+                        <li>Fine-tuned embeddings for incident domain</li>
+                        <li>Cross-encoder reranking for better precision</li>
+                        <li>Dynamic weight adjustment based on feedback</li>
+                        <li>Multi-modal RAG (logs, screenshots)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Agent Capabilities</h4>
+                    <span class="tag tag-primary">High Priority</span>
+                    <ul>
+                        <li>Kubernetes remediation agent</li>
+                        <li>Database recovery agent</li>
+                        <li>Network diagnostics agent</li>
+                        <li>Auto-scaling agent</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Observability</h4>
+                    <span class="tag tag-warning">Low Priority</span>
+                    <ul>
+                        <li>Grafana dashboards</li>
+                        <li>Alerting rules</li>
+                        <li>Cost tracking per incident</li>
+                        <li>SLA monitoring</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>ML/AI</h4>
+                    <span class="tag tag-success">Future</span>
+                    <ul>
+                        <li>Predictive incident detection</li>
+                        <li>Anomaly detection in metrics</li>
+                        <li>Root cause analysis automation</li>
+                        <li>Self-healing infrastructure</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Performance Targets</h3>
+            <table>
+                <tr><th>Metric</th><th>Current</th><th>Target</th></tr>
+                <tr><td>Classification Accuracy</td><td>~90%</td><td>95%</td></tr>
+                <tr><td>Script Match Precision</td><td>~85%</td><td>92%</td></tr>
+                <tr><td>MTTR (Mean Time to Resolve)</td><td>~5 min</td><td>2 min</td></tr>
+                <tr><td>Auto-resolution Rate</td><td>~40%</td><td>70%</td></tr>
+            </table>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: #64748b;">
+            <p>Enterprise AI Incident Management Platform v5.0</p>
+            <p>Generated: December 2024 | Hybrid Protocol Architecture | EU AI Act Compliant</p>
+        </footer>
+    </div>
+</body>
+</html>

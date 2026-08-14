@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>project_steps.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ai-incident-management-platform-complete-technical-whitepaper">AI Incident Management Platform: Complete Technical Whitepaper</h1>
+<h2 id="enterprise-incident-resolution-system-v50">Enterprise Incident Resolution System v5.0</h2>
+<p><strong>Document Classification</strong>: Internal Engineering Reference
+<strong>Version</strong>: 5.0.0
+<strong>Last Updated</strong>: December 2024</p>
+<hr>
+<h2 id="executive-summary">Executive Summary</h2>
+<p>This document provides a complete, step-by-step explanation of an AI-powered incident management platform that automatically resolves infrastructure incidents originating from ServiceNow. The system uses a multi-agent architecture with Kafka event streaming, Swarm RAG for intelligent script retrieval, LLM-as-Judge for plan validation, and human-in-the-loop approval workflows.</p>
+<p><strong>Total Steps in Lifecycle</strong>: 24 discrete steps from incident creation to closure.</p>
+<hr>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#system-overview">System Overview</a></li>
+<li><a href="#step-by-step-incident-lifecycle">Step-by-Step Incident Lifecycle</a></li>
+<li><a href="#end-to-end-timeline-summary">End-to-End Timeline Summary</a></li>
+<li><a href="#architecture-layer-map">Architecture Layer Map</a></li>
+<li><a href="#design-patterns-used">Design Patterns Used</a></li>
+<li><a href="#why-this-architecture-works">Why This Architecture Works</a></li>
+<li><a href="#component-dependency-analysis">Component Dependency Analysis</a></li>
+</ol>
+<hr>
+<h2 id="system-overview">System Overview</h2>
+<h3 id="what-this-system-does">What This System Does</h3>
+<p>When an IT incident occurs (e.g., a GCP VM goes down), this platform:</p>
+<ol>
+<li>Detects the incident via ServiceNow</li>
+<li>Automatically analyzes the problem using AI agents</li>
+<li>Finds the best remediation script using multi-source search</li>
+<li>Validates the plan using an independent LLM judge</li>
+<li>Routes for human approval based on risk level</li>
+<li>Executes the fix via GitHub Actions</li>
+<li>Verifies the resolution and updates its knowledge base</li>
+</ol>
+<h3 id="core-technologies">Core Technologies</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Technology</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event Bus</td>
+<td>Apache Kafka</td>
+<td>Reliable event streaming</td>
+</tr>
+<tr>
+<td>Workflow Engine</td>
+<td>LangGraph</td>
+<td>State machine orchestration</td>
+</tr>
+<tr>
+<td>Vector Database</td>
+<td>Weaviate</td>
+<td>Semantic search</td>
+</tr>
+<tr>
+<td>Graph Database</td>
+<td>Neo4j</td>
+<td>Relationship-based retrieval</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Redis</td>
+<td>State and embedding cache</td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>GitHub Actions</td>
+<td>Infrastructure automation</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>OpenAI GPT-4</td>
+<td>Reasoning and generation</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Next.js 14</td>
+<td>User interface</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>FastAPI (Python)</td>
+<td>API and orchestration</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="step-by-step-incident-lifecycle">Step-by-Step Incident Lifecycle</h2>
+<hr>
+<h3 id="step-1-incident-creation-in-servicenow">STEP 1: Incident Creation in ServiceNow</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Capture the initial problem report in the enterprise ITSM system</li>
+<li>Establish the incident as the authoritative record for tracking and compliance</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+A support engineer or automated monitoring system creates a ticket in ServiceNow describing a problem, such as &quot;Production VM test-incident-vm-01 is not responding in GCP zone us-central1-a.&quot;</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: ServiceNow REST API (Table API)</li>
+<li><strong>Sync/Async</strong>: Synchronous creation</li>
+<li><strong>Data Format</strong>: ServiceNow incident record with fields:
+<ul>
+<li><code>number</code>: INC0010001</li>
+<li><code>short_description</code>: Problem summary</li>
+<li><code>description</code>: Detailed information</li>
+<li><code>priority</code>: 1-5 scale</li>
+<li><code>state</code>: 1 (New)</li>
+<li><code>assignment_group</code>: Infrastructure team</li>
+<li><code>cmdb_ci</code>: Configuration item reference</li>
+</ul>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: ServiceNow SaaS platform</li>
+<li><strong>Protocol Layer</strong>: HTTPS/REST</li>
+<li><strong>Agent Layer</strong>: Not yet involved</li>
+<li><strong>Reasoning Layer</strong>: Not yet involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/agents/servicenow/agent.py</code> → ServiceNow API client (will poll this later)</li>
+<li><code>backend/mcp/servicenow_server.py</code> → MCP server for ServiceNow operations</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: ServiceNow API unavailable, authentication failure</li>
+<li><strong>System reaction</strong>: Incident creation fails; user receives error</li>
+<li><strong>Circuit breaker</strong>: Not applicable at this stage (user-initiated)</li>
+</ul>
+<hr>
+<h3 id="step-2-incident-detection-and-polling">STEP 2: Incident Detection and Polling</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Detect new incidents in ServiceNow that require automated processing</li>
+<li>Transform external ITSM data into internal event format</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The AI platform periodically checks ServiceNow for new incidents. When it finds one assigned to the AI-enabled group, it captures the incident details.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: ServiceNow REST API (Table API with query parameters)</li>
+<li><strong>Sync/Async</strong>: Asynchronous polling (every 30 seconds)</li>
+<li><strong>Push vs Pull</strong>: Pull-based (system polls ServiceNow)</li>
+<li><strong>Query</strong>:<pre class="hljs"><code><div>GET /api/now/table/incident?sysparm_query=state=1^assignment_group=AI_AGENT_GROUP&amp;sysparm_limit=50
+</div></code></pre>
+</li>
+<li><strong>Decision Logic</strong>: Only incidents in state=1 (New) with correct assignment group are processed</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: ServiceNow API, Network</li>
+<li><strong>Protocol Layer</strong>: HTTPS/REST, JSON</li>
+<li><strong>Agent Layer</strong>: ServiceNow Agent (poller)</li>
+<li><strong>Reasoning Layer</strong>: Not yet involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/agents/servicenow/agent.py:fetch_new_incidents()</code> → Polls ServiceNow API</li>
+<li><code>backend/streaming/incident_sources.py</code> → Alternative source handlers</li>
+<li><code>backend/utils/circuit_breaker.py:servicenow_breaker</code> → Protects against API failures</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: ServiceNow API rate limiting, network timeout, authentication expiry</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Circuit breaker opens after 5 consecutive failures</li>
+<li>System waits 30 seconds before retry</li>
+<li>Incidents remain in ServiceNow queue (no data loss)</li>
+</ul>
+</li>
+<li><strong>Circuit breaker behavior</strong>:
+<ul>
+<li>State: CLOSED → OPEN after 5 failures</li>
+<li>Timeout: 30 seconds</li>
+<li>Half-open: Allows 1 test request</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-3-kafka-producer---event-publication">STEP 3: Kafka Producer - Event Publication</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Transform the ServiceNow incident into a standardized event format</li>
+<li>Publish to Kafka for reliable, ordered processing</li>
+<li>Decouple ingestion from processing</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system converts the ServiceNow ticket into a message and places it in a queue. This ensures the incident won't be lost even if later systems are temporarily unavailable.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Kafka Producer API</li>
+<li><strong>Sync/Async</strong>: Asynchronous with acknowledgment</li>
+<li><strong>Topic</strong>: <code>servicenow.incidents</code></li>
+<li><strong>Partition Key</strong>: <code>incident_id</code> (ensures ordering per incident)</li>
+<li><strong>Data Format</strong>: JSON event schema<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"event_type"</span>: <span class="hljs-string">"incident.created"</span>,
+  <span class="hljs-attr">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+  <span class="hljs-attr">"timestamp"</span>: <span class="hljs-string">"2024-12-31T10:00:00Z"</span>,
+  <span class="hljs-attr">"source"</span>: <span class="hljs-string">"servicenow"</span>,
+  <span class="hljs-attr">"payload"</span>: {
+    <span class="hljs-attr">"short_description"</span>: <span class="hljs-string">"VM test-incident-vm-01 is down"</span>,
+    <span class="hljs-attr">"priority"</span>: <span class="hljs-string">"3"</span>,
+    <span class="hljs-attr">"state"</span>: <span class="hljs-string">"1"</span>,
+    <span class="hljs-attr">"cmdb_ci"</span>: <span class="hljs-string">"test-incident-vm-01"</span>
+  }
+}
+</div></code></pre>
+</li>
+<li><strong>Delivery Guarantee</strong>: At-least-once (acks=all)</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Kafka cluster (Docker deployment)</li>
+<li><strong>Protocol Layer</strong>: Kafka binary protocol</li>
+<li><strong>Agent Layer</strong>: ServiceNow Agent (producer role)</li>
+<li><strong>Reasoning Layer</strong>: Not yet involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/utils/kafka_client.py:KafkaEventProducer.publish()</code> → Publishes events</li>
+<li><code>backend/streaming/schemas.py</code> → Event schema definitions</li>
+<li><code>backend/agents/servicenow/agent.py:process_incident()</code> → Triggers publication</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Kafka broker unavailable, network partition, serialization error</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Retries with exponential backoff (3 attempts)</li>
+<li>Events buffered in memory temporarily</li>
+<li>Failed events logged with full payload for manual recovery</li>
+</ul>
+</li>
+<li><strong>Circuit breaker</strong>: Kafka producer has built-in retry mechanism</li>
+</ul>
+<hr>
+<h3 id="step-4-kafka-topic-storage-and-ordering">STEP 4: Kafka Topic Storage and Ordering</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Durably store events until consumers process them</li>
+<li>Maintain strict ordering within partitions</li>
+<li>Enable replay capability for debugging and recovery</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The message sits in a queue organized by incident ID. Multiple incidents can be processed in parallel, but updates to the same incident are always processed in order.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Kafka internal replication protocol</li>
+<li><strong>Topics Used</strong>:
+<ul>
+<li><code>servicenow.incidents</code> → New incidents from ServiceNow</li>
+<li><code>gcp.alerts</code> → Alerts from GCP monitoring</li>
+<li><code>agent.events</code> → Inter-agent communication</li>
+<li><code>incident.approved</code> → Approved execution plans</li>
+<li><code>incident.executed</code> → Completed executions</li>
+</ul>
+</li>
+<li><strong>Partitioning Strategy</strong>: Hash of <code>incident_id</code> mod 3 partitions</li>
+<li><strong>Retention</strong>: 7 days (168 hours)</li>
+<li><strong>Replication Factor</strong>: 1 (development), 3 (production)</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Kafka brokers, ZooKeeper</li>
+<li><strong>Protocol Layer</strong>: Kafka replication protocol</li>
+<li><strong>Agent Layer</strong>: Not directly involved</li>
+<li><strong>Reasoning Layer</strong>: Not directly involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>deployment/docker-compose.yml</code> → Kafka broker configuration</li>
+<li><code>backend/streaming/schemas.py</code> → Topic and schema definitions</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Broker crash, disk full, network partition</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Kafka replicates to surviving brokers</li>
+<li>Producers receive timeout error and retry</li>
+<li>Consumers resume from last committed offset</li>
+</ul>
+</li>
+<li><strong>Dead Letter Queue</strong>: Failed messages after max retries go to <code>*.dlq</code> topics</li>
+</ul>
+<hr>
+<h3 id="step-5-event-consumer-initialization">STEP 5: Event Consumer Initialization</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Subscribe to relevant Kafka topics</li>
+<li>Establish consumer group for load balancing</li>
+<li>Begin processing the event stream</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The AI system's &quot;listener&quot; wakes up and starts reading messages from the queue, ready to process each incident.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Kafka Consumer API</li>
+<li><strong>Consumer Group</strong>: <code>ai-agent-orchestrator</code></li>
+<li><strong>Subscription</strong>: <code>servicenow.incidents</code>, <code>gcp.alerts</code></li>
+<li><strong>Offset Management</strong>: Manual commit after successful processing</li>
+<li><strong>Polling Interval</strong>: 100ms</li>
+<li><strong>Max Poll Records</strong>: 10 (batch size)</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Kafka client library</li>
+<li><strong>Protocol Layer</strong>: Kafka consumer protocol</li>
+<li><strong>Agent Layer</strong>: Event Orchestrator (hub)</li>
+<li><strong>Reasoning Layer</strong>: Not yet involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/streaming/incident_consumer.py:IncidentConsumer</code> → Main consumer class</li>
+<li><code>backend/streaming/incident_consumer.py:start()</code> → Consumer loop</li>
+<li><code>backend/orchestrator/main.py</code> → Orchestrator initialization</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Consumer crash, rebalance storm, deserialization error</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Consumer group rebalances automatically</li>
+<li>Failed message processing triggers retry</li>
+<li>Poison messages (unparseable) sent to DLQ after 3 attempts</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-6-event-deserialization-and-validation">STEP 6: Event Deserialization and Validation</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Parse the raw Kafka message into structured data</li>
+<li>Validate required fields are present</li>
+<li>Reject malformed events early</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system unpacks the message and checks that it has all the necessary information (incident ID, description, priority, etc.) before trying to process it.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: JSON deserialization</li>
+<li><strong>Validation Rules</strong>:
+<ul>
+<li><code>incident_id</code> must be non-empty string</li>
+<li><code>short_description</code> must exist</li>
+<li><code>priority</code> must be 1-5 or P1-P4</li>
+<li><code>timestamp</code> must be valid ISO 8601</li>
+</ul>
+</li>
+<li><strong>Schema</strong>: Pydantic model validation<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IncidentEvent</span><span class="hljs-params">(BaseModel)</span>:</span>
+    event_type: str
+    incident_id: str
+    timestamp: datetime
+    source: Literal[<span class="hljs-string">"servicenow"</span>, <span class="hljs-string">"gcp"</span>, <span class="hljs-string">"manual"</span>]
+    payload: IncidentPayload
+</div></code></pre>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Python runtime</li>
+<li><strong>Protocol Layer</strong>: JSON, Pydantic</li>
+<li><strong>Agent Layer</strong>: Event Orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Not yet involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/streaming/schemas.py:IncidentEvent</code> → Event model</li>
+<li><code>backend/streaming/incident_consumer.py:_deserialize_event()</code> → Parsing logic</li>
+<li><code>backend/guardrails/llm_guardrails.py</code> → Input validation</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Malformed JSON, missing required fields, type mismatch</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Validation error logged with full payload</li>
+<li>Event marked as failed, offset committed</li>
+<li>Event sent to DLQ for investigation</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-7-langgraph-workflow-initialization">STEP 7: LangGraph Workflow Initialization</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Create a new workflow instance for this incident</li>
+<li>Initialize the 7-node state machine</li>
+<li>Begin deterministic orchestration of the resolution process</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system creates a &quot;game plan&quot; for how it will handle this incident, setting up a series of steps it must follow in order.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: LangGraph state machine</li>
+<li><strong>Sync/Async</strong>: Asynchronous (async/await)</li>
+<li><strong>Workflow ID</strong>: <code>wf-{uuid4()}</code></li>
+<li><strong>Initial State</strong>:<pre class="hljs"><code><div>{
+    <span class="hljs-string">"workflow_id"</span>: <span class="hljs-string">"wf-abc123"</span>,
+    <span class="hljs-string">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-string">"current_node"</span>: <span class="hljs-string">"receive_parse"</span>,
+    <span class="hljs-string">"status"</span>: <span class="hljs-string">"active"</span>,
+    <span class="hljs-string">"node_outputs"</span>: {},
+    <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"2024-12-31T10:00:00Z"</span>
+}
+</div></code></pre>
+</li>
+<li><strong>7-Node Architecture</strong>:
+<ol>
+<li><code>receive_parse</code> → Ingestion</li>
+<li><code>swarm_rag</code> → Retrieval</li>
+<li><code>generate_plan</code> → Planning</li>
+<li><code>llm_judge</code> → Validation</li>
+<li><code>control_plane</code> → Approval</li>
+<li><code>execute</code> → Execution</li>
+<li><code>verify_close</code> → Completion</li>
+</ol>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Python asyncio, Redis (state storage)</li>
+<li><strong>Protocol Layer</strong>: LangGraph internal protocol</li>
+<li><strong>Agent Layer</strong>: LangGraph Workflow Engine</li>
+<li><strong>Reasoning Layer</strong>: Not yet involved (orchestration only)</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:IncidentWorkflow</code> → Workflow definition</li>
+<li><code>backend/orchestrator/langgraph_workflow.py:create_workflow()</code> → Factory function</li>
+<li><code>backend/orchestrator/main.py:WORKFLOW_STATES</code> → In-memory state store</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: State initialization error, Redis unavailable</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Workflow creation fails, event returned to Kafka</li>
+<li>Retry with exponential backoff</li>
+<li>Alert raised if persistent failure</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-8-node-1---receive-and-parse-incident-context">STEP 8: Node 1 - Receive and Parse Incident Context</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Extract structured information from the incident description</li>
+<li>Identify the affected service, severity, and key entities</li>
+<li>Prepare context for downstream processing</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The AI reads the incident ticket and figures out what's actually wrong - identifying that this is a &quot;VM down&quot; problem affecting &quot;test-incident-vm-01&quot; in &quot;GCP&quot;.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Internal function call (no network)</li>
+<li><strong>Sync/Async</strong>: Synchronous within async workflow</li>
+<li><strong>Processing Logic</strong>:
+<ol>
+<li>Parse <code>short_description</code> and <code>description</code> fields</li>
+<li>Extract entities using regex and NLP</li>
+<li>Classify incident type (infrastructure, application, network)</li>
+<li>Determine severity based on priority and keywords</li>
+</ol>
+</li>
+<li><strong>Output Schema</strong>:<pre class="hljs"><code><div>{
+    <span class="hljs-string">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-string">"service"</span>: <span class="hljs-string">"test-incident-vm-01"</span>,
+    <span class="hljs-string">"service_type"</span>: <span class="hljs-string">"gcp_compute"</span>,
+    <span class="hljs-string">"classification"</span>: <span class="hljs-string">"infrastructure/gcp/vm_down"</span>,
+    <span class="hljs-string">"severity"</span>: <span class="hljs-string">"P3"</span>,
+    <span class="hljs-string">"entities"</span>: {
+        <span class="hljs-string">"instance_name"</span>: <span class="hljs-string">"test-incident-vm-01"</span>,
+        <span class="hljs-string">"zone"</span>: <span class="hljs-string">"us-central1-a"</span>,
+        <span class="hljs-string">"project"</span>: <span class="hljs-string">"my-project"</span>
+    },
+    <span class="hljs-string">"keywords"</span>: [<span class="hljs-string">"vm"</span>, <span class="hljs-string">"down"</span>, <span class="hljs-string">"gcp"</span>, <span class="hljs-string">"compute"</span>, <span class="hljs-string">"restart"</span>]
+}
+</div></code></pre>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Python runtime</li>
+<li><strong>Protocol Layer</strong>: None (in-process)</li>
+<li><strong>Agent Layer</strong>: LangGraph Node 1</li>
+<li><strong>Reasoning Layer</strong>: Rule-based extraction + optional LLM enhancement</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_node_receive_parse()</code> → Node implementation</li>
+<li><code>backend/rag/query_understanding.py:QueryUnderstanding</code> → Entity extraction</li>
+<li><code>backend/orchestrator/llm_intelligence.py:analyze_incident_with_llm()</code> → LLM enhancement</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Parsing error, unrecognized incident format</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Falls back to raw text if structured parsing fails</li>
+<li>Continues with lower confidence score</li>
+<li>Logged for improvement of parsing rules</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-9-node-2---swarm-rag-multi-agent-search">STEP 9: Node 2 - Swarm RAG Multi-Agent Search</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Find the best remediation script(s) for this incident</li>
+<li>Use multiple search strategies in parallel for maximum recall</li>
+<li>Apply weighted consensus to rank results</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+Four different &quot;search agents&quot; simultaneously look for solutions: one searches by meaning (semantic), one by exact words (keyword), one by past relationships (graph), and one by metadata. They then vote on the best match.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: A2A (Agent-to-Agent) for coordination, MCP for tool calls</li>
+<li><strong>Sync/Async</strong>: Asynchronous parallel execution</li>
+<li><strong>Architecture</strong>: Swarm consensus pattern</li>
+</ul>
+<p><strong>Sub-Step 9.1: Query Understanding</strong></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Input: Incident context from Step 8</span>
+<span class="hljs-comment"># Output: Expanded query with intent</span>
+{
+    <span class="hljs-string">"original_query"</span>: <span class="hljs-string">"VM test-incident-vm-01 is down"</span>,
+    <span class="hljs-string">"intent"</span>: <span class="hljs-string">"RESTART"</span>,
+    <span class="hljs-string">"service_type"</span>: <span class="hljs-string">"GCP"</span>,
+    <span class="hljs-string">"expanded_query"</span>: <span class="hljs-string">"VM down restart recover fix compute GCP instance"</span>,
+    <span class="hljs-string">"entities"</span>: {<span class="hljs-string">"instance"</span>: <span class="hljs-string">"test-incident-vm-01"</span>, <span class="hljs-string">"zone"</span>: <span class="hljs-string">"us-central1-a"</span>}
+}
+</div></code></pre>
+<p><strong>Sub-Step 9.2: Parallel Agent Search</strong></p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Protocol</th>
+<th>Weight</th>
+<th>Data Source</th>
+<th>Search Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vector Agent</td>
+<td>MCP → Weaviate</td>
+<td>0.40</td>
+<td>Weaviate</td>
+<td>Semantic similarity (all-MiniLM-L6-v2)</td>
+</tr>
+<tr>
+<td>Keyword Agent</td>
+<td>Internal</td>
+<td>0.25</td>
+<td>TF-IDF index</td>
+<td>BM25 + bigram matching</td>
+</tr>
+<tr>
+<td>Graph Agent</td>
+<td>MCP → Neo4j</td>
+<td>0.25</td>
+<td>Neo4j</td>
+<td>FIXED_BY relationship traversal</td>
+</tr>
+<tr>
+<td>Metadata Agent</td>
+<td>Internal</td>
+<td>0.10</td>
+<td>Script registry</td>
+<td>Exact field matching</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sub-Step 9.3: Consensus Scoring</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> script <span class="hljs-keyword">in</span> all_results:
+    score = (
+        <span class="hljs-number">0.40</span> * vector_agent_score +
+        <span class="hljs-number">0.25</span> * keyword_agent_score +
+        <span class="hljs-number">0.25</span> * graph_agent_score +
+        <span class="hljs-number">0.10</span> * metadata_agent_score
+    ) * historical_success_rate
+</div></code></pre>
+<p><strong>Sub-Step 9.4: Cross-Encoder Reranking</strong></p>
+<ul>
+<li>Model: <code>ms-marco-MiniLM-L-6-v2</code></li>
+<li>Input: Top 20 candidates</li>
+<li>Output: Top 5 reranked by relevance</li>
+<li>Improvement: +20-30% precision</li>
+</ul>
+<p><strong>Sub-Step 9.5: Blast Radius Filtering</strong></p>
+<ul>
+<li>Check each script's <code>risk_level</code> against incident severity</li>
+<li>Filter out scripts that could affect more systems than necessary</li>
+<li>Attach risk assessment to each remaining candidate</li>
+</ul>
+<p><strong>Output Schema</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"matched_scripts"</span>: [
+        {
+            <span class="hljs-string">"script_id"</span>: <span class="hljs-string">"gcp_restart_vm_001"</span>,
+            <span class="hljs-string">"name"</span>: <span class="hljs-string">"start_gcp_instance.sh"</span>,
+            <span class="hljs-string">"final_score"</span>: <span class="hljs-number">0.92</span>,
+            <span class="hljs-string">"vector_score"</span>: <span class="hljs-number">0.95</span>,
+            <span class="hljs-string">"keyword_score"</span>: <span class="hljs-number">0.88</span>,
+            <span class="hljs-string">"graph_score"</span>: <span class="hljs-number">0.91</span>,
+            <span class="hljs-string">"metadata_score"</span>: <span class="hljs-number">1.0</span>,
+            <span class="hljs-string">"risk_level"</span>: <span class="hljs-string">"low"</span>,
+            <span class="hljs-string">"historical_success_count"</span>: <span class="hljs-number">47</span>,
+            <span class="hljs-string">"avg_resolution_time"</span>: <span class="hljs-string">"3.2 minutes"</span>
+        }
+    ],
+    <span class="hljs-string">"search_metadata"</span>: {
+        <span class="hljs-string">"total_candidates"</span>: <span class="hljs-number">156</span>,
+        <span class="hljs-string">"after_rerank"</span>: <span class="hljs-number">5</span>,
+        <span class="hljs-string">"search_time_ms"</span>: <span class="hljs-number">1842</span>
+    }
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Weaviate, Neo4j, Redis (cache)</li>
+<li><strong>Protocol Layer</strong>: A2A for agent coordination, MCP for tool invocation</li>
+<li><strong>Agent Layer</strong>: Swarm RAG Coordinator, 4 search agents</li>
+<li><strong>Reasoning Layer</strong>: Consensus algorithm, cross-encoder model</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/rag/swarm_retriever.py:SwarmRetriever</code> → Swarm coordinator</li>
+<li><code>backend/rag/swarm_script_selector.py:SwarmScriptSelector</code> → Script-specific swarm</li>
+<li><code>backend/rag/agents/vector_agent.py</code> → Vector search agent</li>
+<li><code>backend/rag/agents/keyword_agent.py</code> → Keyword search agent</li>
+<li><code>backend/rag/agents/graph_agent.py</code> → Graph search agent</li>
+<li><code>backend/rag/agents/metadata_agent.py</code> → Metadata search agent</li>
+<li><code>backend/rag/cross_encoder_reranker.py:CrossEncoderReranker</code> → Reranking</li>
+<li><code>backend/rag/hybrid_search_engine.py:HybridSearchEngine</code> → Search orchestration</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Weaviate timeout, Neo4j connection error, embedding service failure</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Failed agent's vote is excluded (remaining agents continue)</li>
+<li>Weights automatically renormalized</li>
+<li>Minimum 2 agents required for valid consensus</li>
+<li>If all fail: Return empty results, escalate to human</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-10-node-3---generate-remediation-plan">STEP 10: Node 3 - Generate Remediation Plan</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Create a detailed execution plan using the matched script(s)</li>
+<li>Fill in script parameters from incident context</li>
+<li>Generate rollback strategy for safety</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The AI creates a step-by-step plan: &quot;First, check if the VM exists. Then, run the restart script with these specific settings. If it fails, here's how to undo what we did.&quot;</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: OpenAI API (REST)</li>
+<li><strong>Sync/Async</strong>: Asynchronous HTTP call</li>
+<li><strong>Model</strong>: GPT-4-turbo</li>
+<li><strong>Prompt Structure</strong>: Plan-Execute pattern</li>
+<li><strong>Input</strong>:<pre class="hljs"><code><div>{
+    <span class="hljs-string">"incident_context"</span>: {...},  <span class="hljs-comment"># From Step 8</span>
+    <span class="hljs-string">"matched_script"</span>: {...},    <span class="hljs-comment"># Top result from Step 9</span>
+    <span class="hljs-string">"available_tools"</span>: [...]    <span class="hljs-comment"># MCP tool schemas</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<p><strong>LLM Prompt Template</strong>:</p>
+<pre class="hljs"><code><div>You are an IT operations expert. Given the incident context and matched remediation script, create a detailed execution plan.
+
+Incident:
+{incident_context}
+
+Matched Script:
+{matched_script}
+
+Generate a plan with:
+1. Pre-execution checks
+2. Main execution steps with filled parameters
+3. Post-execution validation
+4. Rollback strategy if execution fails
+
+Output as JSON with the following schema:
+{plan_schema}
+</div></code></pre>
+<p><strong>Output Schema</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"plan_id"</span>: <span class="hljs-string">"plan-xyz789"</span>,
+    <span class="hljs-string">"script_id"</span>: <span class="hljs-string">"gcp_restart_vm_001"</span>,
+    <span class="hljs-string">"confidence"</span>: <span class="hljs-number">0.89</span>,
+    <span class="hljs-string">"pre_checks"</span>: [
+        {
+            <span class="hljs-string">"action"</span>: <span class="hljs-string">"verify_instance_exists"</span>,
+            <span class="hljs-string">"command"</span>: <span class="hljs-string">"gcloud compute instances describe test-incident-vm-01 --zone=us-central1-a"</span>,
+            <span class="hljs-string">"expected_outcome"</span>: <span class="hljs-string">"Instance exists"</span>
+        }
+    ],
+    <span class="hljs-string">"main_steps"</span>: [
+        {
+            <span class="hljs-string">"step_number"</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-string">"action"</span>: <span class="hljs-string">"start_instance"</span>,
+            <span class="hljs-string">"command"</span>: <span class="hljs-string">"gcloud compute instances start test-incident-vm-01 --zone=us-central1-a"</span>,
+            <span class="hljs-string">"timeout_seconds"</span>: <span class="hljs-number">120</span>,
+            <span class="hljs-string">"expected_outcome"</span>: <span class="hljs-string">"Instance status: RUNNING"</span>
+        }
+    ],
+    <span class="hljs-string">"post_checks"</span>: [
+        {
+            <span class="hljs-string">"action"</span>: <span class="hljs-string">"verify_instance_running"</span>,
+            <span class="hljs-string">"command"</span>: <span class="hljs-string">"gcloud compute instances describe test-incident-vm-01 --zone=us-central1-a --format='value(status)'"</span>,
+            <span class="hljs-string">"expected_outcome"</span>: <span class="hljs-string">"RUNNING"</span>
+        }
+    ],
+    <span class="hljs-string">"rollback_steps"</span>: [
+        {
+            <span class="hljs-string">"action"</span>: <span class="hljs-string">"stop_instance_if_unstable"</span>,
+            <span class="hljs-string">"command"</span>: <span class="hljs-string">"gcloud compute instances stop test-incident-vm-01 --zone=us-central1-a"</span>,
+            <span class="hljs-string">"trigger"</span>: <span class="hljs-string">"post_check_failed"</span>
+        }
+    ],
+    <span class="hljs-string">"parameters"</span>: {
+        <span class="hljs-string">"instance_name"</span>: <span class="hljs-string">"test-incident-vm-01"</span>,
+        <span class="hljs-string">"zone"</span>: <span class="hljs-string">"us-central1-a"</span>,
+        <span class="hljs-string">"project"</span>: <span class="hljs-string">"my-project"</span>
+    },
+    <span class="hljs-string">"risk_assessment"</span>: {
+        <span class="hljs-string">"level"</span>: <span class="hljs-string">"low"</span>,
+        <span class="hljs-string">"blast_radius"</span>: <span class="hljs-string">"single_instance"</span>,
+        <span class="hljs-string">"requires_approval"</span>: true
+    }
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: OpenAI API, Network</li>
+<li><strong>Protocol Layer</strong>: HTTPS/REST, JSON</li>
+<li><strong>Agent Layer</strong>: LangGraph Node 3</li>
+<li><strong>Reasoning Layer</strong>: GPT-4 (Plan-Execute pattern)</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_node_generate_plan()</code> → Node implementation</li>
+<li><code>backend/orchestrator/llm_intelligence.py:generate_execution_plan()</code> → LLM call</li>
+<li><code>backend/orchestrator/rollback_generator.py:RollbackGenerator</code> → Rollback strategy</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: OpenAI API timeout, rate limiting, malformed response</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Circuit breaker protects against repeated failures</li>
+<li>Retry with exponential backoff (3 attempts)</li>
+<li>Fallback to template-based plan if LLM unavailable</li>
+</ul>
+</li>
+<li><strong>Circuit breaker behavior</strong>:
+<ul>
+<li><code>openai_breaker</code>: Opens after 5 failures, 30s timeout</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-11-node-4---llm-as-judge-validation">STEP 11: Node 4 - LLM-as-Judge Validation</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Independently validate the generated plan for quality, safety, and feasibility</li>
+<li>Provide an objective second opinion using a different model perspective</li>
+<li>Prevent hallucinated or dangerous plans from proceeding</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+A &quot;second AI&quot; reviews the plan and scores it on several criteria: Is it well-structured? Is it safe? Does it match the original problem? Will it actually work?</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: OpenAI API (REST) or Anthropic API (REST)</li>
+<li><strong>Sync/Async</strong>: Asynchronous HTTP call</li>
+<li><strong>Model</strong>: Claude (different from GPT-4 to avoid shared biases)</li>
+<li><strong>Why Different Model</strong>: Independent perspective prevents confirmation bias</li>
+</ul>
+<p><strong>Evaluation Criteria</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Score Range</th>
+<th>Threshold</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quality</td>
+<td>1-10</td>
+<td>≥6</td>
+<td>Plan structure, completeness, logical flow</td>
+</tr>
+<tr>
+<td>Safety</td>
+<td>Pass/Fail</td>
+<td>Must pass</td>
+<td>No dangerous commands, proper guardrails</td>
+</tr>
+<tr>
+<td>Factual</td>
+<td>1-10</td>
+<td>≥6</td>
+<td>Matches RAG results, no hallucinations</td>
+</tr>
+<tr>
+<td>Feasibility</td>
+<td>1-10</td>
+<td>≥6</td>
+<td>Executable given current context</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>Low/Med/High</td>
+<td>≤Medium</td>
+<td>Blast radius assessment</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Judge Prompt Template</strong>:</p>
+<pre class="hljs"><code><div>You are an independent evaluator reviewing an AI-generated incident remediation plan.
+
+Original Incident:
+{incident_context}
+
+RAG Search Results:
+{rag_results}
+
+Generated Plan:
+{plan}
+
+Evaluate this plan on the following criteria:
+1. QUALITY (1-10): Is the plan well-structured and complete?
+2. SAFETY (Pass/Fail): Are there any dangerous commands or missing guardrails?
+3. FACTUAL (1-10): Does the plan match the RAG results without hallucination?
+4. FEASIBILITY (1-10): Can this plan be executed given the context?
+5. RISK (Low/Medium/High): What is the blast radius?
+
+Output your evaluation as JSON:
+{evaluation_schema}
+</div></code></pre>
+<p><strong>Output Schema</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"judge_id"</span>: <span class="hljs-string">"judge-eval-001"</span>,
+    <span class="hljs-string">"plan_id"</span>: <span class="hljs-string">"plan-xyz789"</span>,
+    <span class="hljs-string">"verdict"</span>: <span class="hljs-string">"APPROVED"</span>,  <span class="hljs-comment"># or "NEEDS_REVISION" or "REJECTED"</span>
+    <span class="hljs-string">"scores"</span>: {
+        <span class="hljs-string">"quality"</span>: <span class="hljs-number">8</span>,
+        <span class="hljs-string">"safety"</span>: <span class="hljs-string">"PASS"</span>,
+        <span class="hljs-string">"factual"</span>: <span class="hljs-number">9</span>,
+        <span class="hljs-string">"feasibility"</span>: <span class="hljs-number">8</span>,
+        <span class="hljs-string">"risk"</span>: <span class="hljs-string">"LOW"</span>
+    },
+    <span class="hljs-string">"reasoning"</span>: <span class="hljs-string">"Plan is well-structured with proper pre/post checks..."</span>,
+    <span class="hljs-string">"concerns"</span>: [],
+    <span class="hljs-string">"revision_suggestions"</span>: []
+}
+</div></code></pre>
+<p><strong>Decision Logic</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">if</span> safety == <span class="hljs-string">"FAIL"</span>:
+    verdict = <span class="hljs-string">"REJECTED"</span>
+<span class="hljs-keyword">elif</span> quality &lt; <span class="hljs-number">6</span> <span class="hljs-keyword">or</span> factual &lt; <span class="hljs-number">6</span>:
+    verdict = <span class="hljs-string">"NEEDS_REVISION"</span>
+<span class="hljs-keyword">else</span>:
+    verdict = <span class="hljs-string">"APPROVED"</span>
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Claude/OpenAI API, Network</li>
+<li><strong>Protocol Layer</strong>: HTTPS/REST, JSON</li>
+<li><strong>Agent Layer</strong>: LangGraph Node 4 (LLM Judge)</li>
+<li><strong>Reasoning Layer</strong>: Independent LLM evaluation</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_node_llm_judge()</code> → Node implementation</li>
+<li><code>backend/orchestrator/llm_judge.py:LLMJudge</code> → Judge implementation</li>
+<li><code>backend/orchestrator/llm_judge.py:evaluate_plan()</code> → Evaluation logic</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Judge API timeout, parse error, low confidence</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>If judge unavailable: Flag for mandatory human review</li>
+<li>If verdict is &quot;NEEDS_REVISION&quot;: Loop back to Node 3 with feedback</li>
+<li>Maximum 2 revision loops before human escalation</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-12-revision-loop-conditional">STEP 12: Revision Loop (Conditional)</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Improve the plan based on Judge feedback</li>
+<li>Iterate until quality thresholds are met</li>
+<li>Prevent infinite loops with maximum iteration limit</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+If the second AI found problems with the plan, the first AI revises it and resubmits. This can happen up to 2 times before a human must review.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Internal state transition (LangGraph edge)</li>
+<li><strong>Sync/Async</strong>: Asynchronous workflow</li>
+<li><strong>Condition</strong>: <code>verdict == &quot;NEEDS_REVISION&quot; AND revision_count &lt; 2</code></li>
+<li><strong>State Update</strong>:<pre class="hljs"><code><div>workflow_state[<span class="hljs-string">"revision_count"</span>] += <span class="hljs-number">1</span>
+workflow_state[<span class="hljs-string">"judge_feedback"</span>] = judge_output[<span class="hljs-string">"revision_suggestions"</span>]
+workflow_state[<span class="hljs-string">"current_node"</span>] = <span class="hljs-string">"generate_plan"</span>  <span class="hljs-comment"># Loop back</span>
+</div></code></pre>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Python runtime</li>
+<li><strong>Protocol Layer</strong>: LangGraph state transitions</li>
+<li><strong>Agent Layer</strong>: Workflow orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Decision logic</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_should_revise()</code> → Edge condition</li>
+<li><code>backend/orchestrator/langgraph_workflow.py:_route_after_judge()</code> → Routing logic</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Infinite loop (caught by max iterations)</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>After 2 revisions: Force escalation to human</li>
+<li>Log all revision attempts for debugging</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-13-node-5---control-plane-approval-routing">STEP 13: Node 5 - Control Plane Approval Routing</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Determine the appropriate approval workflow based on risk level</li>
+<li>Route low-risk plans for auto-approval</li>
+<li>Route high-risk plans for human review</li>
+<li>Enforce governance policies</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system decides: &quot;Is this safe enough to do automatically, or does a human need to approve it?&quot; Low-risk actions with high confidence may proceed automatically; everything else needs human sign-off.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Internal decision logic + optional Kafka publish</li>
+<li><strong>Sync/Async</strong>: Synchronous decision, async notification</li>
+<li><strong>Decision Matrix</strong>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Risk Level</th>
+<th>Judge Score</th>
+<th>Confidence</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Low</td>
+<td>≥8</td>
+<td>≥0.90</td>
+<td>Auto-approve</td>
+</tr>
+<tr>
+<td>Low</td>
+<td>≥6</td>
+<td>≥0.80</td>
+<td>Human approval (fast track)</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>Any</td>
+<td>Any</td>
+<td>Human approval (standard)</td>
+</tr>
+<tr>
+<td>High</td>
+<td>Any</td>
+<td>Any</td>
+<td>Human approval + manager</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Auto-Approval Criteria</strong>:</p>
+<pre class="hljs"><code><div>auto_approve = (
+    risk_level == <span class="hljs-string">"LOW"</span> <span class="hljs-keyword">and</span>
+    judge_score &gt;= <span class="hljs-number">8</span> <span class="hljs-keyword">and</span>
+    plan_confidence &gt;= <span class="hljs-number">0.90</span> <span class="hljs-keyword">and</span>
+    script_has_history <span class="hljs-keyword">and</span>
+    historical_success_rate &gt;= <span class="hljs-number">0.95</span>
+)
+</div></code></pre>
+<p><strong>Output Schema</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"control_plane_decision"</span>: {
+        <span class="hljs-string">"requires_approval"</span>: true,
+        <span class="hljs-string">"approval_type"</span>: <span class="hljs-string">"standard"</span>,  <span class="hljs-comment"># or "fast_track", "manager_escalation"</span>
+        <span class="hljs-string">"auto_approved"</span>: false,
+        <span class="hljs-string">"approvers"</span>: [<span class="hljs-string">"oncall-engineer"</span>],
+        <span class="hljs-string">"timeout_minutes"</span>: <span class="hljs-number">60</span>,
+        <span class="hljs-string">"escalation_path"</span>: [<span class="hljs-string">"team-lead"</span>, <span class="hljs-string">"manager"</span>]
+    },
+    <span class="hljs-string">"pending_approval_id"</span>: <span class="hljs-string">"approval-abc123"</span>
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Redis (approval state), Kafka (notification)</li>
+<li><strong>Protocol Layer</strong>: Internal + optional REST webhook</li>
+<li><strong>Agent Layer</strong>: Control Plane agent</li>
+<li><strong>Reasoning Layer</strong>: Policy-based decision logic</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_node_control_plane()</code> → Node implementation</li>
+<li><code>backend/agents/control_plane.py:ControlPlane</code> → Decision logic</li>
+<li><code>backend/governance/approval_policy.py</code> → Policy definitions</li>
+<li><code>backend/orchestrator/main.py:PENDING_APPROVALS</code> → Approval state store</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Policy evaluation error, notification delivery failure</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Default to &quot;requires_approval&quot; if policy evaluation fails</li>
+<li>Retry notification delivery 3 times</li>
+<li>Timeout approval after configured period → escalate</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-14-human-approval-interface">STEP 14: Human Approval Interface</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Present the plan to human approvers in a clear, actionable format</li>
+<li>Enable approve/reject decisions with comments</li>
+<li>Track approval SLAs and escalate if needed</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+A notification appears in the web interface (and optionally Slack) asking an engineer to review and approve the proposed fix. They can see all the details, approve, reject, or request changes.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: REST API for UI, optional Slack webhook</li>
+<li><strong>Sync/Async</strong>: Asynchronous (human time)</li>
+<li><strong>UI Components</strong>: <code>EnterpriseIncidentDetail.tsx</code>, approval buttons</li>
+<li><strong>Approval Payload</strong>:<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"approval_id"</span>: <span class="hljs-string">"approval-abc123"</span>,
+  <span class="hljs-attr">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+  <span class="hljs-attr">"plan_summary"</span>: <span class="hljs-string">"Restart GCP VM test-incident-vm-01"</span>,
+  <span class="hljs-attr">"risk_level"</span>: <span class="hljs-string">"LOW"</span>,
+  <span class="hljs-attr">"judge_score"</span>: <span class="hljs-number">8.5</span>,
+  <span class="hljs-attr">"confidence"</span>: <span class="hljs-number">0.92</span>,
+  <span class="hljs-attr">"estimated_duration"</span>: <span class="hljs-string">"3 minutes"</span>,
+  <span class="hljs-attr">"rollback_available"</span>: <span class="hljs-literal">true</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<p><strong>API Endpoints</strong>:</p>
+<ul>
+<li><code>GET /api/approvals</code> → List pending approvals</li>
+<li><code>GET /api/approvals/{id}</code> → Get approval details</li>
+<li><code>POST /api/approvals/{id}/approve</code> → Approve plan</li>
+<li><code>POST /api/approvals/{id}/reject</code> → Reject plan</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: FastAPI, Redis, Browser</li>
+<li><strong>Protocol Layer</strong>: REST/HTTP, WebSocket (real-time updates)</li>
+<li><strong>Agent Layer</strong>: Not directly involved</li>
+<li><strong>Reasoning Layer</strong>: Not directly involved (human decision)</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/main.py:/api/approvals/*</code> → API endpoints</li>
+<li><code>frontend/src/components/incidents/EnterpriseIncidentDetail.tsx:handleApprove()</code> → UI handler</li>
+<li><code>frontend/src/app/approvals/page.tsx</code> → Approvals list page</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: UI unavailable, approver unresponsive, timeout</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>SLA timer (60 minutes default)</li>
+<li>Escalation to next approver at 50% of timeout</li>
+<li>Auto-reject if no response at 100% timeout</li>
+<li>Incident returned to queue for manual handling</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-15-approval-decision-recording">STEP 15: Approval Decision Recording</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Record the approval decision with full audit trail</li>
+<li>Transition workflow state based on decision</li>
+<li>Publish approval event for downstream processing</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system records who approved (or rejected) the plan, when, and any comments they provided. This creates a complete audit trail for compliance.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: REST (input), Kafka (output), PostgreSQL (storage)</li>
+<li><strong>Sync/Async</strong>: Synchronous API, async event publish</li>
+<li><strong>Audit Record</strong>:<pre class="hljs"><code><div>{
+    <span class="hljs-string">"approval_id"</span>: <span class="hljs-string">"approval-abc123"</span>,
+    <span class="hljs-string">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-string">"plan_id"</span>: <span class="hljs-string">"plan-xyz789"</span>,
+    <span class="hljs-string">"decision"</span>: <span class="hljs-string">"APPROVED"</span>,
+    <span class="hljs-string">"approver"</span>: <span class="hljs-string">"engineer@company.com"</span>,
+    <span class="hljs-string">"timestamp"</span>: <span class="hljs-string">"2024-12-31T10:15:00Z"</span>,
+    <span class="hljs-string">"comments"</span>: <span class="hljs-string">"Looks good, standard restart procedure"</span>,
+    <span class="hljs-string">"approval_type"</span>: <span class="hljs-string">"human"</span>,
+    <span class="hljs-string">"review_duration_seconds"</span>: <span class="hljs-number">120</span>
+}
+</div></code></pre>
+</li>
+<li><strong>Kafka Event</strong> (if approved):<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"event_type"</span>: <span class="hljs-string">"incident.approved"</span>,
+    <span class="hljs-attr">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-attr">"plan_id"</span>: <span class="hljs-string">"plan-xyz789"</span>,
+    <span class="hljs-attr">"approved_by"</span>: <span class="hljs-string">"engineer@company.com"</span>,
+    <span class="hljs-attr">"timestamp"</span>: <span class="hljs-string">"2024-12-31T10:15:00Z"</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: PostgreSQL, Kafka, Redis</li>
+<li><strong>Protocol Layer</strong>: REST, Kafka, SQL</li>
+<li><strong>Agent Layer</strong>: Control Plane (state update)</li>
+<li><strong>Reasoning Layer</strong>: Not involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/main.py:approve_execution()</code> → API handler</li>
+<li><code>backend/governance/audit_log.py</code> → Audit recording</li>
+<li><code>backend/utils/postgres_client.py</code> → Database operations</li>
+<li><code>backend/utils/kafka_client.py</code> → Event publishing</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Database write failure, Kafka publish failure</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Transaction rollback if database fails</li>
+<li>Retry Kafka publish 3 times</li>
+<li>Approval still recorded locally if Kafka unavailable</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-16-node-6---execution-preparation">STEP 16: Node 6 - Execution Preparation</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Validate the execution environment</li>
+<li>Prepare script parameters and credentials</li>
+<li>Generate unique execution ID for tracking</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+Before actually running the fix, the system double-checks that everything is in place: the script exists, the credentials are valid, and the target system is accessible.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Internal validation + MCP tool checks</li>
+<li><strong>Sync/Async</strong>: Synchronous validation</li>
+<li><strong>Pre-execution Checks</strong>:
+<ol>
+<li>Verify script exists in registry</li>
+<li>Validate all required parameters are filled</li>
+<li>Check credentials are available and not expired</li>
+<li>Verify target system is reachable (optional ping)</li>
+<li>Ensure no conflicting executions in progress</li>
+</ol>
+</li>
+</ul>
+<p><strong>Validation Output</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"execution_id"</span>: <span class="hljs-string">"exec-def456"</span>,
+    <span class="hljs-string">"ready_to_execute"</span>: true,
+    <span class="hljs-string">"validations"</span>: {
+        <span class="hljs-string">"script_exists"</span>: true,
+        <span class="hljs-string">"parameters_valid"</span>: true,
+        <span class="hljs-string">"credentials_valid"</span>: true,
+        <span class="hljs-string">"target_reachable"</span>: true,
+        <span class="hljs-string">"no_conflicts"</span>: true
+    },
+    <span class="hljs-string">"execution_context"</span>: {
+        <span class="hljs-string">"script_path"</span>: <span class="hljs-string">"runbooks/gcp/start_instance.sh"</span>,
+        <span class="hljs-string">"environment"</span>: <span class="hljs-string">"production"</span>,
+        <span class="hljs-string">"timeout_seconds"</span>: <span class="hljs-number">300</span>,
+        <span class="hljs-string">"dry_run"</span>: false
+    }
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Script registry, Credential store</li>
+<li><strong>Protocol Layer</strong>: Internal, MCP (tool validation)</li>
+<li><strong>Agent Layer</strong>: Execution Orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Validation rules</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_node_execute()</code> → Node entry</li>
+<li><code>backend/agents/execution_orchestrator.py:validate_execution()</code> → Validation</li>
+<li><code>backend/utils/registry_manager.py</code> → Script registry</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Missing script, invalid credentials, target unreachable</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Fail fast with specific error message</li>
+<li>Return to approval queue for human review</li>
+<li>Log validation failure for debugging</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-17-github-actions-workflow-trigger">STEP 17: GitHub Actions Workflow Trigger</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Execute the remediation script in a secure, auditable environment</li>
+<li>Leverage GitHub Actions for infrastructure automation</li>
+<li>Maintain separation between AI decision and actual execution</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system tells GitHub to run a specific automation script. GitHub Actions provides a secure environment to execute infrastructure changes with full logging.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: GitHub REST API (<code>workflow_dispatch</code>)</li>
+<li><strong>Sync/Async</strong>: Asynchronous (fire and poll)</li>
+<li><strong>API Call</strong>:<pre class="hljs"><code><div>POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+Authorization: Bearer {GITHUB_TOKEN}
+Content-Type: application/json
+
+{
+    &quot;ref&quot;: &quot;main&quot;,
+    &quot;inputs&quot;: {
+        &quot;incident_id&quot;: &quot;INC0010001&quot;,
+        &quot;script_path&quot;: &quot;runbooks/gcp/start_instance.sh&quot;,
+        &quot;parameters&quot;: &quot;{\&quot;instance\&quot;: \&quot;test-incident-vm-01\&quot;, \&quot;zone\&quot;: \&quot;us-central1-a\&quot;}&quot;,
+        &quot;execution_id&quot;: &quot;exec-def456&quot;,
+        &quot;dry_run&quot;: &quot;false&quot;
+    }
+}
+</div></code></pre>
+</li>
+<li><strong>Response</strong>: 204 No Content (workflow queued)</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: GitHub Actions, Cloud (GCP/AWS/Azure)</li>
+<li><strong>Protocol Layer</strong>: REST/HTTPS</li>
+<li><strong>Agent Layer</strong>: Execution Orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Not involved (deterministic execution)</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/main.py:trigger_github_workflow()</code> → API call</li>
+<li><code>backend/agents/execution_orchestrator.py:execute_script()</code> → Orchestration</li>
+<li><code>backend/utils/github_actions.py</code> → GitHub API client</li>
+<li><code>.github/workflows/remediation.yml</code> → GitHub Actions workflow definition</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: GitHub API error, authentication failure, workflow not found</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Circuit breaker protects against repeated failures</li>
+<li>Retry 3 times with exponential backoff</li>
+<li>Alert human if all retries fail</li>
+</ul>
+</li>
+<li><strong>Circuit breaker behavior</strong>:
+<ul>
+<li><code>github_breaker</code>: Opens after 3 failures, 60s timeout</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-18-execution-monitoring-and-polling">STEP 18: Execution Monitoring and Polling</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Track the GitHub Actions workflow execution status</li>
+<li>Capture execution logs and output</li>
+<li>Detect completion or failure</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system watches the GitHub Actions job, checking every few seconds to see if it's done. It captures all the logs and results.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: GitHub REST API (workflow runs)</li>
+<li><strong>Sync/Async</strong>: Asynchronous polling</li>
+<li><strong>Polling Strategy</strong>:
+<ul>
+<li>Initial delay: 2 seconds</li>
+<li>Polling interval: 10 seconds</li>
+<li>Maximum wait: 600 seconds (10 minutes)</li>
+</ul>
+</li>
+<li><strong>API Call</strong>:<pre class="hljs"><code><div>GET /repos/{owner}/{repo}/actions/runs/{run_id}
+</div></code></pre>
+</li>
+<li><strong>Status Values</strong>: <code>queued</code>, <code>in_progress</code>, <code>completed</code></li>
+<li><strong>Conclusion Values</strong>: <code>success</code>, <code>failure</code>, <code>cancelled</code>, <code>timed_out</code></li>
+</ul>
+<p><strong>Polling Loop</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">while</span> elapsed &lt; max_wait:
+    run = github_api.get_workflow_run(run_id)
+    <span class="hljs-keyword">if</span> run.status == <span class="hljs-string">"completed"</span>:
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-string">"status"</span>: <span class="hljs-string">"completed"</span>,
+            <span class="hljs-string">"conclusion"</span>: run.conclusion,
+            <span class="hljs-string">"duration_seconds"</span>: run.duration,
+            <span class="hljs-string">"logs_url"</span>: run.logs_url
+        }
+    <span class="hljs-keyword">await</span> asyncio.sleep(<span class="hljs-number">10</span>)
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: GitHub API, Network</li>
+<li><strong>Protocol Layer</strong>: REST/HTTPS</li>
+<li><strong>Agent Layer</strong>: Execution Orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Not involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/main.py:poll_github_run()</code> → Polling logic</li>
+<li><code>backend/agents/execution_orchestrator.py:monitor_execution()</code> → High-level monitor</li>
+<li><code>backend/utils/github_actions.py:get_run_status()</code> → API wrapper</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Polling timeout, GitHub API unavailable, workflow stuck</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Timeout after 600 seconds → mark as &quot;unknown&quot; status</li>
+<li>Alert human for manual verification</li>
+<li>Continue to verification step regardless</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-19-execution-result-processing">STEP 19: Execution Result Processing</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Interpret the GitHub Actions outcome</li>
+<li>Handle success vs failure differently</li>
+<li>Prepare for verification or rollback</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system checks whether the fix worked. If GitHub says &quot;success,&quot; we move to verification. If it says &quot;failure,&quot; we consider rolling back.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Internal state processing</li>
+<li><strong>Sync/Async</strong>: Synchronous</li>
+<li><strong>Decision Logic</strong>:<pre class="hljs"><code><div><span class="hljs-keyword">if</span> conclusion == <span class="hljs-string">"success"</span>:
+    next_step = <span class="hljs-string">"verify_close"</span>
+    action = <span class="hljs-string">"proceed_to_verification"</span>
+<span class="hljs-keyword">elif</span> conclusion == <span class="hljs-string">"failure"</span>:
+    <span class="hljs-keyword">if</span> rollback_available:
+        action = <span class="hljs-string">"trigger_rollback"</span>
+    <span class="hljs-keyword">else</span>:
+        action = <span class="hljs-string">"escalate_to_human"</span>
+<span class="hljs-keyword">elif</span> conclusion == <span class="hljs-string">"cancelled"</span> <span class="hljs-keyword">or</span> conclusion == <span class="hljs-string">"timed_out"</span>:
+    action = <span class="hljs-string">"escalate_to_human"</span>
+</div></code></pre>
+</li>
+</ul>
+<p><strong>Output Schema</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"execution_id"</span>: <span class="hljs-string">"exec-def456"</span>,
+    <span class="hljs-string">"github_run_id"</span>: <span class="hljs-number">12345678</span>,
+    <span class="hljs-string">"status"</span>: <span class="hljs-string">"completed"</span>,
+    <span class="hljs-string">"conclusion"</span>: <span class="hljs-string">"success"</span>,
+    <span class="hljs-string">"duration_seconds"</span>: <span class="hljs-number">45</span>,
+    <span class="hljs-string">"logs"</span>: <span class="hljs-string">"..."</span>,
+    <span class="hljs-string">"artifacts"</span>: [],
+    <span class="hljs-string">"next_action"</span>: <span class="hljs-string">"proceed_to_verification"</span>
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Python runtime</li>
+<li><strong>Protocol Layer</strong>: Internal</li>
+<li><strong>Agent Layer</strong>: Execution Orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Decision rules</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_process_execution_result()</code> → Result handling</li>
+<li><code>backend/agents/execution_orchestrator.py:handle_result()</code> → Business logic</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Unexpected conclusion value, missing logs</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Default to &quot;escalate_to_human&quot; for unknown states</li>
+<li>Log all available information for debugging</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-20-rollback-execution-conditional">STEP 20: Rollback Execution (Conditional)</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Undo the changes if execution failed</li>
+<li>Restore system to pre-execution state</li>
+<li>Maintain system stability</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+If the fix made things worse, the system automatically runs the &quot;undo&quot; commands that were prepared earlier to put things back the way they were.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: GitHub REST API (same as execution)</li>
+<li><strong>Sync/Async</strong>: Asynchronous</li>
+<li><strong>Trigger Condition</strong>: <code>execution_conclusion == &quot;failure&quot; AND rollback_available</code></li>
+<li><strong>Rollback Script</strong>: Pre-generated in Step 10</li>
+</ul>
+<p><strong>Rollback Workflow</strong>:</p>
+<pre class="hljs"><code><div>POST /repos/{owner}/{repo}/actions/workflows/rollback.yml/dispatches
+{
+    &quot;ref&quot;: &quot;main&quot;,
+    &quot;inputs&quot;: {
+        &quot;incident_id&quot;: &quot;INC0010001&quot;,
+        &quot;original_execution_id&quot;: &quot;exec-def456&quot;,
+        &quot;rollback_script&quot;: &quot;rollback_gcp_restart.sh&quot;,
+        &quot;parameters&quot;: &quot;{...}&quot;
+    }
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: GitHub Actions, Cloud</li>
+<li><strong>Protocol Layer</strong>: REST/HTTPS</li>
+<li><strong>Agent Layer</strong>: Execution Orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Rollback decision rules</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/rollback_generator.py:execute_rollback()</code> → Rollback trigger</li>
+<li><code>backend/agents/execution_orchestrator.py:rollback()</code> → Orchestration</li>
+<li><code>.github/workflows/rollback.yml</code> → Rollback workflow</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Rollback itself fails</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Immediately escalate to human</li>
+<li>Page on-call engineer</li>
+<li>Mark incident as &quot;CRITICAL_MANUAL_INTERVENTION&quot;</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-21-node-7---verification">STEP 21: Node 7 - Verification</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Confirm the remediation actually fixed the problem</li>
+<li>Run health checks on the affected system</li>
+<li>Validate expected outcomes from the plan</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system checks that the fix actually worked: Is the VM running? Can we ping it? Are the services responding? This proves the incident is truly resolved.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: MCP (tool invocation), REST (health endpoints)</li>
+<li><strong>Sync/Async</strong>: Asynchronous</li>
+<li><strong>Verification Steps</strong>:
+<ol>
+<li>Execute post-checks from the plan</li>
+<li>Query the affected system's health endpoint</li>
+<li>Compare current state to expected state</li>
+<li>Calculate verification confidence</li>
+</ol>
+</li>
+</ul>
+<p><strong>Verification Logic</strong>:</p>
+<pre class="hljs"><code><div>verifications = []
+<span class="hljs-keyword">for</span> check <span class="hljs-keyword">in</span> plan[<span class="hljs-string">"post_checks"</span>]:
+    result = <span class="hljs-keyword">await</span> execute_check(check)
+    verifications.append({
+        <span class="hljs-string">"check"</span>: check[<span class="hljs-string">"action"</span>],
+        <span class="hljs-string">"expected"</span>: check[<span class="hljs-string">"expected_outcome"</span>],
+        <span class="hljs-string">"actual"</span>: result,
+        <span class="hljs-string">"passed"</span>: result == check[<span class="hljs-string">"expected_outcome"</span>]
+    })
+
+all_passed = all(v[<span class="hljs-string">"passed"</span>] <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> verifications)
+confidence = sum(v[<span class="hljs-string">"passed"</span>] <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> verifications) / len(verifications)
+</div></code></pre>
+<p><strong>Output Schema</strong>:</p>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"verification_id"</span>: <span class="hljs-string">"verify-ghi789"</span>,
+    <span class="hljs-string">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-string">"execution_id"</span>: <span class="hljs-string">"exec-def456"</span>,
+    <span class="hljs-string">"status"</span>: <span class="hljs-string">"VERIFIED"</span>,  <span class="hljs-comment"># or "FAILED"</span>
+    <span class="hljs-string">"checks"</span>: [
+        {
+            <span class="hljs-string">"check"</span>: <span class="hljs-string">"verify_instance_running"</span>,
+            <span class="hljs-string">"expected"</span>: <span class="hljs-string">"RUNNING"</span>,
+            <span class="hljs-string">"actual"</span>: <span class="hljs-string">"RUNNING"</span>,
+            <span class="hljs-string">"passed"</span>: true
+        }
+    ],
+    <span class="hljs-string">"confidence"</span>: <span class="hljs-number">1.0</span>,
+    <span class="hljs-string">"verification_time_seconds"</span>: <span class="hljs-number">15</span>
+}
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Target system, Monitoring APIs</li>
+<li><strong>Protocol Layer</strong>: MCP, REST, SSH (if needed)</li>
+<li><strong>Agent Layer</strong>: Verification Agent</li>
+<li><strong>Reasoning Layer</strong>: Comparison logic</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_node_verify_close()</code> → Node implementation</li>
+<li><code>backend/agents/execution_orchestrator.py:verify_execution()</code> → Verification logic</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Health check timeout, unexpected system state</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>If verification fails: Consider rollback</li>
+<li>If inconclusive: Flag for human verification</li>
+<li>Retry verification once after 30 seconds</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-22-servicenow-ticket-update-and-closure">STEP 22: ServiceNow Ticket Update and Closure</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Update the ServiceNow incident with resolution details</li>
+<li>Close the ticket with appropriate resolution codes</li>
+<li>Maintain ITSM system as source of truth</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system updates the original ServiceNow ticket to say &quot;Fixed by AI Agent&quot; with all the details of what was done, then closes the ticket.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: ServiceNow REST API (Table API)</li>
+<li><strong>Sync/Async</strong>: Synchronous</li>
+<li><strong>API Call</strong>:<pre class="hljs"><code><div>PATCH /api/now/table/incident/{sys_id}
+{
+    &quot;state&quot;: &quot;6&quot;,  // Resolved
+    &quot;close_code&quot;: &quot;Resolved&quot;,
+    &quot;close_notes&quot;: &quot;Resolved by AI Agent Platform v5.0\n\nExecution ID: exec-def456\nScript: start_gcp_instance.sh\nDuration: 45 seconds\nVerification: PASSED&quot;,
+    &quot;resolution_code&quot;: &quot;Automated Resolution&quot;,
+    &quot;resolved_by&quot;: &quot;ai-agent-service-account&quot;
+}
+</div></code></pre>
+</li>
+</ul>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: ServiceNow API</li>
+<li><strong>Protocol Layer</strong>: REST/HTTPS</li>
+<li><strong>Agent Layer</strong>: ServiceNow Agent</li>
+<li><strong>Reasoning Layer</strong>: Not involved (deterministic update)</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/agents/servicenow/agent.py:close_incident()</code> → API call</li>
+<li><code>backend/mcp/servicenow_server.py:update_incident()</code> → MCP wrapper</li>
+<li><code>backend/orchestrator/main.py:/api/incidents/{id}/close</code> → API endpoint</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: ServiceNow API unavailable, permission denied</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Retry 3 times</li>
+<li>If still failing: Mark as &quot;needs manual closure&quot;</li>
+<li>Alert human to manually close ticket</li>
+<li>Incident resolution is not blocked by closure failure</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-23-learning-engine---knowledge-update">STEP 23: Learning Engine - Knowledge Update</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Record the successful resolution for future use</li>
+<li>Update RAG indexes with new evidence</li>
+<li>Strengthen the association between this incident type and this script</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system remembers what worked. It updates its &quot;knowledge base&quot; so that next time a similar problem occurs, it will be even more confident in recommending this solution.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: MCP (Neo4j, Weaviate), Internal</li>
+<li><strong>Sync/Async</strong>: Asynchronous (non-blocking)</li>
+<li><strong>CRITICAL RULE</strong>: Only update on SUCCESS. Never learn from failures (prevents learning bad patterns).</li>
+</ul>
+<p><strong>Update Operations</strong>:</p>
+<ol>
+<li><strong>Neo4j Graph Update</strong> (FIXED_BY relationship):</li>
+</ol>
+<pre class="hljs"><code><div>MERGE (i:IncidentType {type: $incident_type})
+MERGE (s:Script {id: $script_id})
+MERGE (i)-[r:FIXED_BY]-&gt;(s)
+SET r.success_count = COALESCE(r.success_count, 0) + 1,
+    r.last_success = datetime(),
+    r.avg_resolution_time =
+      (COALESCE(r.avg_resolution_time, 0) * COALESCE(r.success_count, 0) + $duration)
+      / (COALESCE(r.success_count, 0) + 1)
+</div></code></pre>
+<ol start="2">
+<li><strong>Feedback Record</strong>:</li>
+</ol>
+<pre class="hljs"><code><div>{
+    <span class="hljs-string">"feedback_id"</span>: <span class="hljs-string">"fb-xyz123"</span>,
+    <span class="hljs-string">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-string">"incident_type"</span>: <span class="hljs-string">"infrastructure/gcp/vm_down"</span>,
+    <span class="hljs-string">"script_id"</span>: <span class="hljs-string">"gcp_restart_vm_001"</span>,
+    <span class="hljs-string">"outcome"</span>: <span class="hljs-string">"SUCCESS"</span>,
+    <span class="hljs-string">"resolution_time_seconds"</span>: <span class="hljs-number">195</span>,
+    <span class="hljs-string">"confidence_delta"</span>: <span class="hljs-number">0.02</span>,  <span class="hljs-comment"># Boost for next time</span>
+    <span class="hljs-string">"agent_votes"</span>: {
+        <span class="hljs-string">"vector_agent"</span>: <span class="hljs-number">0.95</span>,
+        <span class="hljs-string">"keyword_agent"</span>: <span class="hljs-number">0.88</span>,
+        <span class="hljs-string">"graph_agent"</span>: <span class="hljs-number">0.91</span>,
+        <span class="hljs-string">"metadata_agent"</span>: <span class="hljs-number">1.0</span>
+    },
+    <span class="hljs-string">"timestamp"</span>: <span class="hljs-string">"2024-12-31T10:18:00Z"</span>
+}
+</div></code></pre>
+<ol start="3">
+<li><strong>Weight Optimization</strong>:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-comment"># Boost weights for agents that correctly predicted this script</span>
+<span class="hljs-keyword">for</span> agent, vote <span class="hljs-keyword">in</span> agent_votes.items():
+    <span class="hljs-keyword">if</span> agent_recommended_winning_script(agent, script_id):
+        weights[incident_type][agent] += <span class="hljs-number">0.01</span>
+
+<span class="hljs-comment"># Normalize weights to sum to 1.0</span>
+normalize_weights(weights[incident_type])
+</div></code></pre>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Neo4j, Weaviate, Redis</li>
+<li><strong>Protocol Layer</strong>: MCP (Cypher, GraphQL)</li>
+<li><strong>Agent Layer</strong>: Learning Engine</li>
+<li><strong>Reasoning Layer</strong>: Feedback optimization algorithm</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/rag/feedback_optimizer.py:FeedbackOptimizer</code> → Weight optimization</li>
+<li><code>backend/rag/graph_scorer.py:update_relationship()</code> → Neo4j update</li>
+<li><code>backend/orchestrator/langgraph_workflow.py:_update_learning()</code> → Orchestration</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Neo4j unavailable, write timeout</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Feedback buffered in Redis</li>
+<li>Retry in background</li>
+<li>System continues without blocking</li>
+<li>Learning is &quot;best effort&quot; - main workflow not affected</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="step-24-workflow-completion-and-cleanup">STEP 24: Workflow Completion and Cleanup</h3>
+<p><strong>Purpose:</strong></p>
+<ul>
+<li>Mark the workflow as completed</li>
+<li>Clean up temporary state</li>
+<li>Publish completion event for monitoring</li>
+<li>Calculate and log metrics</li>
+</ul>
+<p><strong>What Happens (Layman View):</strong>
+The system marks this incident as &quot;done,&quot; cleans up any temporary data, and logs how long the whole process took. The incident lifecycle is complete.</p>
+<p><strong>How It Works (Technical View):</strong></p>
+<ul>
+<li><strong>Protocol</strong>: Kafka (event), Prometheus (metrics), Internal (cleanup)</li>
+<li><strong>Sync/Async</strong>: Mixed</li>
+<li><strong>Completion Event</strong>:</li>
+</ul>
+<pre class="hljs"><code><div>{
+    <span class="hljs-attr">"event_type"</span>: <span class="hljs-string">"incident.closed"</span>,
+    <span class="hljs-attr">"incident_id"</span>: <span class="hljs-string">"INC0010001"</span>,
+    <span class="hljs-attr">"workflow_id"</span>: <span class="hljs-string">"wf-abc123"</span>,
+    <span class="hljs-attr">"outcome"</span>: <span class="hljs-string">"SUCCESS"</span>,
+    <span class="hljs-attr">"total_duration_seconds"</span>: <span class="hljs-number">195</span>,
+    <span class="hljs-attr">"breakdown"</span>: {
+        <span class="hljs-attr">"receive_parse"</span>: <span class="hljs-number">0.5</span>,
+        <span class="hljs-attr">"swarm_rag"</span>: <span class="hljs-number">2.1</span>,
+        <span class="hljs-attr">"generate_plan"</span>: <span class="hljs-number">3.2</span>,
+        <span class="hljs-attr">"llm_judge"</span>: <span class="hljs-number">2.8</span>,
+        <span class="hljs-attr">"control_plane"</span>: <span class="hljs-number">0.1</span>,
+        <span class="hljs-attr">"human_approval"</span>: <span class="hljs-number">120.0</span>,
+        <span class="hljs-attr">"execution"</span>: <span class="hljs-number">45.0</span>,
+        <span class="hljs-attr">"verification"</span>: <span class="hljs-number">15.0</span>,
+        <span class="hljs-attr">"learning"</span>: <span class="hljs-number">1.5</span>
+    },
+    <span class="hljs-attr">"timestamp"</span>: <span class="hljs-string">"2024-12-31T10:18:15Z"</span>
+}
+</div></code></pre>
+<p><strong>Metrics Recorded</strong>:</p>
+<ul>
+<li><code>incident_resolution_total{outcome=&quot;success&quot;}</code> +1</li>
+<li><code>incident_resolution_duration_seconds</code> histogram</li>
+<li><code>swarm_rag_search_duration_seconds</code> histogram</li>
+<li><code>llm_judge_score</code> gauge</li>
+<li><code>human_approval_wait_seconds</code> histogram</li>
+</ul>
+<p><strong>Cleanup Tasks</strong>:</p>
+<ol>
+<li>Remove from <code>WORKFLOW_STATES</code> in-memory store</li>
+<li>Remove from <code>PENDING_APPROVALS</code> if present</li>
+<li>Clear any temporary Redis keys</li>
+<li>Archive detailed logs</li>
+</ol>
+<p><strong>Layers Involved:</strong></p>
+<ul>
+<li><strong>Infrastructure Layer</strong>: Kafka, Prometheus, Redis</li>
+<li><strong>Protocol Layer</strong>: Kafka, HTTP (metrics endpoint)</li>
+<li><strong>Agent Layer</strong>: Workflow orchestrator</li>
+<li><strong>Reasoning Layer</strong>: Not involved</li>
+</ul>
+<p><strong>Files Involved:</strong></p>
+<ul>
+<li><code>backend/orchestrator/langgraph_workflow.py:_complete_workflow()</code> → Completion logic</li>
+<li><code>backend/orchestrator/metrics.py:record_completion()</code> → Metrics</li>
+<li><code>backend/utils/kafka_client.py:publish()</code> → Event publication</li>
+</ul>
+<p><strong>Failure &amp; Fallback:</strong></p>
+<ul>
+<li><strong>What can fail</strong>: Kafka publish failure, metrics recording failure</li>
+<li><strong>System reaction</strong>:
+<ul>
+<li>Failures are logged but don't affect outcome</li>
+<li>Workflow considered complete regardless</li>
+<li>Monitoring may show gaps but no functional impact</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="end-to-end-timeline-summary">End-to-End Timeline Summary</h2>
+<h3 id="typical-successful-resolution-3-5-minutes-total">Typical Successful Resolution: ~3-5 minutes total</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Duration</th>
+<th>Cumulative</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1-6</td>
+<td>~1s</td>
+<td>0:01</td>
+<td>Incident ingestion and parsing</td>
+</tr>
+<tr>
+<td>7-8</td>
+<td>~0.5s</td>
+<td>0:01.5</td>
+<td>Workflow init and context extraction</td>
+</tr>
+<tr>
+<td>9</td>
+<td>~2s</td>
+<td>0:03.5</td>
+<td>Swarm RAG search</td>
+</tr>
+<tr>
+<td>10</td>
+<td>~3s</td>
+<td>0:06.5</td>
+<td>Plan generation</td>
+</tr>
+<tr>
+<td>11-12</td>
+<td>~3s</td>
+<td>0:09.5</td>
+<td>LLM Judge evaluation</td>
+</tr>
+<tr>
+<td>13-15</td>
+<td>~2min*</td>
+<td>2:10</td>
+<td>Human approval (variable)</td>
+</tr>
+<tr>
+<td>16-18</td>
+<td>~45s</td>
+<td>2:55</td>
+<td>Execution</td>
+</tr>
+<tr>
+<td>19-21</td>
+<td>~15s</td>
+<td>3:10</td>
+<td>Verification</td>
+</tr>
+<tr>
+<td>22-24</td>
+<td>~5s</td>
+<td>3:15</td>
+<td>Closure and learning</td>
+</tr>
+</tbody>
+</table>
+<p>*Human approval time varies; with auto-approval: ~5 seconds</p>
+<h3 id="auto-approval-path-60-seconds-total">Auto-Approval Path: ~60 seconds total</h3>
+<p>When conditions allow auto-approval (low risk, high confidence, proven script):</p>
+<ul>
+<li>Steps 13-15 reduced to ~0.1 seconds</li>
+<li>Total time: ~65-90 seconds</li>
+</ul>
+<hr>
+<h2 id="architecture-layer-map">Architecture Layer Map</h2>
+<h3 id="layer-%E2%86%92-responsibility-%E2%86%92-files">Layer → Responsibility → Files</h3>
+<pre class="hljs"><code><div>┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 1: PRESENTATION                                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: User interface, approval workflows, monitoring dashboards       │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── frontend/src/app/page.tsx                    → Dashboard home               │
+│ ├── frontend/src/app/incidents/[id]/page.tsx     → Incident detail              │
+│ ├── frontend/src/app/approvals/page.tsx          → Approval queue               │
+│ ├── frontend/src/components/incidents/           → Incident components          │
+│ │   ├── EnterpriseIncidentDetail.tsx            → Main incident view            │
+│ │   ├── RemediationPanel.tsx                    → Remediation workflow          │
+│ │   └── IncidentWorkflow.tsx                    → 7-node visualization          │
+│ └── frontend/src/lib/constants.ts               → Centralized configuration     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 2: API GATEWAY                                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: REST endpoints, request routing, authentication                 │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/orchestrator/main.py                 → FastAPI application          │
+│ │   ├── /api/incidents/*                        → Incident CRUD                 │
+│ │   ├── /api/approvals/*                        → Approval workflow             │
+│ │   ├── /api/execute                            → Execution trigger             │
+│ │   ├── /api/langgraph/*                        → Workflow management           │
+│ │   └── /api/rag/*                              → RAG search                    │
+│ └── backend/orchestrator/metrics.py             → Prometheus metrics            │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 3: ORCHESTRATION                                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: Workflow state machine, node transitions, event routing         │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/orchestrator/langgraph_workflow.py   → 7-node state machine         │
+│ ├── backend/orchestrator/llm_intelligence.py     → LLM-based analysis           │
+│ ├── backend/orchestrator/llm_judge.py            → Independent validation       │
+│ ├── backend/orchestrator/rollback_generator.py   → Rollback strategy            │
+│ └── backend/agents/control_plane.py              → Governance &amp; routing         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 4: AGENT MESH                                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: Specialized agents, A2A communication, tool invocation          │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/agents/base_agent.py                 → Abstract base class          │
+│ ├── backend/agents/servicenow/agent.py           → ServiceNow integration       │
+│ ├── backend/agents/jira/agent.py                 → Jira integration             │
+│ ├── backend/agents/infra/enhanced_agent.py       → Infrastructure agent         │
+│ ├── backend/agents/execution_orchestrator.py     → Execution management         │
+│ ├── backend/agents/remediation/agent.py          → Remediation logic            │
+│ └── backend/agents/a2a/                          → A2A protocol handlers        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 5: INTELLIGENCE (RAG + LLM)                                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: Swarm search, embeddings, consensus, LLM reasoning              │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/rag/__init__.py                      → Module exports               │
+│ ├── backend/rag/swarm_retriever.py               → Swarm coordinator            │
+│ ├── backend/rag/swarm_script_selector.py         → Script-specific swarm        │
+│ ├── backend/rag/intelligent_retriever.py         → Full pipeline                │
+│ ├── backend/rag/query_understanding.py           → Intent extraction            │
+│ ├── backend/rag/hybrid_search_engine.py          → Multi-source search          │
+│ ├── backend/rag/graph_scorer.py                  → Neo4j integration            │
+│ ├── backend/rag/cross_encoder_reranker.py        → Precision reranking          │
+│ ├── backend/rag/embedding_service.py             → Vector embeddings            │
+│ └── backend/rag/feedback_optimizer.py            → Adaptive learning            │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 6: TOOL INTEGRATION (MCP)                                                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: External tool invocation, MCP servers, credential management    │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/mcp/servicenow_server.py             → ServiceNow MCP server        │
+│ ├── backend/mcp/github_server.py                 → GitHub MCP server            │
+│ ├── backend/mcp/rag_server.py                    → RAG MCP server               │
+│ ├── backend/mcp/gcp_server.py                    → GCP MCP server               │
+│ └── backend/orchestrator/services/mcp_client.py  → MCP client                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 7: EVENT STREAMING                                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: Kafka production/consumption, event schemas, ordering           │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/streaming/incident_consumer.py       → Kafka consumer               │
+│ ├── backend/streaming/incident_sources.py        → Source adapters              │
+│ ├── backend/streaming/schemas.py                 → Event schemas                │
+│ └── backend/utils/kafka_client.py                → Kafka client wrapper         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 8: PERSISTENCE                                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: Databases, caching, state storage                               │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/utils/redis_client.py                → Redis operations             │
+│ ├── backend/utils/postgres_client.py             → PostgreSQL client            │
+│ ├── backend/rag/weaviate_client.py               → Weaviate vector DB           │
+│ └── backend/rag/neo4j_client.py                  → Neo4j graph DB               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ LAYER 9: RESILIENCE                                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Responsibility: Circuit breakers, retries, fallbacks, guardrails                │
+│                                                                                 │
+│ Files:                                                                          │
+│ ├── backend/utils/circuit_breaker.py             → Circuit breaker impl         │
+│ └── backend/guardrails/llm_guardrails.py         → Input/output validation      │
+└─────────────────────────────────────────────────────────────────────────────────┘
+</div></code></pre>
+<hr>
+<h2 id="design-patterns-used">Design Patterns Used</h2>
+<h3 id="1-event-sourcing-kafka">1. Event Sourcing (Kafka)</h3>
+<p><strong>What</strong>: All state changes are stored as immutable events
+<strong>Why</strong>: Enables replay, debugging, and audit trails
+<strong>Where</strong>: Kafka topics for all incident state transitions</p>
+<h3 id="2-cqrs-command-query-responsibility-segregation">2. CQRS (Command Query Responsibility Segregation)</h3>
+<p><strong>What</strong>: Separate models for reads vs writes
+<strong>Why</strong>: Optimizes for different access patterns
+<strong>Where</strong>: REST API writes to Kafka; UI reads from Redis/Postgres</p>
+<h3 id="3-saga-pattern-langgraph">3. Saga Pattern (LangGraph)</h3>
+<p><strong>What</strong>: Long-running transactions with compensating actions
+<strong>Why</strong>: Handles multi-step workflows with rollback capability
+<strong>Where</strong>: 7-node LangGraph workflow with rollback steps</p>
+<h3 id="4-circuit-breaker">4. Circuit Breaker</h3>
+<p><strong>What</strong>: Prevent cascade failures by failing fast
+<strong>Why</strong>: Protects against unavailable dependencies
+<strong>Where</strong>: GitHub, ServiceNow, OpenAI API clients</p>
+<h3 id="5-swarm-intelligence-rag">5. Swarm Intelligence (RAG)</h3>
+<p><strong>What</strong>: Multiple agents vote on decisions
+<strong>Why</strong>: Improves accuracy through consensus
+<strong>Where</strong>: Swarm RAG with 4 specialized search agents</p>
+<h3 id="6-llm-as-judge">6. LLM-as-Judge</h3>
+<p><strong>What</strong>: Independent model validates another model's output
+<strong>Why</strong>: Catches hallucinations and safety issues
+<strong>Where</strong>: Claude evaluates GPT-4's generated plans</p>
+<h3 id="7-human-in-the-loop-hitl">7. Human-in-the-Loop (HITL)</h3>
+<p><strong>What</strong>: Humans approve critical decisions
+<strong>Why</strong>: Maintains control over high-risk actions
+<strong>Where</strong>: Approval workflow for medium/high risk plans</p>
+<h3 id="8-feedback-loop-online-learning">8. Feedback Loop (Online Learning)</h3>
+<p><strong>What</strong>: System improves from successful outcomes
+<strong>Why</strong>: Increases accuracy over time
+<strong>Where</strong>: Weight optimization after successful resolutions</p>
+<h3 id="9-hub-and-spoke-agent-architecture">9. Hub-and-Spoke (Agent Architecture)</h3>
+<p><strong>What</strong>: Central orchestrator coordinates specialized agents
+<strong>Why</strong>: Separation of concerns, easier scaling
+<strong>Where</strong>: LangGraph orchestrator → specialized agents</p>
+<h3 id="10-retry-with-exponential-backoff">10. Retry with Exponential Backoff</h3>
+<p><strong>What</strong>: Retry failed operations with increasing delays
+<strong>Why</strong>: Handles transient failures gracefully
+<strong>Where</strong>: All external API calls</p>
+<hr>
+<h2 id="why-this-architecture-works">Why This Architecture Works</h2>
+<h3 id="1-reliability-through-decoupling">1. Reliability Through Decoupling</h3>
+<p>Kafka decouples ingestion from processing. If the AI system goes down, incidents queue up safely. When it recovers, processing resumes from where it left off.</p>
+<h3 id="2-accuracy-through-consensus">2. Accuracy Through Consensus</h3>
+<p>No single search method is perfect. By combining semantic search (understands meaning), keyword search (exact matches), graph search (historical relationships), and metadata search (exact attributes), the system achieves higher accuracy than any individual approach.</p>
+<h3 id="3-safety-through-multiple-validation-layers">3. Safety Through Multiple Validation Layers</h3>
+<ul>
+<li><strong>Layer 1</strong>: Input validation (guardrails)</li>
+<li><strong>Layer 2</strong>: RAG quality (blast radius filtering)</li>
+<li><strong>Layer 3</strong>: LLM-as-Judge (independent review)</li>
+<li><strong>Layer 4</strong>: Human approval (final check)</li>
+<li><strong>Layer 5</strong>: Post-execution verification</li>
+</ul>
+<h3 id="4-auditability-through-event-sourcing">4. Auditability Through Event Sourcing</h3>
+<p>Every decision, every state change, every approval is recorded as an immutable event. Compliance auditors can replay any incident resolution to understand exactly what happened.</p>
+<h3 id="5-adaptability-through-feedback-learning">5. Adaptability Through Feedback Learning</h3>
+<p>The system gets better over time. Successful resolutions strengthen the associations between incident types and scripts. Agent weights are optimized based on which agents predicted correctly.</p>
+<h3 id="6-resilience-through-circuit-breakers">6. Resilience Through Circuit Breakers</h3>
+<p>When external services fail, the system degrades gracefully. Circuit breakers prevent cascade failures. Fallback paths ensure incidents are never lost.</p>
+<hr>
+<h2 id="component-dependency-analysis">Component Dependency Analysis</h2>
+<h3 id="what-breaks-if-kafka-is-removed">What Breaks If Kafka Is Removed?</h3>
+<table>
+<thead>
+<tr>
+<th>Impact</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Critical</strong></td>
+<td>No reliable event delivery between components</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>No ordering guarantees for incident updates</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>No replay capability for debugging</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>No decoupling - direct synchronous calls required</td>
+</tr>
+<tr>
+<td><strong>Workaround</strong></td>
+<td>Could replace with Redis Streams (less durable) or direct API calls (tightly coupled)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-breaks-if-mcp-is-removed">What Breaks If MCP Is Removed?</h3>
+<table>
+<thead>
+<tr>
+<th>Impact</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>High</strong></td>
+<td>No standardized tool invocation protocol</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>Each tool requires custom integration code</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>No tool schema discovery</td>
+</tr>
+<tr>
+<td><strong>Medium</strong></td>
+<td>Agents become tightly coupled to tool implementations</td>
+</tr>
+<tr>
+<td><strong>Workaround</strong></td>
+<td>Could use direct REST calls (more code, less standardized)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-breaks-if-swarm-rag-is-removed">What Breaks If Swarm RAG Is Removed?</h3>
+<table>
+<thead>
+<tr>
+<th>Impact</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>High</strong></td>
+<td>Lower accuracy in script matching</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>No consensus-based confidence scoring</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>No adaptive weight optimization</td>
+</tr>
+<tr>
+<td><strong>Medium</strong></td>
+<td>Single point of failure in search</td>
+</tr>
+<tr>
+<td><strong>Workaround</strong></td>
+<td>Could use single-source search (less accurate, no voting)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-breaks-if-llm-as-judge-is-removed">What Breaks If LLM-as-Judge Is Removed?</h3>
+<table>
+<thead>
+<tr>
+<th>Impact</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Critical</strong></td>
+<td>No independent validation of generated plans</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Higher risk of hallucinated or dangerous plans proceeding</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>No quality scoring for auto-approval decisions</td>
+</tr>
+<tr>
+<td><strong>Workaround</strong></td>
+<td>Could rely entirely on human review (slower, more costly)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-breaks-if-human-approval-is-removed">What Breaks If Human Approval Is Removed?</h3>
+<table>
+<thead>
+<tr>
+<th>Impact</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Critical</strong></td>
+<td>No human oversight for high-risk actions</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Compliance violations (many regulations require human approval)</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>Increased risk of automated mistakes</td>
+</tr>
+<tr>
+<td><strong>Workaround</strong></td>
+<td>Not recommended - human oversight is essential for enterprise systems</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="appendix-a-glossary">Appendix A: Glossary</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A2A</strong></td>
+<td>Agent-to-Agent protocol for inter-agent communication</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Model Context Protocol for agent-to-tool invocation</td>
+</tr>
+<tr>
+<td><strong>LangGraph</strong></td>
+<td>State machine library for LLM-based workflows</td>
+</tr>
+<tr>
+<td><strong>Swarm RAG</strong></td>
+<td>Multi-agent retrieval system using weighted consensus</td>
+</tr>
+<tr>
+<td><strong>LLM-as-Judge</strong></td>
+<td>Pattern where one LLM evaluates another's output</td>
+</tr>
+<tr>
+<td><strong>HITL</strong></td>
+<td>Human-in-the-Loop - requiring human approval</td>
+</tr>
+<tr>
+<td><strong>Circuit Breaker</strong></td>
+<td>Pattern to prevent cascade failures</td>
+</tr>
+<tr>
+<td><strong>DLQ</strong></td>
+<td>Dead Letter Queue - storage for failed messages</td>
+</tr>
+<tr>
+<td><strong>ITSM</strong></td>
+<td>IT Service Management (e.g., ServiceNow)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="appendix-b-configuration-reference">Appendix B: Configuration Reference</h2>
+<h3 id="environment-variables">Environment Variables</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># ServiceNow</span>
+SNOW_INSTANCE_URL=https://instance.service-now.com
+SNOW_USERNAME=api_user
+SNOW_PASSWORD=&lt;secret&gt;
+
+<span class="hljs-comment"># Kafka</span>
+KAFKA_BOOTSTRAP_SERVERS=localhost:29092
+
+<span class="hljs-comment"># Databases</span>
+REDIS_URL=redis://localhost:6379
+POSTGRES_URL=postgresql://user:pass@localhost:5432/aiagent
+WEAVIATE_URL=http://localhost:8081
+NEO4J_URI=bolt://localhost:7687
+
+<span class="hljs-comment"># LLM</span>
+OPENAI_API_KEY=&lt;secret&gt;
+ANTHROPIC_API_KEY=&lt;secret&gt;
+
+<span class="hljs-comment"># GitHub</span>
+GITHUB_TOKEN=&lt;secret&gt;
+GITHUB_REPO=owner/repo
+
+<span class="hljs-comment"># Thresholds</span>
+AUTO_APPROVE_MIN_CONFIDENCE=0.90
+AUTO_APPROVE_MIN_JUDGE_SCORE=8
+APPROVAL_TIMEOUT_MINUTES=60
+</div></code></pre>
+<hr>
+<h2 id="appendix-c-visual-architecture-diagram">Appendix C: Visual Architecture Diagram</h2>
+<pre class="hljs"><code><div>                              ┌─────────────────┐
+                              │   ServiceNow    │
+                              │   (Incident)    │
+                              └────────┬────────┘
+                                       │ Step 1-2
+                                       ▼
+                              ┌─────────────────┐
+                              │  ServiceNow     │
+                              │    Agent        │
+                              └────────┬────────┘
+                                       │ Step 3
+                                       ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                         KAFKA EVENT BUS                              │
+│  [servicenow.incidents] [gcp.alerts] [incident.approved] [...]       │
+└──────────────────────────────────────────────────────────────────────┘
+                                       │ Step 4-6
+                                       ▼
+                              ┌─────────────────┐
+                              │    LangGraph    │
+                              │   Orchestrator  │
+                              └────────┬────────┘
+                                       │
+                    ┌──────────────────┼──────────────────┐
+                    │                  │                  │
+                    ▼                  ▼                  ▼
+           ┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+           │  Node 1:      │  │  Node 2:      │  │  Node 3:      │
+           │ Receive/Parse │  │  Swarm RAG    │  │ Generate Plan │
+           └───────────────┘  └───────────────┘  └───────────────┘
+                                       │
+                    ┌──────────────────┴──────────────────┐
+                    │                                     │
+                    ▼                                     ▼
+           ┌───────────────────────────────────────────────────────┐
+           │                    SWARM RAG                          │
+           │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐      │
+           │  │ Vector  │ │ Keyword │ │  Graph  │ │Metadata │      │
+           │  │ (0.40)  │ │ (0.25)  │ │ (0.25)  │ │ (0.10)  │      │
+           │  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘      │
+           │       └──────────┬┴───────────┴───────────┘           │
+           │                  ▼                                    │
+           │         ┌──────────────┐                              │
+           │         │  Consensus   │                              │
+           │         │  + Rerank    │                              │
+           │         └──────────────┘                              │
+           └───────────────────────────────────────────────────────┘
+                                       │
+                                       ▼
+                              ┌─────────────────┐
+                              │   Node 4:       │
+                              │   LLM Judge     │
+                              └────────┬────────┘
+                                       │
+                          ┌────────────┼────────────┐
+                          │ APPROVED   │ REVISION   │ REJECTED
+                          ▼            │            ▼
+                 ┌─────────────────┐   │    ┌─────────────────┐
+                 │   Node 5:       │   │    │     STOP        │
+                 │ Control Plane   │   │    │   (Escalate)    │
+                 └────────┬────────┘   │    └─────────────────┘
+                          │            │
+              ┌───────────┴────────────┘
+              │ Auto-approve?
+              ▼
+     ┌─────────────────┐          ┌─────────────────┐
+     │     YES         │          │      NO         │
+     │  → Execute      │          │ → Human Review  │
+     └────────┬────────┘          └────────┬────────┘
+              │                            │
+              └────────────┬───────────────┘
+                           ▼
+                  ┌─────────────────┐
+                  │   Node 6:       │
+                  │   Execute       │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │ GitHub Actions  │
+                  │  (Remediation)  │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │   Node 7:       │
+                  │ Verify &amp; Close  │
+                  └────────┬────────┘
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+              ▼                         ▼
+     ┌─────────────────┐       ┌─────────────────┐
+     │  Close Ticket   │       │  Update RAG     │
+     │  (ServiceNow)   │       │  (Learning)     │
+     └─────────────────┘       └─────────────────┘
+</div></code></pre>
+<hr>
+<p><em>Document End</em></p>
+<p><em>This whitepaper provides a complete technical reference for the AI Incident Management Platform v5.0. For questions or clarifications, contact the platform engineering team.</em></p>
+
+</body>
+</html>

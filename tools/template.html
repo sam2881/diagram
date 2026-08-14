@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise Agentic Platform — Master Documentation</title>
+<meta name="description" content="Single source of truth for the Enterprise Agentic Platform: Data Engineering, Agentic AI, Platform Engineering, GCP architecture, operations and L1/L2/L3 production support.">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --bg:#ffffff; --bg-alt:#f6f8fa; --bg-sunken:#eef1f5; --fg:#1b1f24; --fg-muted:#5a6673;
+  --fg-faint:#7d8896; --border:#d8dee6; --border-soft:#e7ebf0;
+  --accent:#1a73e8; --accent-soft:#e8f0fe; --accent-fg:#1558c0;
+  --note:#1a73e8; --note-bg:#eef4fd; --tip:#0f9d58; --tip-bg:#e9f7ef;
+  --warn:#c5221f; --warn-bg:#fdecea; --imp:#8430ce; --imp-bg:#f4ecfd;
+  --ok:#0f9d58; --ok-bg:#e9f7ef;
+  --code-bg:#f6f8fa; --code-fg:#24292f; --code-head:#eaeef2;
+  --sidebar:300px; --toc:230px; --maxw:900px;
+  /* How far a diagram may extend past the prose column on each side.
+     Uses whatever horizontal slack the viewport actually has, capped so a
+     diagram never collides with the sidebar or the on-this-page rail. */
+  --dia-bleed:clamp(0px, calc((100vw - var(--sidebar) - var(--toc) - var(--maxw) - 130px) / 2), 340px);
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,"Cascadia Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.06);
+  --tok-kw:#cf222e; --tok-str:#0a3069; --tok-num:#0550ae; --tok-com:#6e7781; --tok-fn:#8250df;
+  --dia-bg:#fbfcfe; --dia-bar:#f2f5f9; --dia-border:#dde4ec; --dia-dot:#e3e9f1;
+  --dia-modal:rgba(240,244,249,.94);
+}
+:root[data-theme="dark"]{
+  --bg:#0d1117; --bg-alt:#161b22; --bg-sunken:#010409; --fg:#e6edf3; --fg-muted:#9198a1;
+  --fg-faint:#6e7681; --border:#30363d; --border-soft:#21262d;
+  --accent:#58a6ff; --accent-soft:#0d2847; --accent-fg:#79c0ff;
+  --note:#58a6ff; --note-bg:#0d2036; --tip:#3fb950; --tip-bg:#0d2818;
+  --warn:#f85149; --warn-bg:#2d1214; --imp:#bc8cff; --imp-bg:#221230;
+  --ok:#3fb950; --ok-bg:#0d2818;
+  --code-bg:#161b22; --code-fg:#e6edf3; --code-head:#1c2128;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
+  --tok-kw:#ff7b72; --tok-str:#a5d6ff; --tok-num:#79c0ff; --tok-com:#8b949e; --tok-fn:#d2a8ff;
+  --dia-bg:#0f1620; --dia-bar:#161d28; --dia-border:#293341; --dia-dot:#1c2531;
+  --dia-modal:rgba(8,12,18,.94);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1117; --bg-alt:#161b22; --bg-sunken:#010409; --fg:#e6edf3; --fg-muted:#9198a1;
+    --fg-faint:#6e7681; --border:#30363d; --border-soft:#21262d;
+    --accent:#58a6ff; --accent-soft:#0d2847; --accent-fg:#79c0ff;
+    --note:#58a6ff; --note-bg:#0d2036; --tip:#3fb950; --tip-bg:#0d2818;
+    --warn:#f85149; --warn-bg:#2d1214; --imp:#bc8cff; --imp-bg:#221230;
+    --ok:#3fb950; --ok-bg:#0d2818;
+    --code-bg:#161b22; --code-fg:#e6edf3; --code-head:#1c2128;
+    --shadow:0 1px 3px rgba(0,0,0,.4);
+    --tok-kw:#ff7b72; --tok-str:#a5d6ff; --tok-num:#79c0ff; --tok-com:#8b949e; --tok-fn:#d2a8ff;
+    --dia-bg:#0f1620; --dia-bar:#161d28; --dia-border:#293341; --dia-dot:#1c2531;
+    --dia-modal:rgba(8,12,18,.94);
+  }
+}
+html{scroll-behavior:smooth; scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:15.5px;line-height:1.68;-webkit-font-smoothing:antialiased}
+
+/* ---------- top bar ---------- */
+.topbar{position:fixed;inset:0 0 auto 0;height:56px;z-index:60;display:flex;align-items:center;
+  gap:14px;padding:0 18px;background:var(--bg);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em;
+  white-space:nowrap;min-width:0}
+.brand .dot{width:26px;height:26px;border-radius:7px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--accent),#8430ce);display:grid;place-items:center;
+  color:#fff;font-size:13px;font-weight:800}
+.brand .txt{overflow:hidden;text-overflow:ellipsis}
+.brand .ver{font-size:11px;font-weight:600;color:var(--accent-fg);background:var(--accent-soft);
+  padding:2px 7px;border-radius:20px;flex:0 0 auto}
+.spacer{flex:1}
+.search-wrap{position:relative;flex:0 1 340px;min-width:120px}
+#search{width:100%;height:34px;padding:0 12px 0 32px;border:1px solid var(--border);
+  border-radius:8px;background:var(--bg-alt);color:var(--fg);font-size:13.5px;font-family:inherit}
+#search:focus{outline:2px solid var(--accent);outline-offset:-1px;background:var(--bg)}
+.search-wrap svg{position:absolute;left:10px;top:9px;color:var(--fg-faint);pointer-events:none}
+.iconbtn{height:34px;min-width:34px;padding:0 9px;border:1px solid var(--border);border-radius:8px;
+  background:var(--bg-alt);color:var(--fg-muted);cursor:pointer;display:inline-grid;place-items:center;
+  font-family:inherit;font-size:13px}
+.iconbtn:hover{background:var(--accent-soft);color:var(--accent-fg);border-color:var(--accent)}
+
+/* ---------- layout ---------- */
+.shell{display:flex;padding-top:56px;min-height:100vh}
+.sidebar{position:fixed;top:56px;bottom:0;left:0;width:var(--sidebar);overflow-y:auto;
+  border-right:1px solid var(--border);background:var(--bg-alt);padding:16px 8px 60px}
+.sidebar::-webkit-scrollbar{width:9px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+.nav-part{display:block;padding:8px 12px;margin-top:14px;font-size:12px;font-weight:750;
+  letter-spacing:.045em;text-transform:uppercase;color:var(--fg-faint);text-decoration:none;
+  border-radius:7px}
+.nav-part:hover{color:var(--accent-fg)}
+.nav-sec{display:block;padding:5px 12px 5px 20px;font-size:13.4px;color:var(--fg-muted);
+  text-decoration:none;border-radius:7px;border-left:2px solid transparent;line-height:1.45}
+.nav-sec:hover{background:var(--accent-soft);color:var(--accent-fg)}
+.nav-sec.active{background:var(--accent-soft);color:var(--accent-fg);font-weight:600;
+  border-left-color:var(--accent)}
+.nav-part.active{color:var(--accent-fg)}
+.nav-hidden{display:none !important}
+.no-results{padding:16px 14px;color:var(--fg-faint);font-size:13px;font-style:italic}
+
+.main{margin-left:var(--sidebar);flex:1;min-width:0;display:flex;justify-content:center;
+  padding:34px 40px 120px;gap:36px}
+.content{max-width:var(--maxw);width:100%;min-width:0}
+.toc{position:sticky;top:80px;align-self:flex-start;width:var(--toc);flex:0 0 var(--toc);
+  max-height:calc(100vh - 120px);overflow-y:auto;font-size:12.8px;
+  border-left:1px solid var(--border-soft);padding-left:16px}
+.toc h4{margin:0 0 10px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--fg-faint);font-weight:750}
+.toc a{display:block;padding:3.5px 0;color:var(--fg-muted);text-decoration:none;line-height:1.4}
+.toc a:hover{color:var(--accent-fg)}
+.toc a.active{color:var(--accent-fg);font-weight:600}
+.toc a.lvl4{padding-left:12px;font-size:12.2px;color:var(--fg-faint)}
+
+/* ---------- typography ---------- */
+.hd{position:relative;scroll-margin-top:76px;letter-spacing:-.015em}
+h1.hd{font-size:31px;font-weight:730;margin:8px 0 20px;padding-bottom:14px;
+  border-bottom:2px solid var(--border);line-height:1.25}
+h2.hd{font-size:23px;font-weight:690;margin:52px 0 16px;padding-bottom:9px;
+  border-bottom:1px solid var(--border-soft);line-height:1.3;cursor:pointer}
+h2.hd::before{content:"▾";position:absolute;left:-19px;top:1px;font-size:12px;color:var(--fg-faint);
+  transition:transform .18s ease}
+h2.hd.collapsed::before{transform:rotate(-90deg)}
+h3.hd{font-size:18px;font-weight:660;margin:34px 0 12px;line-height:1.35}
+h4.hd{font-size:15.5px;font-weight:660;margin:26px 0 10px;color:var(--fg-muted)}
+h5.hd,h6.hd{font-size:14px;font-weight:650;margin:20px 0 8px;color:var(--fg-muted)}
+.anchor{position:absolute;margin-left:8px;color:var(--fg-faint);text-decoration:none;opacity:0;
+  font-weight:400;transition:opacity .13s}
+.hd:hover .anchor{opacity:1}
+.anchor:hover{color:var(--accent)}
+p{margin:0 0 14px}
+a{color:var(--accent-fg);text-decoration:none}
+a:hover{text-decoration:underline}
+ul,ol{margin:0 0 16px;padding-left:24px}
+li{margin:5px 0}
+strong{font-weight:660;color:var(--fg)}
+hr.part-rule{border:0;border-top:1px solid var(--border-soft);margin:44px 0}
+code{font-family:var(--mono);font-size:.875em;background:var(--bg-sunken);
+  border:1px solid var(--border-soft);padding:1.5px 5px;border-radius:5px;white-space:nowrap}
+.section-body{overflow:hidden}
+.section-body.hidden{display:none}
+
+/* ---------- tables ---------- */
+.table-wrap{overflow-x:auto;margin:0 0 20px;border:1px solid var(--border);border-radius:10px;
+  box-shadow:var(--shadow);background:var(--bg)}
+.table-wrap::-webkit-scrollbar{height:9px}
+.table-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:min(100%,520px)}
+thead th{background:var(--bg-alt);text-align:left;font-weight:660;padding:10px 14px;
+  border-bottom:1px solid var(--border);white-space:nowrap;color:var(--fg);font-size:13.4px}
+tbody td{padding:9px 14px;border-bottom:1px solid var(--border-soft);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--bg-alt)}
+tbody td code{white-space:normal}
+
+/* ---------- code ---------- */
+.codeblock{margin:0 0 20px;border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  background:var(--code-bg);box-shadow:var(--shadow)}
+.codeblock figcaption{display:flex;align-items:center;justify-content:space-between;
+  padding:6px 12px;background:var(--code-head);border-bottom:1px solid var(--border)}
+.codeblock .lang{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--fg-faint);font-weight:650}
+.copy-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);
+  background:var(--bg);color:var(--fg-muted);font-size:11.5px;font-family:inherit;padding:3px 9px;
+  border-radius:6px;cursor:pointer}
+.copy-btn:hover{background:var(--accent-soft);color:var(--accent-fg);border-color:var(--accent)}
+.copy-btn.done{color:var(--ok);border-color:var(--ok)}
+.codeblock pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codeblock pre::-webkit-scrollbar{height:9px}
+.codeblock pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+.codeblock code{font-family:var(--mono);font-size:12.9px;line-height:1.62;background:none;
+  border:0;padding:0;white-space:pre;color:var(--code-fg);display:block}
+.tok-kw{color:var(--tok-kw)} .tok-str{color:var(--tok-str)} .tok-num{color:var(--tok-num)}
+.tok-com{color:var(--tok-com);font-style:italic} .tok-fn{color:var(--tok-fn)}
+
+/* ---------- callouts ---------- */
+.callout{margin:0 0 20px;padding:13px 16px;border-radius:10px;border:1px solid;
+  border-left-width:4px;font-size:14.4px}
+.callout-title{font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;
+  margin-bottom:6px}
+.callout-body p{margin:0 0 8px}
+.callout-body p:last-child{margin-bottom:0}
+.callout-note{background:var(--note-bg);border-color:var(--note)}
+.callout-note .callout-title{color:var(--note)}
+.callout-tip{background:var(--tip-bg);border-color:var(--tip)}
+.callout-tip .callout-title{color:var(--tip)}
+.callout-warning{background:var(--warn-bg);border-color:var(--warn)}
+.callout-warning .callout-title{color:var(--warn)}
+.callout-important{background:var(--imp-bg);border-color:var(--imp)}
+.callout-important .callout-title{color:var(--imp)}
+.callout-success{background:var(--ok-bg);border-color:var(--ok)}
+.callout-success .callout-title{color:var(--ok)}
+
+blockquote.pullquote{margin:0 0 22px;padding:6px 0 6px 20px;border-left:4px solid var(--accent);
+  font-size:17px;line-height:1.6;color:var(--fg-muted);font-style:italic}
+blockquote.pullquote p:last-child{margin-bottom:0}
+blockquote.pullquote strong{color:var(--fg);font-style:normal}
+
+/* ---------- diagrams ---------- */
+/* A diagram is not prose. Capping it at the 900px reading column scales every
+   flowchart down until the labels are unreadable, while leaving hundreds of
+   pixels of screen unused. Diagrams therefore break out symmetrically into
+   whatever slack the viewport has; --dia-bleed collapses to 0 on narrow
+   screens, so this degrades cleanly rather than overflowing. */
+.diagram{margin:0 -1px 26px;
+  margin-left:calc(-1 * var(--dia-bleed));
+  margin-right:calc(-1 * var(--dia-bleed));
+  width:calc(100% + (2 * var(--dia-bleed)));border:1px solid var(--dia-border);border-radius:14px;
+  background:var(--dia-bg);box-shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px -12px rgba(16,24,40,.18);
+  overflow:hidden;position:relative}
+:root[data-theme="dark"] .diagram{box-shadow:0 1px 2px rgba(0,0,0,.5),0 10px 28px -14px rgba(0,0,0,.8)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .diagram{
+  box-shadow:0 1px 2px rgba(0,0,0,.5),0 10px 28px -14px rgba(0,0,0,.8)}}
+
+.dia-bar{display:flex;align-items:center;gap:9px;padding:7px 10px 7px 13px;
+  background:var(--dia-bar);border-bottom:1px solid var(--dia-border);font-size:11.5px}
+.dia-tag{font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:10px;
+  color:var(--accent-fg);background:var(--accent-soft);padding:2.5px 8px;border-radius:20px;
+  white-space:nowrap}
+.dia-num{color:var(--fg-faint);font-weight:600;letter-spacing:.03em;white-space:nowrap}
+.dia-spacer{flex:1}
+.dia-tools{display:flex;gap:3px;align-items:center}
+.dia-btn{min-width:26px;height:24px;padding:0 6px;border:1px solid transparent;border-radius:6px;
+  background:transparent;color:var(--fg-faint);cursor:pointer;font-family:inherit;font-size:12px;
+  line-height:1;display:inline-grid;place-items:center;transition:background .12s,color .12s}
+.dia-btn:hover{background:var(--accent-soft);color:var(--accent-fg);border-color:var(--dia-border)}
+.dia-btn.dia-zoom{font-size:10.5px;font-weight:650;min-width:42px;font-variant-numeric:tabular-nums}
+.dia-btn.on{background:var(--accent-soft);color:var(--accent-fg)}
+
+.dia-viewport{position:relative;overflow:hidden;padding:22px 18px;
+  /* tall enough that a 12-node flowchart is legible without zooming */
+  min-height:min(62vh, 620px);
+  display:flex;align-items:center;justify-content:center;
+  background-image:radial-gradient(var(--dia-dot) 1px,transparent 1px);
+  background-size:18px 18px;background-position:-9px -9px;
+  display:flex;align-items:center;justify-content:center;cursor:grab}
+.dia-viewport.grabbing{cursor:grabbing}
+.dia-viewport.plain{cursor:default;overflow-x:auto;justify-content:flex-start;background-image:none}
+.diagram pre.mermaid{margin:0;flex:0 0 auto;font-family:var(--mono);font-size:12.3px;text-align:left;
+  white-space:pre;color:var(--fg-muted);transform-origin:center center;
+  transition:transform .16s cubic-bezier(.2,.8,.3,1);max-width:100%}
+.diagram pre.mermaid.dragging{transition:none}
+.diagram pre.mermaid[data-processed]{font-family:var(--sans);text-align:center;white-space:normal}
+.diagram svg{max-width:100%;height:auto;display:block;overflow:visible;
+  /* Mermaid emits an intrinsic width that is often far narrower than the space
+     available. Let a diagram grow up to 1.6x its natural size before it stops,
+     so small diagrams fill the frame instead of floating in it. */
+  width:auto;min-width:min(100%, calc(var(--dia-natural, 680px)))}
+
+/* rendered SVG polish */
+.diagram svg .node rect,.diagram svg .node polygon,.diagram svg .node circle,
+.diagram svg .node ellipse,.diagram svg .node path{
+  filter:drop-shadow(0 1px 1.5px rgba(16,24,40,.10));stroke-width:1.3px}
+:root[data-theme="dark"] .diagram svg .node rect,
+:root[data-theme="dark"] .diagram svg .node polygon,
+:root[data-theme="dark"] .diagram svg .node circle,
+:root[data-theme="dark"] .diagram svg .node ellipse{
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
+.diagram svg .cluster rect{rx:12px;ry:12px;stroke-width:1.2px;stroke-dasharray:0}
+.diagram svg .cluster-label,.diagram svg .cluster text{font-weight:700 !important;
+  letter-spacing:.02em;text-transform:none}
+.diagram svg .edgePath path,.diagram svg .flowchart-link,.diagram svg path.path{
+  stroke-width:1.6px;stroke-linecap:round}
+.diagram svg .edgeLabel{font-size:11.5px !important}
+.diagram svg .edgeLabel rect,.diagram svg .edgeLabel foreignObject div{
+  border-radius:5px;padding:0 2px}
+.diagram svg .marker,.diagram svg marker path{stroke-width:1px}
+.diagram svg .nodeLabel,.diagram svg .label{font-size:13px}
+.diagram svg .actor{stroke-width:1.3px;filter:drop-shadow(0 1px 2px rgba(16,24,40,.12))}
+.diagram svg .messageLine0,.diagram svg .messageLine1{stroke-width:1.5px}
+.diagram svg .note{filter:drop-shadow(0 1px 2px rgba(16,24,40,.10))}
+.diagram svg .statediagram-state rect,.diagram svg .er.entityBox,
+.diagram svg .classGroup rect{filter:drop-shadow(0 1px 2px rgba(16,24,40,.10))}
+
+.dia-hint{padding:6px 13px;border-top:1px solid var(--dia-border);background:var(--dia-bar);
+  font-size:11px;color:var(--fg-faint);opacity:0;max-height:0;overflow:hidden;
+  transition:opacity .18s,max-height .18s,padding .18s;padding-top:0;padding-bottom:0}
+.diagram:hover .dia-hint{opacity:1;max-height:34px;padding-top:6px;padding-bottom:6px}
+.dia-note{font-size:12px;color:var(--fg-faint);padding:8px 13px;font-style:italic;
+  border-top:1px solid var(--dia-border)}
+
+.dia-btn.dia-small{color:#b42318;font-weight:800;background:#fee4e2;border-color:#fda29b}
+button.dia-note{display:block;width:100%;text-align:left;cursor:pointer;
+  font:inherit;border:0;border-top:1px solid var(--dia-border);
+  background:var(--dia-bar);color:var(--fg-muted);padding:9px 14px}
+button.dia-note:hover{background:var(--accent-soft,#eef4ff);color:var(--fg)}
+.dia-cta{font-weight:750;color:var(--accent-fg,#1d4ed8);white-space:nowrap}
+.dia-full{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex:0 0 auto}
+.dia-full-label{margin-left:5px;font-weight:700;letter-spacing:.01em}
+@media (max-width:900px){ .dia-full-label{display:none} }
+/* source panel */
+.dia-src{display:none;border-top:1px solid var(--dia-border);background:var(--code-bg)}
+.dia-src.show{display:block}
+.dia-src pre{margin:0;padding:13px 15px;overflow-x:auto;font-family:var(--mono);
+  font-size:12.3px;line-height:1.6;color:var(--code-fg);white-space:pre}
+
+/* fullscreen overlay */
+.dia-modal{position:fixed;inset:0;z-index:200;background:var(--dia-modal);
+  display:none;flex-direction:column;backdrop-filter:blur(3px)}
+.dia-modal.show{display:flex}
+.dia-modal-bar{display:flex;align-items:center;gap:10px;padding:11px 16px;
+  background:var(--bg);border-bottom:1px solid var(--border);font-size:13px}
+.dia-modal-title{font-weight:650}
+.dia-modal-stage{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  cursor:grab;background-image:radial-gradient(var(--dia-dot) 1px,transparent 1px);
+  background-size:22px 22px}
+.dia-modal-stage.grabbing{cursor:grabbing}
+.dia-modal-stage svg{max-width:none !important;height:auto;
+  /* the stage is a flex container: without this the SVG is compressed to
+     the stage width before any transform, so fit() sees a diagram that is
+     already 'fitted' and the legibility floor never engages. */
+  flex:0 0 auto;
+  transform-origin:center center;transition:transform .16s cubic-bezier(.2,.8,.3,1)}
+.dia-modal-stage.dragging svg{transition:none}
+
+/* ---------- responsive ---------- */
+@media (max-width:1400px){
+  .toc{display:none}
+  /* the rail is gone, so stop reserving its width for it */
+  :root{--toc:0px}
+}
+@media (max-width:1080px){
+  :root{--sidebar:260px}
+  .main{padding:28px 26px 100px}
+}
+@media (max-width:860px){
+  /* --maxw is a percentage below this breakpoint, so the bleed calc
+     cannot resolve; diagrams simply use the full column. */
+  :root{--dia-bleed:0px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s ease;z-index:55;width:290px;
+    box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .sidebar.open{transform:none}
+  .main{margin-left:0;padding:22px 16px 90px}
+  #menu-btn{display:inline-grid}
+  .brand .txt{display:none}
+  .search-wrap{flex:1 1 auto}
+  h1.hd{font-size:25px} h2.hd{font-size:20px} h2.hd::before{left:-15px}
+  body{font-size:15px}
+  .scrim.show{position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.4);z-index:54}
+}
+#menu-btn{display:none}
+
+/* ---------- print ---------- */
+@media print{
+  :root{--bg:#fff;--fg:#000;--maxw:100%;--dia-bleed:0px}
+  .topbar,.sidebar,.toc,.copy-btn,.anchor,.scrim{display:none !important}
+  .main{margin:0;padding:0;display:block}
+  .shell{padding-top:0}
+  .content{max-width:100%}
+  .section-body.hidden{display:block !important}
+  h1.hd{page-break-before:always;font-size:22pt}
+  h1.hd:first-of-type{page-break-before:avoid}
+  h2.hd,h3.hd{page-break-after:avoid}
+  .table-wrap,.codeblock,.callout,.diagram{page-break-inside:avoid;box-shadow:none}
+  table{font-size:9pt} body{font-size:10.5pt;line-height:1.45}
+  a{color:#000;text-decoration:underline}
+  .diagram{border:1px solid #999}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="iconbtn" id="menu-btn" type="button" aria-label="Toggle navigation">&#9776;</button>
+  <div class="brand">
+    <span class="dot">EA</span>
+    <span class="txt">Enterprise Agentic Platform</span>
+    <span class="ver">v7.0 FAST</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="search-wrap">
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M11.7 10.3a6 6 0 1 0-1.4 1.4l3.3 3.3 1.4-1.4-3.3-3.3ZM7 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/></svg>
+    <input id="search" type="search" placeholder="Search sections&hellip;  (Ctrl+K)" autocomplete="off" spellcheck="false">
+  </div>
+  <button class="iconbtn" id="theme-btn" type="button" aria-label="Toggle light and dark theme">&#9790;</button>
+  <button class="iconbtn" id="print-btn" type="button" aria-label="Print or save as PDF">&#128424;</button>
+</header>
+
+<div class="scrim"></div>
+
+<div class="shell">
+  <nav class="sidebar" aria-label="Documentation navigation">
+{{NAV}}
+</nav>
+  <div class="main">
+    <article class="content">
+{{CONTENT}}
+
+    </article>
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <div id="toc-list"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var root = document.documentElement;
+
+  /* ---------- theme ---------- */
+  var stored = null;
+  try { stored = localStorage.getItem('eap-theme'); } catch(e){}
+  if (stored) root.setAttribute('data-theme', stored);
+  function currentTheme(){
+    return root.getAttribute('data-theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+  function paintThemeBtn(){
+    var b = document.getElementById('theme-btn');
+    if (b) b.textContent = currentTheme() === 'dark' ? '\u2600' : '\u263E';
+  }
+  var tb = document.getElementById('theme-btn');
+  if (tb) tb.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('eap-theme', next); } catch(e){}
+    paintThemeBtn();
+    renderMermaid(true);
+  });
+  paintThemeBtn();
+
+  /* ---------- print ---------- */
+  var pb = document.getElementById('print-btn');
+  if (pb) pb.addEventListener('click', function(){
+    document.querySelectorAll('.section-body.hidden').forEach(function(s){ s.classList.remove('hidden'); });
+    document.querySelectorAll('h2.hd.collapsed').forEach(function(h){ h.classList.remove('collapsed'); });
+    window.print();
+  });
+
+  /* ---------- mobile nav ---------- */
+  var sidebar = document.querySelector('.sidebar');
+  var scrim = document.querySelector('.scrim');
+  var mb = document.getElementById('menu-btn');
+  function closeNav(){ sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+  if (mb) mb.addEventListener('click', function(){
+    sidebar.classList.toggle('open');
+    scrim.classList.toggle('show', sidebar.classList.contains('open'));
+  });
+  if (scrim) scrim.addEventListener('click', closeNav);
+  sidebar.addEventListener('click', function(e){
+    if (e.target.tagName === 'A' && window.innerWidth <= 860) closeNav();
+  });
+
+  /* ---------- copy buttons ---------- */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var el = document.getElementById(btn.dataset.target);
+      if (!el) return;
+      var text = el.textContent;
+      var done = function(){
+        var span = btn.querySelector('span');
+        var old = span.textContent;
+        span.textContent = 'Copied';
+        btn.classList.add('done');
+        setTimeout(function(){ span.textContent = old; btn.classList.remove('done'); }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+      function fallback(){
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch(e){}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* ---------- syntax highlighting ---------- */
+  var KEYWORDS = {
+    python: 'def class return if elif else for while in not and or import from as with try except finally raise lambda None True False async await yield pass break continue global assert del is',
+    bash:   'if then else fi for while do done case esac function return export echo cd source local exit set trap',
+    sh:     'if then else fi for while do done case esac function return export echo cd source local exit set trap',
+    sql:    'SELECT FROM WHERE GROUP BY ORDER HAVING JOIN LEFT RIGHT INNER FULL OUTER ON AS AND OR NOT NULL INSERT UPDATE DELETE CREATE TABLE VIEW WITH UNION ALL DISTINCT LIMIT CASE WHEN THEN ELSE END COUNT SUM AVG MAX MIN INTERVAL EXTRACT COALESCE CAST OVER PARTITION MERGE INTO VALUES SET DESCRIBE HISTORY RESTORE VERSION OF OPTIMIZE VACUUM ZORDER RETAIN HOURS TIMESTAMP DATE',
+    cypher: 'MATCH MERGE CREATE SET RETURN WHERE WITH ORDER BY LIMIT DELETE DETACH COUNT AVG SUM MAX CASE WHEN THEN ELSE END AND OR NOT NULL datetime duration length',
+    hcl:    'resource module variable output provider data locals terraform source count for_each depends_on true false null',
+    yaml:   'true false null',
+    json:   'true false null',
+    text:   ''
+  };
+  function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function esc(t){
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* Single-pass tokenizer: one combined regex scanned left to right, so an
+     already-emitted token can never be re-scanned or corrupted by a later rule. */
+  var HL_CACHE = {};
+  var HL_LANGS = { python:1, bash:1, sh:1, sql:1, cypher:1, hcl:1, yaml:1, json:1, promql:1 };
+
+  function buildRules(lang){
+    if (HL_CACHE[lang]) return HL_CACHE[lang];
+
+    var comment;
+    if (lang === 'sql')         comment = '--[^\\n]*';
+    else if (lang === 'cypher') comment = '//[^\\n]*';
+    else if (lang === 'json')   comment = null;
+    else                        comment = '#[^\\n]*';
+
+    var str = '"{3}[\\s\\S]*?"{3}'
+            + "|'{3}[\\s\\S]*?'{3}"
+            + '|"(?:\\\\.|[^"\\\\\\n])*"'
+            + "|'(?:\\\\.|[^'\\\\\\n])*'";
+    if (lang === 'sql' || lang === 'cypher') str += '|`[^`\\n]*`';
+
+    var alts = [];
+    if (comment) alts.push(['tok-com', comment]);
+    alts.push(['tok-str', str]);
+    alts.push(['tok-num', '\\b\\d+(?:\\.\\d+)?\\b']);
+
+    var kws = KEYWORDS[lang];
+    if (kws) {
+      var list = kws.split(' ').filter(Boolean).map(escapeRe);
+      if (list.length) alts.push(['tok-kw', '\\b(?:' + list.join('|') + ')\\b']);
+    }
+    alts.push(['tok-fn', '\\b[A-Za-z_][A-Za-z0-9_]*(?=\\()']);
+
+    var flags = (lang === 'sql' || lang === 'cypher') ? 'gi' : 'g';
+    var re = new RegExp(alts.map(function(a){ return '(' + a[1] + ')'; }).join('|'), flags);
+    return (HL_CACHE[lang] = { re: re, alts: alts });
+  }
+
+  function highlight(codeEl){
+    var lang = (codeEl.className.match(/lang-([a-z0-9+#]+)/i) || [, 'text'])[1].toLowerCase();
+    if (!HL_LANGS[lang]) return;               /* text, jinja, diagrams: leave verbatim */
+    var src = codeEl.textContent;
+    if (src.length > 24000) return;            /* skip very large blocks */
+
+    var rules = buildRules(lang), re = rules.re, alts = rules.alts;
+    re.lastIndex = 0;
+
+    var out = '', last = 0, m;
+    while ((m = re.exec(src)) !== null) {
+      if (m[0].length === 0) { re.lastIndex++; continue; }
+      if (m.index > last) out += esc(src.slice(last, m.index));
+      var cls = 'tok-str';
+      for (var g = 0; g < alts.length; g++) {
+        if (m[g + 1] !== undefined) { cls = alts[g][0]; break; }
+      }
+      out += '<span class="' + cls + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    out += esc(src.slice(last));
+    codeEl.innerHTML = out;
+  }
+
+  document.querySelectorAll('.codeblock code').forEach(function(c){
+    try { highlight(c); } catch(e){}
+  });
+
+  /* ---------- collapsible sections ---------- */
+  document.querySelectorAll('h2.hd').forEach(function(h){
+    var body = document.createElement('div');
+    body.className = 'section-body';
+    var node = h.nextSibling;
+    while (node) {
+      var next = node.nextSibling;
+      if (node.nodeType === 1 && /^H[12]$/.test(node.tagName)) break;
+      body.appendChild(node);
+      node = next;
+    }
+    h.parentNode.insertBefore(body, h.nextSibling);
+    h.addEventListener('click', function(e){
+      if (e.target.classList.contains('anchor')) return;
+      h.classList.toggle('collapsed');
+      body.classList.toggle('hidden');
+    });
+  });
+  function revealTarget(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    var p = el;
+    while (p) {
+      if (p.classList && p.classList.contains('section-body') && p.classList.contains('hidden')) {
+        p.classList.remove('hidden');
+        var prev = p.previousElementSibling;
+        if (prev) prev.classList.remove('collapsed');
+      }
+      p = p.parentElement;
+    }
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = decodeURIComponent(a.getAttribute('href').slice(1));
+    revealTarget(id);
+    var el = document.getElementById(id);
+    if (el) { e.preventDefault(); history.replaceState(null,'','#'+id);
+              el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+  if (location.hash) setTimeout(function(){
+    revealTarget(decodeURIComponent(location.hash.slice(1)));
+    var el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (el) el.scrollIntoView();
+  }, 60);
+
+  /* ---------- sidebar search ---------- */
+  var search = document.getElementById('search');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar a'));
+  var noRes = document.querySelector('.no-results');
+  if (search) {
+    search.addEventListener('input', function(){
+      var q = search.value.trim().toLowerCase();
+      if (!q) {
+        links.forEach(function(a){ a.classList.remove('nav-hidden'); });
+        noRes.style.display = 'none';
+        return;
+      }
+      var hits = 0;
+      links.forEach(function(a){
+        var match = a.textContent.toLowerCase().indexOf(q) !== -1;
+        a.classList.toggle('nav-hidden', !match);
+        if (match) hits++;
+      });
+      noRes.style.display = hits ? 'none' : 'block';
+    });
+    document.addEventListener('keydown', function(e){
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); search.focus(); search.select(); }
+      if (e.key === 'Escape' && document.activeElement === search) { search.value=''; search.dispatchEvent(new Event('input')); search.blur(); }
+    });
+  }
+
+  /* ---------- active-section tracking ---------- */
+  var navMap = {};
+  links.forEach(function(a){ navMap[a.dataset.target] = a; });
+  var heads = Array.prototype.slice.call(document.querySelectorAll('h1.hd, h2.hd'));
+  var tocEl = document.getElementById('toc-list');
+
+  function buildToc(partId){
+    if (!tocEl) return;
+    var sec = document.getElementById('sec-' + partId);
+    if (!sec) { tocEl.innerHTML = ''; return; }
+    var out = '';
+    sec.querySelectorAll('h2.hd, h3.hd').forEach(function(h){
+      var lvl = h.tagName === 'H2' ? '' : ' lvl4';
+      var txt = h.textContent.replace(/#$/,'').trim();
+      out += '<a class="' + lvl.trim() + '" href="#' + h.id + '">' + txt + '</a>';
+    });
+    tocEl.innerHTML = out;
+  }
+
+  var currentPart = null;
+  function onScroll(){
+    var y = window.scrollY + 90;
+    var active = null, activePart = null;
+    for (var i = 0; i < heads.length; i++) {
+      if (heads[i].offsetTop <= y) {
+        active = heads[i];
+        if (heads[i].tagName === 'H1') activePart = heads[i];
+      } else break;
+    }
+    links.forEach(function(a){ a.classList.remove('active'); });
+    if (active && navMap[active.id]) navMap[active.id].classList.add('active');
+    if (activePart) {
+      if (navMap[activePart.id]) navMap[activePart.id].classList.add('active');
+      if (currentPart !== activePart.id) { currentPart = activePart.id; buildToc(activePart.id); }
+    }
+    if (tocEl) {
+      var tl = tocEl.querySelectorAll('a');
+      tl.forEach(function(a){ a.classList.remove('active'); });
+      if (active) {
+        for (var j = 0; j < tl.length; j++) {
+          if (tl[j].getAttribute('href') === '#' + active.id) { tl[j].classList.add('active'); break; }
+        }
+      }
+    }
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (!ticking) { window.requestAnimationFrame(function(){ onScroll(); ticking = false; }); ticking = true; }
+  }, {passive:true});
+  onScroll();
+
+  /* ---------- mermaid: themed rendering + interaction ---------- */
+  var originals = [];
+  document.querySelectorAll('pre.mermaid').forEach(function(p, i){ originals[i] = p.textContent; });
+
+  var SANS = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+
+  var PALETTE = {
+    light: {
+      background:'transparent',
+      primaryColor:'#e8f0fe', primaryTextColor:'#12263f', primaryBorderColor:'#4285f4',
+      secondaryColor:'#eef7f0', secondaryTextColor:'#12263f', secondaryBorderColor:'#5aa469',
+      tertiaryColor:'#f7f3fd', tertiaryTextColor:'#12263f', tertiaryBorderColor:'#a97fe0',
+      mainBkg:'#e8f0fe', nodeBorder:'#4285f4', nodeTextColor:'#12263f',
+      lineColor:'#7a8798', textColor:'#1b1f24', titleColor:'#12263f',
+      clusterBkg:'rgba(26,115,232,0.045)', clusterBorder:'#cbd9ee',
+      edgeLabelBackground:'#ffffff', labelBackground:'#ffffff',
+      labelBoxBkgColor:'#e8f0fe', labelBoxBorderColor:'#4285f4', labelTextColor:'#12263f',
+      actorBkg:'#e8f0fe', actorBorder:'#4285f4', actorTextColor:'#12263f', actorLineColor:'#aab6c4',
+      signalColor:'#5a6673', signalTextColor:'#1b1f24',
+      loopTextColor:'#12263f', activationBkgColor:'#d7e5fb', activationBorderColor:'#4285f4',
+      sequenceNumberColor:'#ffffff', noteBkgColor:'#fff8dd', noteBorderColor:'#e0c86b',
+      noteTextColor:'#3d3418',
+      altBackground:'#f6f8fa', errorBkgColor:'#fdecea', errorTextColor:'#c5221f',
+      attributeBackgroundColorOdd:'#ffffff', attributeBackgroundColorEven:'#f6f8fa',
+      classText:'#12263f', fillType0:'#e8f0fe', fillType1:'#eef7f0', fillType2:'#f7f3fd',
+      fillType3:'#fff5e6', fillType4:'#fdecea', fillType5:'#e9f6fb', fillType6:'#f3f0ff',
+      fillType7:'#eefaf3'
+    },
+    dark: {
+      background:'transparent',
+      primaryColor:'#16273d', primaryTextColor:'#dbe7f5', primaryBorderColor:'#58a6ff',
+      secondaryColor:'#14291d', secondaryTextColor:'#d5ead9', secondaryBorderColor:'#3fb950',
+      tertiaryColor:'#241a33', tertiaryTextColor:'#e4d9f5', tertiaryBorderColor:'#bc8cff',
+      mainBkg:'#16273d', nodeBorder:'#58a6ff', nodeTextColor:'#dbe7f5',
+      lineColor:'#6d7c8f', textColor:'#e6edf3', titleColor:'#e6edf3',
+      clusterBkg:'rgba(88,166,255,0.07)', clusterBorder:'#2e3d51',
+      edgeLabelBackground:'#0f1620', labelBackground:'#0f1620',
+      labelBoxBkgColor:'#16273d', labelBoxBorderColor:'#58a6ff', labelTextColor:'#dbe7f5',
+      actorBkg:'#16273d', actorBorder:'#58a6ff', actorTextColor:'#dbe7f5', actorLineColor:'#3d4b5c',
+      signalColor:'#9198a1', signalTextColor:'#e6edf3',
+      loopTextColor:'#dbe7f5', activationBkgColor:'#1d3350', activationBorderColor:'#58a6ff',
+      sequenceNumberColor:'#0d1117', noteBkgColor:'#2b2415', noteBorderColor:'#7d6a2a',
+      noteTextColor:'#e8dcb5',
+      altBackground:'#161b22', errorBkgColor:'#2d1214', errorTextColor:'#f85149',
+      attributeBackgroundColorOdd:'#0f1620', attributeBackgroundColorEven:'#161b22',
+      classText:'#dbe7f5', fillType0:'#16273d', fillType1:'#14291d', fillType2:'#241a33',
+      fillType3:'#2b2415', fillType4:'#2d1214', fillType5:'#102a33', fillType6:'#1d1a33',
+      fillType7:'#12291f'
+    }
+  };
+
+  function renderMermaid(force){
+    if (!window.mermaid) return;
+    var nodes = document.querySelectorAll('pre.mermaid');
+    if (force) {
+      nodes.forEach(function(p, i){
+        p.removeAttribute('data-processed');
+        p.innerHTML = '';
+        p.textContent = originals[i];
+        p.style.transform = '';
+        var fig = p.closest('.diagram');
+        if (fig) { fig._view = null; var z = fig.querySelector('.dia-zoom'); if (z) z.textContent = '100%'; }
+      });
+    }
+    try {
+      window.mermaid.initialize({
+        startOnLoad:false,
+        securityLevel:'loose',
+        theme:'base',
+        themeVariables: Object.assign(
+          { fontFamily: SANS, fontSize:'14px' },
+          PALETTE[currentTheme() === 'dark' ? 'dark' : 'light']
+        ),
+        flowchart:{ htmlLabels:true, curve:'basis', useMaxWidth:true, padding:14,
+                    nodeSpacing:48, rankSpacing:56, diagramPadding:10 },
+        sequence:{ useMaxWidth:true, boxMargin:10, mirrorActors:false,
+                   actorMargin:56, messageMargin:38, noteMargin:10, wrap:true },
+        er:{ useMaxWidth:true, entityPadding:14, minEntityWidth:110 },
+        state:{ useMaxWidth:true, padding:12 },
+        class:{ useMaxWidth:true },
+        mindmap:{ useMaxWidth:true, padding:14 }
+      });
+      window.mermaid.run({ querySelector:'pre.mermaid' })
+        .then(enhanceDiagrams)
+        .catch(function(e){ console.warn('mermaid run failed', e); });
+    } catch(e){ console.warn('mermaid render failed', e); }
+  }
+  window.renderMermaid = renderMermaid;
+
+  /* ---------- pan / zoom / fullscreen ---------- */
+  var MIN_Z = 0.35, MAX_Z = 6;
+
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  function applyView(target, v){
+    target.style.transform =
+      'translate(' + v.x + 'px,' + v.y + 'px) scale(' + v.k + ')';
+  }
+
+  function makeInteractive(stage, target, badge, onDouble){
+    var v = { k:1, x:0, y:0 };
+    var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+
+    /* Mermaid fits its SVG to the container, so a 3124px-wide diagram may be
+       displayed at 1200px before we apply any zoom at all. Reporting that as
+       "100%" hides the real problem. baseRatio converts our zoom factor into a
+       true percentage of the diagram's natural size. */
+    function baseRatio(){
+      var svg = target.tagName && target.tagName.toLowerCase() === 'svg'
+                  ? target : target.querySelector('svg');
+      if (!svg) return 1;
+      var vb = svg.viewBox && svg.viewBox.baseVal;
+      if (!vb || !vb.width) return 1;
+      var shown = svg.getBoundingClientRect().width / (v.k || 1);
+      return shown / vb.width;
+    }
+
+    function sync(){
+      applyView(target, v);
+      if (badge) {
+        var pct = Math.round(v.k * baseRatio() * 100);
+        badge.textContent = pct + '%';
+        // flag it when the diagram is too small to read
+        badge.classList.toggle('dia-small', pct < 60);
+        badge.title = pct < 60
+          ? 'Shown at ' + pct + '% of full size - zoom in or open fullscreen'
+          : 'Reset view';
+      }
+    }
+    function reset(){ v = { k:1, x:0, y:0 }; sync(); }
+    function zoomBy(f, cx, cy){
+      var nk = clamp(v.k * f, MIN_Z, MAX_Z);
+      if (nk === v.k) return;
+      if (cx != null) {
+        var r = stage.getBoundingClientRect();
+        var px = cx - r.left - r.width / 2;
+        var py = cy - r.top - r.height / 2;
+        v.x = px - (px - v.x) * (nk / v.k);
+        v.y = py - (py - v.y) * (nk / v.k);
+      }
+      v.k = nk;
+      sync();
+    }
+
+    stage.addEventListener('wheel', function(e){
+      if (!e.ctrlKey && Math.abs(e.deltaY) < 2) return;
+      e.preventDefault();
+      zoomBy(e.deltaY < 0 ? 1.18 : 1 / 1.18, e.clientX, e.clientY);
+    }, { passive:false });
+
+    stage.addEventListener('pointerdown', function(e){
+      if (e.button !== 0) return;
+      dragging = true; sx = e.clientX; sy = e.clientY; ox = v.x; oy = v.y;
+      stage.classList.add('grabbing', 'dragging');
+      target.classList.add('dragging');
+      stage.setPointerCapture(e.pointerId);
+    });
+    stage.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      v.x = ox + (e.clientX - sx);
+      v.y = oy + (e.clientY - sy);
+      applyView(target, v);
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      stage.addEventListener(ev, function(){
+        if (!dragging) return;
+        dragging = false;
+        stage.classList.remove('grabbing', 'dragging');
+        target.classList.remove('dragging');
+      });
+    });
+    /* Double-click expands. Resetting on double-click is the least useful
+       binding available: the toolbar already has a reset, and a reader whose
+       diagram is too small to read reaches for double-click expecting bigger. */
+    stage.addEventListener('dblclick', function(e){
+      e.preventDefault();
+      if (typeof onDouble === 'function') onDouble(); else reset();
+    });
+
+    /* Fit the target to its stage. Without this, fullscreen opens at a fixed
+       100%: a large diagram overflows and a small one floats in the middle of
+       an empty window. */
+    /* Fit the target to its stage, but never below MIN_LEGIBLE. Shrinking a
+       3000px diagram to fit a laptop screen produces 5px labels - technically
+       "fitted" and completely unreadable. Below the floor we open at a readable
+       scale and let the user pan, which is how any image viewer behaves. */
+    var MIN_LEGIBLE = 0.8;
+    function fit(pad){
+      var r = stage.getBoundingClientRect();
+      var b = target.getBoundingClientRect();
+      var natW = b.width / (v.k || 1), natH = b.height / (v.k || 1);
+      if (!natW || !natH || !r.width || !r.height) return;
+      var m = pad == null ? 0.96 : pad;
+      var k = Math.min(r.width / natW, r.height / natH) * m;
+      if (k < MIN_LEGIBLE) k = MIN_LEGIBLE;          // legibility beats fitting
+      v = { k: clamp(k, MIN_Z, MAX_Z), x: 0, y: 0 };
+      sync();
+    }
+
+    return { zoomBy:zoomBy, reset:reset, fit:fit, refresh:sync,
+             get:function(){ return v; } };
+  }
+
+  /* fullscreen modal (created once) */
+  var modal = null, modalCtl = null;
+  function ensureModal(){
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.className = 'dia-modal';
+    modal.innerHTML =
+      '<div class="dia-modal-bar">' +
+        '<span class="dia-modal-title"></span>' +
+        '<span class="dia-spacer" style="flex:1"></span>' +
+        '<button class="dia-btn" data-m="out" title="Zoom out">&#8722;</button>' +
+        '<button class="dia-btn dia-zoom" data-m="reset" title="Reset">100%</button>' +
+        '<button class="dia-btn" data-m="in" title="Zoom in">&#43;</button>' +
+        '<button class="iconbtn" data-m="close" title="Close (Esc)">&#10005;</button>' +
+      '</div><div class="dia-modal-stage"></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){
+      var b = e.target.closest('[data-m]');
+      if (!b) return;
+      var a = b.dataset.m;
+      if (a === 'close') closeModal();
+      else if (modalCtl) {
+        if (a === 'in') modalCtl.zoomBy(1.25);
+        else if (a === 'out') modalCtl.zoomBy(1 / 1.25);
+        else modalCtl.reset();
+      }
+    });
+    return modal;
+  }
+  function openModal(fig){
+    var svg = fig.querySelector('svg');
+    if (!svg) return;
+    var m = ensureModal();
+    var stage = m.querySelector('.dia-modal-stage');
+    stage.innerHTML = '';
+    var clone = svg.cloneNode(true);
+    clone.removeAttribute('style');
+    /* Mermaid ships width="100%", which makes the clone fit the stage and turns
+       "100%" into a lie. Pin it to the viewBox so 100% really is full size and
+       the user can pan a large diagram at a readable scale. */
+    var vb = svg.viewBox && svg.viewBox.baseVal;
+    if (vb && vb.width) {
+      clone.setAttribute('width', vb.width);
+      clone.setAttribute('height', vb.height);
+      clone.style.maxWidth = 'none';
+    }
+    stage.appendChild(clone);
+    m.querySelector('.dia-modal-title').textContent =
+      'Figure ' + fig.dataset.fig + ' — ' + (fig.querySelector('.dia-tag') || {}).textContent;
+    m.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    modalCtl = makeInteractive(stage, clone, m.querySelector('.dia-zoom'),
+                               function(){ modalCtl.fit(); });
+    // fit after layout has settled, so the stage has real dimensions
+    requestAnimationFrame(function(){ modalCtl.fit(); });
+  }
+  window.addEventListener('resize', function(){
+    if (modal && modal.classList.contains('show') && modalCtl) modalCtl.fit();
+  });
+  function closeModal(){
+    if (!modal) return;
+    modal.classList.remove('show');
+    modal.querySelector('.dia-modal-stage').innerHTML = '';
+    document.body.style.overflow = '';
+    modalCtl = null;
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && modal && modal.classList.contains('show')) closeModal();
+  });
+
+  function downloadSVG(fig){
+    var svg = fig.querySelector('svg');
+    if (!svg) return;
+    var clone = svg.cloneNode(true);
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    var bg = getComputedStyle(document.body).backgroundColor;
+    var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('width', '100%'); rect.setAttribute('height', '100%');
+    rect.setAttribute('fill', bg);
+    clone.insertBefore(rect, clone.firstChild);
+    var src = new XMLSerializer().serializeToString(clone);
+    var blob = new Blob([src], { type:'image/svg+xml;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'figure-' + fig.dataset.fig + '.svg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function enhanceDiagrams(){
+    document.querySelectorAll('.diagram').forEach(function(fig, idx){
+      if (fig._wired) return;
+      fig._wired = true;
+      var vp = fig.querySelector('.dia-viewport');
+      var pre = fig.querySelector('pre.mermaid');
+      var badge = fig.querySelector('.dia-zoom');
+      if (!vp || !pre) return;
+
+      var rendered = !!fig.querySelector('svg');
+      if (!rendered) { vp.classList.add('plain'); }
+
+      var ctl = rendered
+        ? makeInteractive(vp, pre, badge, function(){ openModal(fig); })
+        : null;
+
+      /* A diagram displayed under ~55% of natural size is not readable inline.
+         Say so, rather than leaving the reader to wonder why it is blurry. */
+      if (rendered) {
+        setTimeout(function(){
+          var svg = fig.querySelector('svg');
+          var vb = svg && svg.viewBox && svg.viewBox.baseVal;
+          if (!vb || !vb.width) return;
+          var shown = svg.getBoundingClientRect().width;
+          if (!shown) return;                      // layout has not settled yet
+          var pct = Math.round(shown / vb.width * 100);
+          if (ctl) ctl.refresh();          // badge now shows the real scale, not a stale 100%
+          if (pct < 1 || pct >= 55 || fig.querySelector('.dia-toosmall')) return;
+          var n = document.createElement('button');
+          n.type = 'button';
+          n.className = 'dia-note dia-toosmall';
+          n.innerHTML = 'This diagram is ' + Math.round(vb.width) +
+            '&thinsp;px wide and is shown here at <b>' + pct +
+            '%</b>. <span class="dia-cta">Open full screen &#9974;</span>';
+          n.addEventListener('click', function(){ openModal(fig); });
+          fig.appendChild(n);
+        }, 450);
+      }
+
+      fig.addEventListener('click', function(e){
+        var b = e.target.closest('.dia-btn');
+        if (!b) return;
+        var act = b.dataset.act;
+        if (act === 'in'  && ctl) ctl.zoomBy(1.25);
+        else if (act === 'out' && ctl) ctl.zoomBy(1 / 1.25);
+        else if (act === 'reset' && ctl) ctl.reset();
+        else if (act === 'full') openModal(fig);
+        else if (act === 'dl') downloadSVG(fig);
+        else if (act === 'src') {
+          var panel = fig.querySelector('.dia-src');
+          if (!panel) {
+            panel = document.createElement('div');
+            panel.className = 'dia-src';
+            var p2 = document.createElement('pre');
+            p2.textContent = originals[idx] || pre.textContent;
+            panel.appendChild(p2);
+            fig.appendChild(panel);
+          }
+          panel.classList.toggle('show');
+          b.classList.toggle('on', panel.classList.contains('show'));
+        }
+      });
+    });
+  }
+
+  /* Load order matters on a locked-down network: a local copy sitting beside
+     this file works with no internet at all, and the CDN is only a fallback for
+     when the HTML has been shared on its own. */
+  var MERMAID_SOURCES = ['mermaid.min.js',
+                         'tools/mermaid.min.js',
+                         'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'];
+
+  function loadMermaid(i){
+    if (i >= MERMAID_SOURCES.length) { mermaidUnavailable(); return; }
+    var s = document.createElement('script');
+    s.src = MERMAID_SOURCES[i];
+    s.onload  = function(){ renderMermaid(false); };
+    s.onerror = function(){ loadMermaid(i + 1); };
+    document.head.appendChild(s);
+  }
+
+  function mermaidUnavailable(){
+    document.querySelectorAll('.diagram').forEach(function(d){
+      d.querySelector('.dia-viewport').classList.add('plain');
+      if (d.querySelector('.dia-note')) return;
+      var note = document.createElement('div');
+      note.className = 'dia-note';
+      note.textContent = 'Diagram renderer unavailable offline — showing diagram source.';
+      d.appendChild(note);
+    });
+    enhanceDiagrams();
+  }
+
+  loadMermaid(0);
+})();
+</script>
+</body>
+</html>
