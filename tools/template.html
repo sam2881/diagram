@@ -394,6 +394,7 @@ button.dia-note:hover{background:var(--accent-soft,#eef4ff);color:var(--fg)}
   </div>
 </div>
 
+<!--MERMAID_EMBED-->
 <script>
 (function(){
   'use strict';
@@ -1037,6 +1038,12 @@ button.dia-note:hover{background:var(--accent-soft,#eef4ff);color:var(--fg)}
   var MERMAID_SOURCES = ['mermaid.min.js',
                          'tools/mermaid.min.js',
                          'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'];
+
+  /* A default build embeds the renderer above (see MERMAID_EMBED in
+     tools/build_docs.py), so the page draws its diagrams when the HTML has been
+     emailed, dropped in Downloads or opened from SharePoint with no sibling
+     files and no reachable CDN. Nothing to fetch in that case. */
+  if (window.mermaid) { renderMermaid(false); return; }
 
   function loadMermaid(i){
     if (i >= MERMAID_SOURCES.length) { mermaidUnavailable(); return; }

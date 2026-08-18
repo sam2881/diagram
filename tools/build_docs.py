@@ -2,11 +2,19 @@
 """
 build_docs.py — regenerate Master_Documentation.html from Master_Documentation.md
 
-    python tools/build_docs.py            # generate
-    python tools/build_docs.py --check    # verify the committed HTML matches (CI gate)
+    python tools/build_docs.py             # generate (renderer embedded)
+    python tools/build_docs.py --no-embed  # generate, load the renderer externally
+    python tools/build_docs.py --check     # verify the committed HTML matches (CI gate)
 
 Master_Documentation.md is the ONLY source of truth.
 Master_Documentation.html is a build artefact and must never be hand-edited.
+
+By default the Mermaid renderer is embedded in the page. Without it the HTML has
+to fetch mermaid.min.js from a sibling file or from jsdelivr, so a copy that has
+been emailed, downloaded or opened from SharePoint behind a proxy shows diagram
+*source* instead of diagrams and its zoom buttons go dead. Embedding costs ~3.3 MB
+and buys a file that renders anywhere. --check must be passed the same flag the
+committed artefact was built with.
 """
 import io, os, re, sys, html, hashlib
 
@@ -16,6 +24,9 @@ MD = os.path.join(ROOT, 'Master_Documentation.md')
 OUT = os.path.join(ROOT, 'Master_Documentation.html')
 TPL = os.path.join(HERE, 'template.html')
 FIGTPL = os.path.join(HERE, 'figure_template.html')
+MERMAID = os.path.join(HERE, 'mermaid.min.js')
+
+EMBED_SLOT = '<!--MERMAID_EMBED-->'
 
 try:
     import markdown
@@ -174,7 +185,36 @@ def build_nav(nav):
     return '\n'.join(rows)
 
 
-def build():
+def mermaid_embed():
+    """Return a <script> block carrying the whole Mermaid bundle, or '' if absent.
+
+    The bundle is inserted verbatim -- no escaping. That is only safe because the
+    HTML tokenizer ends a <script> element on '</script', and can be tricked into
+    *not* ending it by an inner '<script'. Neither appears in the vendored
+    mermaid@10 bundle, so we assert rather than mangle minified JS: a future
+    bundle that does contain them must be handled deliberately, not silently
+    corrupted.
+    """
+    if not os.path.exists(MERMAID):
+        sys.stderr.write('WARNING: %s not found - building without an embedded '
+                         'renderer.\n         The HTML will need a sibling '
+                         'mermaid.min.js or the CDN.\n' % MERMAID)
+        return ''
+
+    js = io.open(MERMAID, encoding='utf-8').read()
+    lowered = js.lower()
+    for bad in ('</script', '<script'):
+        if bad in lowered:
+            sys.exit("ERROR: tools/mermaid.min.js contains %r, which cannot be "
+                     "inlined safely.\n       Rebuild with --no-embed, or add "
+                     "explicit escaping to mermaid_embed()." % bad)
+
+    return ('<!-- Mermaid renderer, embedded so this file renders standalone. '
+            'Source: tools/mermaid.min.js -->\n'
+            '<script>\n%s\n</script>' % js.strip())
+
+
+def build(embed=True):
     md_text = io.open(MD, encoding='utf-8').read()
     template = io.open(TPL, encoding='utf-8').read()
     figtpl = io.open(FIGTPL, encoding='utf-8').read() if os.path.exists(FIGTPL) else ''
@@ -194,6 +234,13 @@ def build():
     body = restore_mermaid(body, blocks, figtpl)
     body = sectionise(body)
 
+    if template.count(EMBED_SLOT) != 1:
+        sys.exit('ERROR: tools/template.html must contain exactly one %s marker '
+                 '(found %d).' % (EMBED_SLOT, template.count(EMBED_SLOT)))
+    if EMBED_SLOT in body:
+        sys.exit('ERROR: Master_Documentation.md produced a literal %s, which '
+                 'collides with the renderer slot.' % EMBED_SLOT)
+
     page = template.replace('{{NAV}}', build_nav(nav)).replace('{{CONTENT}}', body)
     banner = ('\n<!-- ============================================================\n'
               '     GENERATED FILE - DO NOT EDIT\n'
@@ -202,11 +249,16 @@ def build():
               '     Any manual edit will be overwritten on the next build.\n'
               '     ============================================================ -->\n')
     page = page.replace('<head>', '<head>' + banner, 1)
-    return page, len(blocks), len(nav)
+
+    # Last, so the renderer's minified source is never scanned for {{...}} slots.
+    embed_block = mermaid_embed() if embed else ''
+    page = page.replace(EMBED_SLOT, embed_block, 1)
+    return page, len(blocks), len(nav), len(embed_block)
 
 
 def main():
-    page, n_dia, n_nav = build()
+    embed = '--no-embed' not in sys.argv
+    page, n_dia, n_nav, n_embed = build(embed=embed)
     check = '--check' in sys.argv
 
     if check:
@@ -218,13 +270,18 @@ def main():
             b = hashlib.sha256(page.encode()).hexdigest()[:12]
             sys.exit('FAIL: Master_Documentation.html is out of date or was hand-edited.\n'
                      '      committed=%s generated=%s\n'
-                     '      Run: python tools/build_docs.py' % (a, b))
+                     '      Run: python tools/build_docs.py%s'
+                     % (a, b, '' if embed else ' --no-embed'))
         print('OK: Master_Documentation.html matches Master_Documentation.md')
         return
 
     io.open(OUT, 'w', encoding='utf-8').write(page)
     print('Generated Master_Documentation.html')
     print('  %d bytes | %d diagrams | %d nav entries' % (len(page), n_dia, n_nav))
+    if n_embed:
+        print('  renderer embedded (%d bytes) — file renders standalone' % n_embed)
+    else:
+        print('  renderer NOT embedded — needs a sibling mermaid.min.js or the CDN')
 
 
 if __name__ == '__main__':
