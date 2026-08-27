@@ -6,6 +6,8 @@ A browsable collection of enterprise architecture, AI consulting, data engineeri
 
 ## What You Will Find
 
+**Data layer standard:** `RAW` → `TRANSIENT` → `BRONZE` → `SILVER` → `GOLD`, with `GOLD` as the analytics-ready serving layer.
+
 | Area | Explore |
 | --- | --- |
 | Enterprise architecture | Reference architectures, system boundaries, and decision records |
