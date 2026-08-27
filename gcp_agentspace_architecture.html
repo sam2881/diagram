@@ -780,7 +780,7 @@
         <strong style="color:#81c995;">&#10003; In Scope</strong>
         <ul style="margin-top:10px;margin-bottom:0;">
           <li><strong>Incident track:</strong> intake from ServiceNow, Cloud Monitoring alerts and manual API/UI submission; AIOps correlation, dedup and enrichment; RCA, blast-radius assessment and change-record creation; retrieval of remediation runbooks (Terraform, Ansible, Kubernetes manifests, shell); LLM plan generation, independent judge validation, risk-based approval routing; execution, verification, auto-rollback, ticket closure and knowledge-base learning</li>
-          <li><strong>Data track (APEX):</strong> pipeline requests via Jira, structured UI form, natural language or SSIS/DTSX upload; metadata-driven generation of Airflow DAGs, PySpark jobs and SQL transforms; medallion ingestion Raw &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Trusted; quality gates, PII detection and masking, schema evolution, drift detection; lineage, catalog, data products, cost tracking; Git-based CI/CD deployment into Cloud Composer</li>
+          <li><strong>Data track (APEX):</strong> pipeline requests via Jira, structured UI form, natural language or SSIS/DTSX upload; metadata-driven generation of Airflow DAGs, PySpark jobs and SQL transforms; medallion ingestion Raw/Landing &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Consumption; quality gates, PII detection and masking, schema evolution, drift detection; lineage, catalog, data products, cost tracking; Git-based CI/CD deployment into Cloud Composer</li>
           <li><strong>Platform:</strong> GCP infrastructure, GKE, networking, IAM, secrets, observability, CI/CD, cost control, and L1/L2/L3 operational procedures</li>
         </ul>
       </div>
@@ -2093,7 +2093,7 @@
     <table class="tech-table">
       <thead><tr><th style="color:#81c995; width:20%;">Reference model</th><th style="color:#81c995; width:16%;">Position</th><th style="color:#81c995;">Rationale</th></tr></thead>
       <tbody>
-        <tr><td><strong>Medallion / Lakehouse</strong></td><td><span class="pill ok">Adopted</span></td><td>Raw &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Trusted with a declared contract and quality gate per zone; schema-on-read at landing, schema-on-write from Bronze; ACID on object storage via Delta/Iceberg; single copy, multiple engines</td></tr>
+        <tr><td><strong>Medallion / Lakehouse</strong></td><td><span class="pill ok">Adopted</span></td><td>Raw/Landing &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Consumption with a declared contract and quality gate per zone; schema-on-read at landing, schema-on-write from Bronze; ACID on object storage via Delta/Iceberg; single copy, multiple engines</td></tr>
         <tr><td><strong>Lambda architecture</strong></td><td><span class="pill bad">Not used</span></td><td>Parallel batch and speed layers means <strong>dual code paths for the same logic</strong> &mdash; the pattern's known failure mode</td></tr>
         <tr><td><strong>Kappa architecture</strong></td><td><span class="pill warn">Partially adopted</span></td><td>The <strong>control plane</strong> is Kappa-shaped (the event log is the source of truth; reprocessing is replay). The <strong>data plane</strong> is batch-first with a streaming pattern where the source is genuinely a stream</td></tr>
         <tr><td><strong>Data Mesh</strong></td><td><span class="pill ok">Conformant on all 4 principles</span></td><td>Domain ownership (<code>domain_registry</code>, business owner per pipeline) &middot; data as a product (registry, subscriptions, SLAs) &middot; self-serve platform (the APEX compiler) &middot; <strong>federated computational governance</strong></td></tr>
@@ -3368,7 +3368,7 @@ exactly what vector search cannot produce: all
 
     <h3>Medallion Architecture</h3>
     <div class="dgm">
-      <div class="dgm-title">Raw &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Trusted, with gates between zones</div>
+      <div class="dgm-title">Raw/Landing &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Consumption, with gates between zones</div>
       <div class="dgm-row nowrap" style="min-width:1000px;">
         <div class="node grey"><div class="n-t">Landing / Raw</div><div class="n-s">Byte-faithful copy of the source. All columns <code>STRING</code>. No schema enforced.</div></div>
         <div class="arr"></div>
@@ -3378,7 +3378,7 @@ exactly what vector search cannot produce: all
         <div class="arr w y"><i>Gate 2</i></div>
         <div class="node purple"><div class="n-t">Gold</div><div class="n-s">Business-modelled: multi-table joins with grain verification, aggregations, SCD2, surrogate keys, PII masking enforcement.</div></div>
         <div class="arr"></div>
-        <div class="node cyan"><div class="n-t">Trusted</div><div class="n-s">Certified for consumption. Catalog registration, data product publication, SLA-backed.</div></div>
+        <div class="node cyan"><div class="n-t">Consumption</div><div class="n-s">Published business products with catalog registration and SLA evidence.</div></div>
       </div>
       <div class="dgm-row" style="margin-top:10px;">
         <div class="node yellow"><div class="n-t">Gate 1 &mdash; Bronze schema validation</div><div class="n-s">Great Expectations: column presence, not-null constraints, primary-key uniqueness, data types</div></div>
@@ -3416,7 +3416,7 @@ exactly what vector search cannot produce: all
     <table class="tech-table">
       <thead><tr><th style="color:#81c995; width:22%;">Spark job</th><th style="color:#81c995; width:14%;">Zone</th><th style="color:#81c995;">Key operations</th></tr></thead>
       <tbody>
-        <tr><td><code>raw_to_bronze.py</code></td><td>Raw &rarr; Bronze</td><td>Multi-format read (CSV/JSON/Parquet/EBCDIC/XML/Excel), schema evolution check, type casting, audit columns, corrupt-record DLQ, idempotent delete, Delta/Iceberg/Parquet write</td></tr>
+        <tr><td><code>promote_landing_to_bronze.py</code></td><td>Landing &rarr; Bronze</td><td>Multi-format read (CSV/JSON/Parquet/EBCDIC/XML/Excel), schema evolution check, type casting, audit columns, corrupt-record DLQ, idempotent delete, Delta/Iceberg/Parquet write</td></tr>
         <tr><td><code>bronze_schema_validation.py</code></td><td>Bronze</td><td>Great Expectations &mdash; column presence, not-null, PK uniqueness, data types; quality score 0&ndash;100; PASS &rarr; Silver, FAIL &rarr; quarantine</td></tr>
         <tr><td><code>bronze_to_silver.py</code></td><td>Bronze &rarr; Silver</td><td>View SQL + transformation rules, PII detection (regex + column names), masking (REDACT / HASH / TOKENIZE / PARTIAL_MASK), dedup by PK, MD5 business keys</td></tr>
         <tr><td><code>silver_semantic_validation.py</code></td><td>Silver</td><td>Business rules as SQL, referential integrity, cross-field checks, range checks, custom expectations</td></tr>
@@ -3518,7 +3518,7 @@ exactly what vector search cannot produce: all
             <tr><td><code>raw</code></td><td>Write-once; lifecycle to Nearline at 30 days, Coldline at 90, delete at 365</td></tr>
             <tr><td><code>bronze</code></td><td>Table format managed; retention 730 days</td></tr>
             <tr><td><code>silver</code></td><td>Table format managed; retained</td></tr>
-            <tr><td><code>gold</code> / <code>trusted</code></td><td>Versioning enabled; retained; multi-region for critical products</td></tr>
+            <tr><td><code>gold</code> / <code>consumption</code></td><td>Versioning enabled; retained; multi-region for critical products</td></tr>
             <tr><td><code>quarantine</code> / <code>dlq</code></td><td>90-day retention; <strong>monitored for growth</strong></td></tr>
             <tr><td><code>_tmp</code> / <code>_checkpoints</code></td><td>7-day lifecycle deletion</td></tr>
           </tbody>
@@ -6173,7 +6173,7 @@ ServiceNow &#8594; Agentspace Connector &#8594; Pub/Sub (incident.created) &#859
       <div class="glossary-term"><dt>Cross-encoder reranking</dt><dd>Second-stage retrieval that scores (query, document) jointly rather than independently. +20&ndash;30% precision over bi-encoder ranking; final score = 0.70&middot;rerank + 0.30&middot;rrf.</dd></div>
       <div class="glossary-term"><dt>Blast radius</dt><dd>The set of services affected if a change goes wrong, computed by breadth-first search over the Neo4j <code>DEPENDS_ON</code> graph. Feeds risk routing and filters critical-risk candidates out of retrieval.</dd></div>
       <div class="glossary-term"><dt><code>FIXED_BY</code></dt><dd>The knowledge-graph edge from an Incident to the Script that resolved it, carrying success, resolution time and human-verification flags. This is how the platform remembers what actually worked.</dd></div>
-      <div class="glossary-term"><dt>Medallion architecture</dt><dd>Raw &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Trusted, with quality gates between Bronze&rarr;Silver and Silver&rarr;Gold. Failing records are quarantined, not passed through.</dd></div>
+      <div class="glossary-term"><dt>Medallion architecture</dt><dd>Raw/Landing &rarr; Bronze &rarr; Silver &rarr; Gold &rarr; Consumption, with quality gates between Bronze&rarr;Silver and Silver&rarr;Gold. Failing records are quarantined, not passed through.</dd></div>
       <div class="glossary-term"><dt>MCP</dt><dd><strong>Model Context Protocol</strong> &mdash; the JSON-RPC 2.0 agent-to-tool standard used in the portable stack. Its GCP-native counterpart is Agentspace connectors plus Vertex AI Extensions. Its key property is that credentials live server-side, never in the model's context.</dd></div>
       <div class="glossary-term"><dt>A2A</dt><dd>Agent-to-Agent messaging &mdash; real-time, best-effort coordination between agents (swarm voting, judge evaluation), as distinct from durable state transitions which always go through the event spine.</dd></div>
       <div class="glossary-term"><dt>Shadow mode</dt><dd>A deployment mode in which plans are generated but never executed. Used both to validate a new model or prompt against production traffic, and as the platform's kill switch.</dd></div>
