@@ -7309,7 +7309,7 @@ flowchart LR
     G1["bronze_schema_validation<br/>Great Expectations"]
     subgraph C1["Checks"]
         C1A["Column presence"]
-        C1B["Not-null constraints"]
+        NN["Not-null constraints"]
         C1C["PK uniqueness"]
         C1D["Data types"]
     end
