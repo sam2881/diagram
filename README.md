@@ -4,6 +4,10 @@
 
 A browsable collection of enterprise architecture, AI consulting, data engineering, cloud, and delivery artifacts. Use it as a visual companion to the implementation repositories in this portfolio.
 
+## Why It Is Useful
+
+This repository turns architecture from a static slide into a reviewable decision trail: business need, system boundaries, technology choices, delivery steps, governance, and operational readiness. It is designed for design reviews, discovery workshops, and technical portfolio walkthroughs.
+
 ## What You Will Find
 
 **Data layer standard:** `RAW` → `TRANSIENT` → `BRONZE` → `SILVER` → `GOLD`, with `GOLD` as the analytics-ready serving layer.
